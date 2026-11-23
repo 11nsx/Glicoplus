@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLICO+ | Canais de Denúncia e Reclamação no SUS</title>
+    <meta name="description" content="Saiba como exigir seus direitos no SUS quando faltam medicamentos, insulinas ou insumos de diabetes. Passo a passo para registrar manifestações no Fala.BR, Ouvidoria do SUS (136) e Ministério Público.">
+
+    <!-- FONTES E ÍCONES OBRIGATÓRIOS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ══ PALETA DE CORES E VARIÁVEIS OFICIAIS GLICO+ ══ */
+        :root {
+            --rosa: #DFB2B5;
+            --rosa-escuro: #c99699;
+            --rosa-suave: #f7ecec;
+            --rosa-claro: #fdf5f5;
+            --creme: #faf7f4;
+            --texto: #2c2422;
+            --texto-mudo: #7a6560;
+            --branco: #ffffff;
+            --nav-h: 60px;
+            --shadow-soft: 0 4px 20px rgba(180, 80, 90, 0.08);
+            --shadow-hover: 0 8px 30px rgba(180, 80, 90, 0.15);
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--creme);
+            color: var(--texto);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+            padding-top: var(--nav-h);
+        }
+
+        /* ══ TOPNAV FIXA ══ */
+        .topnav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--nav-h);
+            background: var(--rosa);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1rem;
+            z-index: 200;
+            box-shadow: 0 2px 10px rgba(180, 80, 90, .18);
+        }
+
+        .topnav-left {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+        }
+
+        .hamburger {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .18);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            transition: 0.2s;
+            flex-shrink: 0;
+        }
+
+        .hamburger:hover {
+            background: rgba(255, 255, 255, .32);
+        }
+
+        .topnav-logo {
+            height: 34px;
+            object-fit: contain;
+        }
+
+        .topnav-logo-fallback {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: var(--branco);
+            font-size: 1.25rem;
+            letter-spacing: 0.5px;
+        }
+
+        .topnav-logo-fallback .plus-icon {
+            background: rgba(255, 255, 255, 0.25);
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .topnav-center {
+            display: flex;
+            align-items: center;
+            gap: .25rem;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .topnav-link {
+            display: flex;
+            align-items: center;
+            gap: .35rem;
+            padding: .45rem .85rem;
+            border-radius: 20px;
+            color: white;
+            text-decoration: none;
+            font-size: .84rem;
+            font-weight: 500;
+            transition: 0.2s;
+            white-space: nowrap;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .topnav-link:hover,
+        .topnav-link.active {
+            background: rgba(255, 255, 255, .25);
+        }
+
+        .topnav-link i {
+            font-size: 14px;
+        }
+
+        .topnav-right {
+            display: flex;
+            align-items: center;
+            width: 40px;
+        }
+
+        /* ══ OVERLAY ══ */
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(44, 36, 34, .45);
+            z-index: 299;
+            opacity: 0;
+            visibility: hidden;
+            transition: .3s;
+            backdrop-filter: blur(2px);
+        }
+
+        .sidebar-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* ══ MENU LATERAL (SIDE-MENU) ══ */
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 320px;
+            max-width: 86vw;
+            height: 100%;
+            background: var(--branco);
+            z-index: 300;
+            transform: translateX(-100%);
+            transition: transform .3s cubic-bezier(.4, 0, .2, 1);
+            overflow-y: auto;
+            box-shadow: 4px 0 24px rgba(44, 36, 34, .15);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .side-menu.open {
+            transform: translateX(0);
+        }
+
+        .side-menu-header {
+            background: var(--rosa);
+            padding: 1.25rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .side-menu-header img {
+            height: 36px;
+            object-fit: contain;
+        }
+
+        .side-menu-header span {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: white;
+            font-weight: 700;
+            flex: 1;
+        }
+
+        .side-menu-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: 0.2s;
+        }
+
+        .side-menu-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .side-menu-section {
+            padding: 1rem 0;
+        }
+
+        .side-menu-label {
+            padding: .5rem 1.25rem;
+            font-size: .75rem;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: var(--texto-mudo);
+            font-weight: 700;
+        }
+
+        .side-menu-item {
+            display: flex;
+            align-items: center;
+            gap: .85rem;
+            padding: .75rem 1.25rem;
+            color: var(--texto);
+            text-decoration: none;
+            font-size: .92rem;
+            font-weight: 500;
+            transition: 0.2s;
+            border-left: 3px solid transparent;
+            cursor: pointer;
+            background: none;
+            width: 100%;
+            text-align: left;
+            border-top: none;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .side-menu-item:hover {
+            background: var(--rosa-claro);
+            color: var(--rosa-escuro);
+        }
+
+        .side-menu-item.active {
+            background: var(--rosa-suave);
+            border-left-color: var(--rosa-escuro);
+            color: var(--rosa-escuro);
+            font-weight: 700;
+        }
+
+        .side-menu-item i {
+            width: 20px;
+            text-align: center;
+            color: var(--rosa-escuro);
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .side-menu-item i.fa-balance-scale {
+            color: #dc2626;
+        }
+
+        /* ══ CONTEÚDO PRINCIPAL ══ */
+        .page-body {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.25rem 4rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.75rem;
+        }
+
+        .breadcrumb-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--texto-mudo);
+        }
+
+        .breadcrumb-nav a {
+            color: var(--texto-mudo);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb-nav a:hover {
+            color: var(--rosa-escuro);
+        }
+
+        .topic-header {
+            background: linear-gradient(135deg, var(--branco) 0%, var(--rosa-claro) 100%);
+            border: 1px solid var(--rosa-suave);
+            border-radius: 20px;
+            padding: 2.25rem;
+            box-shadow: var(--shadow-soft);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .topic-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background: var(--rosa-escuro);
+        }
+
+        .topic-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--rosa-suave);
+            color: var(--rosa-escuro);
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.85rem;
+        }
+
+        .topic-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.15rem;
+            color: var(--texto);
+            line-height: 1.25;
+            margin-bottom: 0.85rem;
+        }
+
+        .topic-header p.lead {
+            font-size: 1.05rem;
+            color: var(--texto-mudo);
+            max-width: 820px;
+            line-height: 1.6;
+        }
+
+        /* ══ CARDS DE CONTEÚDO ══ */
+        .content-card {
+            background: var(--branco);
+            border: 1px solid var(--rosa-suave);
+            border-radius: 18px;
+            padding: 1.75rem;
+            box-shadow: var(--shadow-soft);
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .card-header-row {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .card-header-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: var(--rosa-suave);
+            color: var(--rosa-escuro);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.35rem;
+            color: var(--texto);
+        }
+
+        /* ══ NÍVEIS DE ATENDIMENTO (ESCADA DE COBRANÇA) ══ */
+        .channels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .channel-card {
+            background: var(--creme);
+            border: 1px solid var(--rosa-suave);
+            border-radius: 14px;
+            padding: 1.35rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            position: relative;
+        }
+
+        .channel-num {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            background: var(--rosa-suave);
+            color: var(--rosa-escuro);
+            padding: 0.25rem 0.65rem;
+            border-radius: 14px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            width: fit-content;
+        }
+
+        .channel-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15rem;
+            color: var(--texto);
+        }
+
+        .channel-card p {
+            font-size: 0.9rem;
+            color: var(--texto-mudo);
+            line-height: 1.5;
+        }
+
+        /* ══ TIPOS DE MANIFESTAÇÃO NO FALA.BR ══ */
+        .manifestation-types-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1rem;
+        }
+
+        .manifestation-card {
+            border-radius: 14px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .manifestation-card.reclamacao {
+            background: #fff1f2;
+            border: 2px solid #fecdd3;
+        }
+
+        .manifestation-card.solicitacao {
+            background: #f0fdf4;
+            border: 2px solid #bbf7d0;
+        }
+
+        .manifestation-card.denuncia {
+            background: #fffbeb;
+            border: 2px solid #fde68a;
+        }
+
+        .manifestation-card strong {
+            font-size: 1rem;
+            color: var(--texto);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .manifestation-card p {
+            font-size: 0.88rem;
+            color: var(--texto);
+            line-height: 1.5;
+        }
+
+        /* ══ TIMELINE / PASSOS DE REGISTRO ══ */
+        .steps-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .step-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            background: var(--creme);
+            border: 1px solid var(--rosa-suave);
+            border-radius: 12px;
+            padding: 1.15rem;
+        }
+
+        .step-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--rosa-escuro);
+            color: var(--branco);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.95rem;
+            flex-shrink: 0;
+        }
+
+        .step-text {
+            font-size: 0.92rem;
+            color: var(--texto);
+            line-height: 1.55;
+        }
+
+        /* ══ MODALIDADES DE REGISTRO (IDENTIFICADO X ANÔNIMO) ══ */
+        .id-modes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .id-mode-box {
+            background: var(--branco);
+            border: 1px solid var(--rosa-suave);
+            border-radius: 12px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .id-mode-box strong {
+            font-size: 0.98rem;
+            color: var(--texto);
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+        }
+
+        .id-mode-box p {
+            font-size: 0.88rem;
+            color: var(--texto-mudo);
+            line-height: 1.5;
+        }
+
+        /* ══ CARDS DE ACESSO RÁPIDO ══ */
+        .quick-links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1rem;
+        }
+
+        .quick-link-card {
+            background: var(--creme);
+            border: 1px solid var(--rosa-suave);
+            border-radius: 14px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 0.75rem;
+        }
+
+        .quick-link-title {
+            font-weight: 700;
+            color: var(--texto);
+            font-size: 0.98rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .quick-link-desc {
+            font-size: 0.88rem;
+            color: var(--texto-mudo);
+            line-height: 1.45;
+        }
+
+        .link-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            background: var(--rosa-suave);
+            border: 1px solid var(--rosa);
+            color: var(--rosa-escuro);
+            padding: 0.55rem 0.95rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            width: fit-content;
+            transition: 0.2s;
+        }
+
+        .link-btn:hover {
+            background: var(--rosa-escuro);
+            color: var(--branco);
+        }
+
+        .alert-box {
+            background: var(--rosa-claro);
+            border-left: 4px solid var(--rosa-escuro);
+            padding: 1rem 1.25rem;
+            border-radius: 0 12px 12px 0;
+            font-size: 0.92rem;
+            color: var(--texto);
+            line-height: 1.55;
+        }
+
+        /* ══ BANNER CTA FINAL ══ */
+        .gov-cta-section {
+            background: linear-gradient(135deg, var(--branco) 0%, var(--rosa-claro) 100%);
+            border: 2px dashed var(--rosa);
+            border-radius: 20px;
+            padding: 2.25rem 1.5rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .gov-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--rosa-suave);
+            color: var(--rosa-escuro);
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .gov-cta-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.7rem;
+            color: var(--texto);
+            max-width: 620px;
+            line-height: 1.3;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--rosa-escuro);
+            color: var(--branco);
+            text-decoration: none;
+            padding: 0.85rem 1.6rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background: #ba787c;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--branco);
+            color: var(--texto);
+            border: 1px solid var(--rosa);
+            text-decoration: none;
+            padding: 0.85rem 1.6rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            background: var(--rosa-suave);
+            color: var(--rosa-escuro);
+        }
+
+        @media (max-width: 768px) {
+            .topnav-center {
+                display: none;
+            }
+
+            .topic-header h1 {
+                font-size: 1.65rem;
+            }
+        }
+    
+        /* ══ ESTILO PADRONIZADO DO NAV & SIDEBAR (medicamentos-insumos-sus.html + pílulas) ══ */
+        :root {
+            --rosa: #DFB2B5;
+            --rosa-escuro: #c99699;
+            --rosa-suave: #f7ecec;
+            --rosa-claro: #fdf5f5;
+            --creme: #faf7f4;
+            --texto: #2c2422;
+            --texto-mudo: #7a6560;
+            --branco: #ffffff;
+            --nav-h: 60px;
+            --shadow-soft: 0 4px 20px rgba(180, 80, 90, 0.08);
+            --shadow-hover: 0 8px 30px rgba(180, 80, 90, 0.15);
+        }
+
+        body {
+            padding-top: var(--nav-h);
+        }
+
+        .topnav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--nav-h);
+            background: var(--rosa);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1rem;
+            z-index: 200;
+            box-shadow: 0 2px 10px rgba(180, 80, 90, .18);
+        }
+
+        .topnav-left {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+        }
+
+        .hamburger {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .18);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            transition: 0.2s;
+            flex-shrink: 0;
+        }
+
+        .hamburger:hover {
+            background: rgba(255, 255, 255, .32);
+        }
+
+        .topnav-logo {
+            height: 34px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .topnav-logo-fallback {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: var(--branco);
+            font-size: 1.25rem;
+        }
+
+        .topnav-logo-fallback .plus-icon {
+            background: rgba(255, 255, 255, 0.25);
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .topnav-center {
+            display: flex;
+            align-items: center;
+            gap: .35rem;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .topnav-link {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: .35rem;
+            padding: .45rem .85rem;
+            height: auto;
+            border-radius: 20px;
+            border-bottom: none;
+            background: rgba(255, 255, 255, .14);
+            color: white;
+            text-decoration: none;
+            font-size: .84rem;
+            font-weight: 500;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+
+        .topnav-link i {
+            font-size: 14px;
+        }
+
+        .topnav-link:hover,
+        .topnav-link.active {
+            background: rgba(255, 255, 255, .30);
+            color: white;
+            border-bottom: none;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(44, 36, 34, .45);
+            z-index: 299;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: .3s;
+            backdrop-filter: blur(2px);
+        }
+
+        .sidebar-overlay.open {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: all;
+        }
+
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 320px;
+            max-width: 86vw;
+            height: 100%;
+            background: var(--branco);
+            z-index: 300;
+            transform: translateX(-100%);
+            transition: transform .3s cubic-bezier(.4, 0, .2, 1);
+            overflow-y: auto;
+            box-shadow: 4px 0 24px rgba(44, 36, 34, .15);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .side-menu.open {
+            transform: translateX(0);
+        }
+
+        .side-menu-header {
+            background: var(--rosa);
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            min-height: var(--nav-h);
+        }
+
+        .side-menu-header img {
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .side-menu-header span {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: white;
+            font-weight: 700;
+            flex: 1;
+        }
+
+        .side-menu-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+
+        .side-menu-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .side-menu-section {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--rosa-suave);
+        }
+
+        .side-menu-section:last-child {
+            border-bottom: none;
+        }
+
+        .side-menu-label {
+            padding: .5rem 1.25rem;
+            font-size: .75rem;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: var(--texto-mudo);
+            font-weight: 700;
+        }
+
+        .side-menu-item {
+            display: flex;
+            align-items: center;
+            gap: .85rem;
+            padding: .75rem 1.25rem;
+            color: var(--texto);
+            text-decoration: none;
+            font-size: .92rem;
+            font-weight: 500;
+            transition: 0.2s;
+            border: none;
+            border-left: 3px solid transparent;
+            background: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            line-height: 1.35;
+        }
+
+        .side-menu-item:hover {
+            background: var(--rosa-claro);
+            color: var(--rosa-escuro);
+        }
+
+        .side-menu-item.active {
+            background: var(--rosa-suave);
+            border-left-color: var(--rosa-escuro);
+            color: var(--rosa-escuro);
+            font-weight: 700;
+        }
+
+        .side-menu-item i {
+            width: 20px;
+            text-align: center;
+            color: var(--rosa-escuro);
+            flex-shrink: 0;
+        }
+
+        .side-menu-item i.fa-balance-scale {
+            color: #dc2626;
+        }
+
+        @media (min-width: 769px) {
+            .topnav-center {
+                display: flex;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .topnav-center {
+                display: none;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- NAV SUPERIOR -->
+    <nav class="topnav">
+        <div class="topnav-left">
+            <button class="hamburger" id="hamburger-btn" aria-label="Abrir menu">
+                <i class="fa fa-bars"></i>
+            </button>
+            <img class="topnav-logo"
+                src="https://lh3.google.com/u/1/d/1AFkllEteK2G4I7QkAsqzwZrgo43DDGtE=w1878-h956-iv1?auditContext=prefetch"
+                alt="GLICO+"
+                onerror="this.style.display='none'; document.getElementById('topnav-fallback').style.display='inline-flex';">
+            <div id="topnav-fallback" class="topnav-logo-fallback" style="display: none;">
+                <span class="plus-icon">+</span>
+                <span>GLICO+</span>
+            </div>
+        </div>
+
+        <div class="topnav-center">
+            <a href="../index.html" class="topnav-link"><i class="fa fa-home"></i><span>Início</span></a>
+            <a href="../saude/agenda.html" class="topnav-link"><i class="fa fa-calendar"></i><span>Agenda</span></a>
+            <a href="../saude/calculadora.html" class="topnav-link"><i class="fa fa-heartbeat"></i><span>Glicemia</span></a>
+            <a href="../saude/receitas.html" class="topnav-link"><i class="fa fa-cutlery"></i><span>Receitas</span></a>
+        </div>
+    </nav>
+
+    <!-- OVERLAY -->
+    <div class="sidebar-overlay" id="overlay"></div>
+
+    <!-- MENU LATERAL -->
+    <aside class="side-menu" id="side-menu">
+        <div class="side-menu-header">
+            <img src="https://lh3.google.com/u/1/d/1AFkllEteK2G4I7QkAsqzwZrgo43DDGtE=w1878-h956-iv1?auditContext=prefetch"
+                alt="GLICO+"
+                onerror="this.style.display='none';">
+            <span>GLICO+</span>
+            <button class="side-menu-close" id="menu-close" aria-label="Fechar menu"><i class="fa fa-times"></i></button>
+        </div>
+
+        <div class="side-menu-section">
+            <div class="side-menu-label">Navegação &amp; Saúde</div>
+            <a href="../index.html" class="side-menu-item"><i class="fa fa-home"></i> Página Inicial</a>
+            <a href="../saude/consulta-exames.html" class="side-menu-item"><i class="fa fa-stethoscope"></i> Acesso a Consultas e Exames</a>
+            <a href="../saude/calculadora.html" class="side-menu-item"><i class="fa fa-heartbeat"></i> Acompanhe a Glicemia</a>
+            <a href="../saude/agenda.html" class="side-menu-item"><i class="fa fa-calendar"></i> Agenda</a>
+            <a href="../saude/oqueeh.html" class="side-menu-item"><i class="fa fa-question"></i> O Que é? | Tipos</a>
+            <a href="../saude/receitas.html" class="side-menu-item"><i class="fa fa-cutlery"></i> Receitas</a>
+        </div>
+
+        <div class="side-menu-section">
+            <div class="side-menu-label">Direitos &amp; SUS</div>
+            <a href="acoes-judiciais.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Ações Judiciais (Medicamentos)</a>
+            <a href="aposentadoria-bpc-loas.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Aposentadoria / BPC / LOAS</a>
+            <a href="canais-denuncia.html" class="side-menu-item active"><i class="fa fa-bullhorn"></i> Canais de Denúncia e Reclamação</a>
+            <a href="medicamentos-fora-relacao.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Como Solicitar Medicamentos (Fora da Relação Oficial)</a>
+            <a href="criterios-justica.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Critérios para Conseguir Medicamentos pela Justiça</a>
+            <a href="defensoria-publica.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Defensoria Pública e Assistência Jurídica Gratuita</a>
+            <a href="padronizados.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Diferenças entre Medicamentos Padronizados e Não Padronizados no SUS</a>
+            <a href="direitos-diabetico.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Direitos da Pessoa com Diabetes</a>
+            <a href="vulnerabilidade.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Direitos da Pessoa com Diabetes em Situação de Vulnerabilidade</a>
+            <a href="incorporacao-conitec.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Incorporação de Novos Medicamentos ao SUS</a>
+            <a href="instrumentos-juridicos.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Instrumentos Jurídicos Aplicáveis</a>
+            <a href="medicamentos-insumos-sus.html" class="side-menu-item"><i class="fa fa-medkit"></i> Medicamentos e Insumos Fornecidos pelo SUS</a>
+            <a href="politicas-publicas.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Políticas Públicas para Pessoas com Diabetes</a>
+            <a href="responsabilidade-estado.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Responsabilidade do Estado</a>
+            <a href="tratamentos-nao-disponibilizados.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Tratamentos Não Disponibilizados pelo SUS</a>
+        </div>
+    </aside>
+
+    <!-- ══ CONTEÚDO PRINCIPAL: CANAIS DE DENÚNCIA E RECLAMAÇÃO ══ -->
+    <main class="page-body">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb-nav">
+            <a href="../index.html"><i class="fa fa-home"></i> Início</a>
+            <i class="fa fa-angle-right"></i>
+            <span>Fiscalização &amp; Cidadania</span>
+            <i class="fa fa-angle-right"></i>
+            <span style="color: var(--rosa-escuro); font-weight: 600;">Canais de Denúncia no SUS</span>
+        </nav>
+
+        <!-- Cabeçalho -->
+        <header class="topic-header">
+            <span class="topic-tag">
+                <i class="fa fa-bullhorn"></i> Ouvidoria e Defesa do Cidadão no SUS
+            </span>
+            <h1>Canais de Denúncia e Reclamação: Como Exigir seus Direitos no SUS?</h1>
+            <p class="lead">
+                A falta de insulinas, medicamentos orais, tiras reagentes e agulhas ou a recusa injustificada de atendimento colocam em risco a vida da pessoa com diabetes. Saiba como formalizar sua queixa em cada esfera pública e registrar denúncias oficiais com respaldo legal.
+            </p>
+        </header>
+
+        <!-- Níveis de Reclamação: Onde Agir Primeiro -->
+        <section class="content-card">
+            <div class="card-header-row">
+                <div class="card-header-icon">
+                    <i class="fa fa-sitemap"></i>
+                </div>
+                <div>
+                    <h2 class="card-title">A Escala de Reclamação e Cobrança no SUS</h2>
+                    <p style="font-size: 0.92rem; color: var(--texto-mudo);">
+                        Siga a ordem dos canais para criar um histórico documental sólido em caso de medidas judiciais:
+                    </p>
+                </div>
+            </div>
+
+            <div class="channels-grid">
+                <div class="channel-card">
+                    <span class="channel-num">1º Nível: Local</span>
+                    <h3>Unidade de Saúde (UBS / Farmácia)</h3>
+                    <p>
+                        Procure a farmácia ou a coordenação da UBS onde você retira os remédios. Solicite uma <strong>declaração de indisponibilidade</strong> ou anote no verso da receita a data e a justificativa da falta. Guarde todas as receitas e protocolos anteriores.
+                    </p>
+                </div>
+
+                <div class="channel-card">
+                    <span class="channel-num">2º Nível: Municipal</span>
+                    <h3>Ouvidoria da Secretaria Municipal de Saúde</h3>
+                    <p>
+                        Responsável pela atenção primária e distribuição da Relação Municipal de Medicamentos (REMUME). A queixa pode ser feita pelo portal oficial da prefeitura (seção <em>Ouvidoria / Fale Conosco</em>) ou presencialmente na Secretaria Municipal de Saúde.
+                    </p>
+                </div>
+
+                <div class="channel-card">
+                    <span class="channel-num">3º Nível: Estadual</span>
+                    <h3>Ouvidoria da Secretaria Estadual de Saúde</h3>
+                    <p>
+                        Indicada para medicamentos do Componente Especializado da Assistência Farmacêutica (CEAF) e farmácias de alto custo estaduais. Acesse o portal oficial do governo do seu estado para registrar a ocorrência.
+                    </p>
+                </div>
+
+                <div class="channel-card">
+                    <span class="channel-num">4º Nível: Federal</span>
+                    <h3>Ouvidoria-Geral do SUS (OuvSUS)</h3>
+                    <p>
+                        Canal federal vinculado ao Ministério da Saúde que fiscaliza repasses e funcionamento do SUS em todo o país. Atendimento gratuito pelo telefone <strong>136</strong> ou pela plataforma online integrada <strong>Fala.BR</strong>.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Como Registrar Manifestação pela Internet no Fala.BR -->
+        <section class="content-card">
+            <div class="card-header-row">
+                <div class="card-header-icon">
+                    <i class="fa fa-laptop"></i>
+                </div>
+                <div>
+                    <h2 class="card-title">Como Registrar uma Manifestação pela Internet?</h2>
+                    <p style="font-size: 0.92rem; color: var(--texto-mudo);">
+                        Passo a passo no portal oficial da Ouvidoria-Geral do SUS e plataforma Fala.BR:
+                    </p>
+                </div>
+            </div>
+
+            <div class="steps-container">
+                <div class="step-row">
+                    <div class="step-circle">1</div>
+                    <div class="step-text">
+                        Acesse a página oficial da Ouvidoria-Geral do SUS no portal Gov.br e clique em <strong>"Iniciar"</strong> para ser redirecionado à plataforma <strong>Fala.BR</strong>.
+                    </div>
+                </div>
+
+                <div class="step-row">
+                    <div class="step-circle">2</div>
+                    <div class="step-text">
+                        Escolha a opção de registrar manifestação e <strong>selecione o tipo adequado</strong> (Reclamação, Solicitação ou Denúncia — veja a diferença abaixo).
+                    </div>
+                </div>
+
+                <div class="step-row">
+                    <div class="step-circle">3</div>
+                    <div class="step-text">
+                        Indique o órgão responsável (ex: Ministério da Saúde, Secretaria Estadual ou Municipal) e descreva com clareza o problema vivenciado.
+                    </div>
+                </div>
+
+                <div class="step-row">
+                    <div class="step-circle">4</div>
+                    <div class="step-text">
+                        Informe o local exato (nome da Unidade Básica de Saúde, endereço e município), a data em que o fato ocorreu e as providências já tentadas.
+                    </div>
+                </div>
+
+                <div class="step-row">
+                    <div class="step-circle">5</div>
+                    <div class="step-text">
+                        Anexe documentos de comprovação (fotos da receita médica atualizada, comprovante de atendimento, negativas escritas ou protocolos de agendamento).
+                    </div>
+                </div>
+
+                <div class="step-row">
+                    <div class="step-circle">6</div>
+                    <div class="step-text">
+                        Revise os dados, confirme o envio e <strong>salve imediatamente o número de protocolo</strong> e a chave de acesso gerada.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tipos de Manifestação -->
+            <h3 style="font-family: 'Playfair Display', serif; font-size: 1.15rem; color: var(--texto); margin-top: 0.5rem;">
+                Escolha o Tipo Correto da sua Manifestação:
+            </h3>
+
+            <div class="manifestation-types-grid">
+                <div class="manifestation-card reclamacao">
+                    <strong><i class="fa fa-exclamation-triangle" style="color: #e11d48;"></i> Reclamação</strong>
+                    <p>
+                        Utilizada quando existe insatisfação direta com a qualidade de um serviço ou com o atendimento prestado por funcionários e unidades de saúde.
+                    </p>
+                </div>
+
+                <div class="manifestation-card solicitacao">
+                    <strong><i class="fa fa-check-square-o" style="color: #16a34a;"></i> Solicitação</strong>
+                    <p>
+                        Indicada para pedir uma providência concreta do órgão, como o fornecimento emergencial de insulinas, marcação de consultas ou realização de exames.
+                    </p>
+                </div>
+
+                <div class="manifestation-card denuncia">
+                    <strong><i class="fa fa-shield" style="color: #d97706;"></i> Denúncia</strong>
+                    <p>
+                        Reservada para indícios graves de irregularidades, desvio de medicamentos, corrupção, omissão deliberada ou fraude na administração pública.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Identificação e Acompanhamento -->
+        <section class="content-card">
+            <div class="card-header-row">
+                <div class="card-header-icon">
+                    <i class="fa fa-clock-o"></i>
+                </div>
+                <div>
+                    <h2 class="card-title">Acompanhamento e Prazos Oficiais</h2>
+                    <p style="font-size: 0.92rem; color: var(--texto-mudo);">
+                        Regras de resposta e como consultar o andamento da sua solicitação:
+                    </p>
+                </div>
+            </div>
+
+            <div class="id-modes-grid">
+                <div class="id-mode-box">
+                    <strong><i class="fa fa-user-check" style="color: #0284c7;"></i> Registro Identificado (Recomendado)</strong>
+                    <p>
+                        Permite acompanhar o andamento pelo sistema Fala.BR, receber notificações no e-mail, obter uma <strong>resposta conclusiva fundamentada</strong> e interpor recursos administrativos caso a solução não seja satisfatória.
+                    </p>
+                </div>
+
+                <div class="id-mode-box">
+                    <strong><i class="fa fa-user-secret" style="color: var(--texto-mudo);"></i> Denúncia Anônima</strong>
+                    <p>
+                        O órgão investiga os indícios informados, mas o cidadão <strong>não recebe resposta conclusiva</strong> nem consegue acompanhar a tramitação ou interpor recursos na plataforma.
+                    </p>
+                </div>
+            </div>
+
+            <div class="alert-box">
+                <strong style="color: var(--texto);">Prazo Oficial de Resposta:</strong><br>
+                A ouvidoria tem o prazo legal de <strong>até 30 dias</strong> para responder à manifestação, prorrogável por mais 30 dias mediante justificativa formal. Caso a resposta seja insatisfatória, o cidadão pode apresentar <strong>recurso à própria ouvidoria</strong> diretamente pelo sistema.
+            </div>
+        </section>
+
+        <!-- Quando a Ouvidoria não resolve: Ministério Público e Defensoria -->
+        <section class="content-card">
+            <div class="card-header-row">
+                <div class="card-header-icon" style="background: #fee2e2; color: #dc2626;">
+                    <i class="fa fa-balance-scale"></i>
+                </div>
+                <div>
+                    <h2 class="card-title">Quando a Reclamação não Resolve: MP e Defensoria</h2>
+                    <p style="font-size: 0.92rem; color: var(--texto-mudo);">
+                        Se o problema persistir ou o desabastecimento for crônico na sua região, acione os órgãos de controle externo:
+                    </p>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+                <div style="background: var(--creme); border-radius: 12px; padding: 1.25rem; border: 1px solid var(--rosa-suave);">
+                    <h4 style="font-weight: 700; color: var(--texto); margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fa fa-institution" style="color: #dc2626;"></i> Ministério Público (Estadual e Federal)
+                    </h4>
+                    <p style="font-size: 0.9rem; color: var(--texto-mudo); line-height: 1.55;">
+                        O Ministério Público atua na defesa dos direitos coletivos à saúde. Em nível municipal/estadual, procure a <strong>Promotoria de Justiça de Defesa da Saúde</strong>. Em falhas de atribuição federal, utilize o portal de denúncias do <strong>Ministério Público Federal (MPF)</strong>.
+                    </p>
+                </div>
+
+                <div style="background: var(--creme); border-radius: 12px; padding: 1.25rem; border: 1px solid var(--rosa-suave);">
+                    <h4 style="font-weight: 700; color: var(--texto); margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fa fa-balance-scale" style="color: var(--rosa-escuro);"></i> Defensoria Pública (DPE e DPU)
+                    </h4>
+                    <p style="font-size: 0.9rem; color: var(--texto-mudo); line-height: 1.55;">
+                        Presta assistência jurídica integral e gratuita para pacientes de baixa renda. A apresentação dos protocolos da ouvidoria comprova que o SUS foi procurado e negou atendimento, viabilizando o pedido de liminar urgente.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cards de Acesso Rápido -->
+        <section class="content-card">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 1.35rem; color: var(--texto); margin-bottom: 0.25rem;">
+                <i class="fa fa-external-link" style="color: var(--rosa-escuro); margin-right: 8px;"></i>
+                Canais Oficiais para Registro Imediato
+            </h2>
+            <p style="font-size: 0.92rem; color: var(--texto-mudo);">
+                Links e telefones verificados do Governo Federal e órgãos de controle:
+            </p>
+
+            <div class="quick-links-grid">
+                <div class="quick-link-card">
+                    <div>
+                        <div class="quick-link-title"><i class="fa fa-heartbeat" style="color: var(--rosa-escuro);"></i> Ouvidoria-Geral do SUS</div>
+                        <p class="quick-link-desc">Página oficial do Ministério da Saúde para cadastro de manifestações na OuvSUS.</p>
+                    </div>
+                    <a href="https://www.gov.br/pt-br/servicos/cadastrar-manifestacao-na-ouvidoria-geral-do-sus-ouvsus" target="_blank" rel="noopener noreferrer" class="link-btn">
+                        <i class="fa fa-external-link"></i> Abrir Ouvidoria SUS
+                    </a>
+                </div>
+
+                <div class="quick-link-card">
+                    <div>
+                        <div class="quick-link-title"><i class="fa fa-commenting-o" style="color: var(--rosa-escuro);"></i> Plataforma Fala.BR</div>
+                        <p class="quick-link-desc">Sistema integrado da CGU para registrar e acompanhar manifestações com sua conta Gov.br.</p>
+                    </div>
+                    <a href="https://falabr.cgu.gov.br/" target="_blank" rel="noopener noreferrer" class="link-btn">
+                        <i class="fa fa-external-link"></i> Acessar Fala.BR
+                    </a>
+                </div>
+
+                <div class="quick-link-card">
+                    <div>
+                        <div class="quick-link-title"><i class="fa fa-phone" style="color: var(--rosa-escuro);"></i> Disque Saúde 136</div>
+                        <p class="quick-link-desc">Atendimento telefônico gratuito da Ouvidoria do SUS para registrar e consultar protocolos.</p>
+                    </div>
+                    <span style="font-size: 0.88rem; font-weight: 700; color: var(--rosa-escuro);">Ligue 136 (Gratuito)</span>
+                </div>
+
+                <div class="quick-link-card">
+                    <div>
+                        <div class="quick-link-title"><i class="fa fa-gavel" style="color: #dc2626;"></i> Denúncias no MPF</div>
+                        <p class="quick-link-desc">Canal oficial de denúncias do Ministério Público Federal para irregularidades no SUS.</p>
+                    </div>
+                    <a href="https://www.mpf.mp.br/servicos/denuncias/denuncias" target="_blank" rel="noopener noreferrer" class="link-btn">
+                        <i class="fa fa-external-link"></i> Denúncias MPF
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navegação Integrada GLICO+ -->
+        <section class="gov-cta-section">
+            <span class="gov-badge">
+                <i class="fa fa-compass"></i> Navegação Integrada GLICO+
+            </span>
+            <h2>Consulte Outros Temas Fundamentais de Saúde e Direitos</h2>
+            <p style="color: var(--texto-mudo); font-size: 0.95rem; max-width: 580px;">
+                Se a ouvidoria não solucionar e você precisar solicitar medicamentos fora da relação ou entrar na justiça:
+            </p>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+                <a href="medicamentos-fora-relacao.html" class="btn-primary">
+                    <i class="fa fa-file-text-o"></i>
+                    <span>Medicamentos Fora da Lista</span>
+                </a>
+                <a href="criterios-justica.html" class="btn-secondary">
+                    <i class="fa fa-gavel"></i>
+                    <span>Critérios do STF</span>
+                </a>
+                <a href="acoes-judiciais.html" class="btn-secondary">
+                    <i class="fa fa-balance-scale"></i>
+                    <span>Casos Julgados</span>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- JAVASCRIPT DO MENU -->
+    <script>
+        const hamburgerBtn = document.getElementById('hamburger-btn');
+        const sideMenu = document.getElementById('side-menu');
+        const overlay = document.getElementById('overlay');
+        const menuClose = document.getElementById('menu-close');
+
+        function openMenu() {
+            sideMenu.classList.add('open');
+            overlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMenu() {
+            sideMenu.classList.remove('open');
+            overlay.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        hamburgerBtn.addEventListener('click', openMenu);
+        overlay.addEventListener('click', closeMenu);
+        menuClose.addEventListener('click', closeMenu);
+    </script>
+
+    <script>
+        (function () {
+            const sideMenuEl = document.getElementById('side-menu');
+            const overlayEl = document.getElementById('overlay');
+            function forceCloseMenu() {
+                if (sideMenuEl) sideMenuEl.classList.remove('open');
+                if (overlayEl) overlayEl.classList.remove('open');
+                document.body.style.overflow = '';
+            }
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') forceCloseMenu();
+            });
+            document.querySelectorAll('#side-menu a.side-menu-item').forEach(function (link) {
+                link.addEventListener('click', forceCloseMenu);
+            });
+        })();
+    </script>
+</body>
+
+</html>

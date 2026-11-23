@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLICO+ | Incorporação de Novos Medicamentos ao SUS (CONITEC)</title>
+    <meta name="description" content="Entenda como funciona o processo de incorporação de medicamentos e tecnologias para diabetes no SUS pela CONITEC: etapas de avaliação científica, consultas públicas, prazo legal de 180 dias e a Lei 12.401/2011.">
+
+    <!-- FONTES E ÍCONES OBRIGATÓRIOS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --rosa: #DFB2B5;
+            --rosa-escuro: #c99699;
+            --rosa-suave: #f7ecec;
+            --rosa-claro: #fdf5f5;
+            --creme: #faf7f4;
+            --texto: #2c2422;
+            --texto-mudo: #7a6560;
+            --branco: #ffffff;
+            --nav-h: 60px;
+            --shadow-soft: 0 4px 20px rgba(180, 80, 90, 0.08);
+            --shadow-hover: 0 8px 30px rgba(180, 80, 90, 0.15);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--creme); color: var(--texto);
+            min-height: 100vh; overflow-x: hidden; line-height: 1.6; padding-top: var(--nav-h);
+        }
+
+        .topnav {
+            position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h);
+            background: var(--rosa); display: flex; align-items: center; justify-content: space-between;
+            padding: 0 1rem; z-index: 200; box-shadow: 0 2px 10px rgba(180, 80, 90, .18);
+        }
+        .topnav-left { display: flex; align-items: center; gap: .75rem; }
+        .hamburger {
+            width: 38px; height: 38px; border-radius: 50%; background: rgba(255, 255, 255, .18);
+            border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 18px; transition: 0.2s; flex-shrink: 0;
+        }
+        .hamburger:hover { background: rgba(255, 255, 255, .32); }
+
+        .topnav-logo-fallback {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-family: 'Playfair Display', serif; font-weight: 700; color: var(--branco); font-size: 1.25rem;
+        }
+
+        .topnav-center {
+            display: flex; align-items: center; gap: .25rem;
+            position: absolute; left: 50%; transform: translateX(-50%);
+        }
+        .topnav-link {
+            display: flex; align-items: center; gap: .35rem; padding: .45rem .85rem; border-radius: 20px;
+            color: white; text-decoration: none; font-size: .84rem; font-weight: 500; transition: 0.2s; white-space: nowrap;
+        }
+        .topnav-link:hover, .topnav-link.active { background: rgba(255, 255, 255, .25); }
+
+        .sidebar-overlay {
+            position: fixed; inset: 0; background: rgba(44, 36, 34, .45);
+            z-index: 299; opacity: 0; visibility: hidden; transition: .3s; backdrop-filter: blur(2px);
+        }
+        .sidebar-overlay.open { opacity: 1; visibility: visible; }
+
+        .side-menu {
+            position: fixed; top: 0; left: 0; width: 320px; max-width: 86vw; height: 100%;
+            background: var(--branco); z-index: 300; transform: translateX(-100%);
+            transition: transform .3s cubic-bezier(.4, 0, .2, 1);
+            overflow-y: auto; box-shadow: 4px 0 24px rgba(44, 36, 34, .15);
+            display: flex; flex-direction: column;
+        }
+        .side-menu.open { transform: translateX(0); }
+
+        .side-menu-header {
+            background: var(--rosa); padding: 1.25rem; display: flex; align-items: center; gap: .75rem;
+            position: sticky; top: 0; z-index: 10;
+        }
+        .side-menu-header span { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: white; font-weight: 700; flex: 1; }
+        .side-menu-close { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; }
+
+        .side-menu-section { padding: 1rem 0; }
+        .side-menu-label { padding: .5rem 1.25rem; font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; color: var(--texto-mudo); font-weight: 700; }
+        .side-menu-item {
+            display: flex; align-items: center; gap: .85rem; padding: .75rem 1.25rem;
+            color: var(--texto); text-decoration: none; font-size: .92rem; font-weight: 500;
+            transition: 0.2s; border-left: 3px solid transparent;
+        }
+        .side-menu-item:hover { background: var(--rosa-claro); color: var(--rosa-escuro); }
+        .side-menu-item.active { background: var(--rosa-suave); border-left-color: var(--rosa-escuro); color: var(--rosa-escuro); font-weight: 700; }
+        .side-menu-item i { width: 20px; text-align: center; color: var(--rosa-escuro); }
+        .side-menu-item i.fa-balance-scale { color: #dc2626; }
+
+        .page-body {
+            max-width: 960px; margin: 0 auto; padding: 2rem 1.25rem 4rem;
+            display: flex; flex-direction: column; gap: 1.75rem;
+        }
+
+        .breadcrumb-nav { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--texto-mudo); }
+        .breadcrumb-nav a { color: var(--texto-mudo); text-decoration: none; }
+        .breadcrumb-nav a:hover { color: var(--rosa-escuro); }
+
+        .topic-header {
+            background: linear-gradient(135deg, var(--branco) 0%, var(--rosa-claro) 100%);
+            border: 1px solid var(--rosa-suave); border-radius: 20px; padding: 2.25rem;
+            box-shadow: var(--shadow-soft); position: relative; overflow: hidden;
+        }
+        .topic-header::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 6px; height: 100%; background: var(--rosa-escuro);
+        }
+        .topic-tag {
+            display: inline-flex; align-items: center; gap: 0.5rem; background: var(--rosa-suave); color: var(--rosa-escuro);
+            padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.82rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.85rem;
+        }
+        .topic-header h1 {
+            font-family: 'Playfair Display', serif; font-size: 2.15rem; color: var(--texto); line-height: 1.25; margin-bottom: 0.85rem;
+        }
+        .topic-header p.lead {
+            font-size: 1.05rem; color: var(--texto-mudo); max-width: 820px; line-height: 1.6;
+        }
+
+        .content-card {
+            background: var(--branco); border: 1px solid var(--rosa-suave);
+            border-radius: 18px; padding: 1.75rem; box-shadow: var(--shadow-soft);
+            display: flex; flex-direction: column; gap: 1.25rem;
+        }
+        .card-header-row { display: flex; align-items: center; gap: 0.85rem; }
+        .card-header-icon {
+            width: 44px; height: 44px; border-radius: 12px; background: var(--rosa-suave);
+            color: var(--rosa-escuro); display: flex; align-items: center; justify-content: center;
+            font-size: 1.25rem; flex-shrink: 0;
+        }
+        .card-title { font-family: 'Playfair Display', serif; font-size: 1.35rem; color: var(--texto); }
+
+        /* Grade de Aspectos Avaliados */
+        .eval-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem;
+        }
+        .eval-item {
+            background: var(--creme); border: 1px solid var(--rosa-suave); border-radius: 12px;
+            padding: 1.15rem; display: flex; flex-direction: column; gap: 0.35rem;
+        }
+        .eval-item strong {
+            font-size: 0.95rem; color: var(--texto); display: flex; align-items: center; gap: 0.4rem;
+        }
+        .eval-item p { font-size: 0.86rem; color: var(--texto-mudo); line-height: 1.45; }
+
+        /* Etapas da Conitec */
+        .conitec-steps-container {
+            display: flex; flex-direction: column; gap: 0.85rem;
+        }
+        .conitec-step-item {
+            background: var(--creme); border: 1px solid var(--rosa-suave); border-radius: 12px;
+            padding: 1rem 1.25rem; display: flex; align-items: flex-start; gap: 1rem;
+        }
+        .conitec-step-badge {
+            width: 32px; height: 32px; border-radius: 50%; background: var(--rosa-escuro);
+            color: white; font-weight: 700; display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; font-size: 0.95rem;
+        }
+
+        /* Destaque Prazo 180 dias */
+        .deadline-box {
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+            border: 2px solid #6ee7b7; border-radius: 16px; padding: 1.5rem;
+            display: flex; align-items: center; gap: 1.25rem;
+        }
+        .deadline-val {
+            font-size: 2.2rem; font-weight: 700; color: #047857; font-family: 'Playfair Display', serif;
+            white-space: nowrap;
+        }
+
+        .gov-cta-section {
+            background: linear-gradient(135deg, var(--branco) 0%, var(--rosa-claro) 100%);
+            border: 2px dashed var(--rosa); border-radius: 20px;
+            padding: 2.25rem 1.5rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1rem;
+        }
+        .btn-primary {
+            display: inline-flex; align-items: center; gap: 0.5rem; background: var(--rosa-escuro);
+            color: var(--branco); text-decoration: none; padding: 0.85rem 1.6rem; border-radius: 12px;
+            font-weight: 600; font-size: 0.95rem; transition: 0.2s;
+        }
+        .btn-primary:hover { background: #ba787c; transform: translateY(-2px); }
+
+        .btn-secondary {
+            display: inline-flex; align-items: center; gap: 0.5rem; background: var(--branco);
+            color: var(--texto); border: 1px solid var(--rosa); text-decoration: none;
+            padding: 0.85rem 1.6rem; border-radius: 12px; font-weight: 600; font-size: 0.95rem; transition: 0.2s;
+        }
+        .btn-secondary:hover { background: var(--rosa-suave); color: var(--rosa-escuro); }
+
+        @media (max-width: 768px) {
+            .topnav-center { display: none; }
+            .topic-header h1 { font-size: 1.65rem; }
+            .deadline-box { flex-direction: column; text-align: center; }
+        }
+    
+        /* ══ ESTILO PADRONIZADO DO NAV & SIDEBAR (medicamentos-insumos-sus.html + pílulas) ══ */
+        :root {
+            --rosa: #DFB2B5;
+            --rosa-escuro: #c99699;
+            --rosa-suave: #f7ecec;
+            --rosa-claro: #fdf5f5;
+            --creme: #faf7f4;
+            --texto: #2c2422;
+            --texto-mudo: #7a6560;
+            --branco: #ffffff;
+            --nav-h: 60px;
+            --shadow-soft: 0 4px 20px rgba(180, 80, 90, 0.08);
+            --shadow-hover: 0 8px 30px rgba(180, 80, 90, 0.15);
+        }
+
+        body {
+            padding-top: var(--nav-h);
+        }
+
+        .topnav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--nav-h);
+            background: var(--rosa);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1rem;
+            z-index: 200;
+            box-shadow: 0 2px 10px rgba(180, 80, 90, .18);
+        }
+
+        .topnav-left {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+        }
+
+        .hamburger {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .18);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            transition: 0.2s;
+            flex-shrink: 0;
+        }
+
+        .hamburger:hover {
+            background: rgba(255, 255, 255, .32);
+        }
+
+        .topnav-logo {
+            height: 34px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .topnav-logo-fallback {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: var(--branco);
+            font-size: 1.25rem;
+        }
+
+        .topnav-logo-fallback .plus-icon {
+            background: rgba(255, 255, 255, 0.25);
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .topnav-center {
+            display: flex;
+            align-items: center;
+            gap: .35rem;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .topnav-link {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: .35rem;
+            padding: .45rem .85rem;
+            height: auto;
+            border-radius: 20px;
+            border-bottom: none;
+            background: rgba(255, 255, 255, .14);
+            color: white;
+            text-decoration: none;
+            font-size: .84rem;
+            font-weight: 500;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+
+        .topnav-link i {
+            font-size: 14px;
+        }
+
+        .topnav-link:hover,
+        .topnav-link.active {
+            background: rgba(255, 255, 255, .30);
+            color: white;
+            border-bottom: none;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(44, 36, 34, .45);
+            z-index: 299;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: .3s;
+            backdrop-filter: blur(2px);
+        }
+
+        .sidebar-overlay.open {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: all;
+        }
+
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 320px;
+            max-width: 86vw;
+            height: 100%;
+            background: var(--branco);
+            z-index: 300;
+            transform: translateX(-100%);
+            transition: transform .3s cubic-bezier(.4, 0, .2, 1);
+            overflow-y: auto;
+            box-shadow: 4px 0 24px rgba(44, 36, 34, .15);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .side-menu.open {
+            transform: translateX(0);
+        }
+
+        .side-menu-header {
+            background: var(--rosa);
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            min-height: var(--nav-h);
+        }
+
+        .side-menu-header img {
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .side-menu-header span {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: white;
+            font-weight: 700;
+            flex: 1;
+        }
+
+        .side-menu-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+
+        .side-menu-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .side-menu-section {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--rosa-suave);
+        }
+
+        .side-menu-section:last-child {
+            border-bottom: none;
+        }
+
+        .side-menu-label {
+            padding: .5rem 1.25rem;
+            font-size: .75rem;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: var(--texto-mudo);
+            font-weight: 700;
+        }
+
+        .side-menu-item {
+            display: flex;
+            align-items: center;
+            gap: .85rem;
+            padding: .75rem 1.25rem;
+            color: var(--texto);
+            text-decoration: none;
+            font-size: .92rem;
+            font-weight: 500;
+            transition: 0.2s;
+            border: none;
+            border-left: 3px solid transparent;
+            background: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            line-height: 1.35;
+        }
+
+        .side-menu-item:hover {
+            background: var(--rosa-claro);
+            color: var(--rosa-escuro);
+        }
+
+        .side-menu-item.active {
+            background: var(--rosa-suave);
+            border-left-color: var(--rosa-escuro);
+            color: var(--rosa-escuro);
+            font-weight: 700;
+        }
+
+        .side-menu-item i {
+            width: 20px;
+            text-align: center;
+            color: var(--rosa-escuro);
+            flex-shrink: 0;
+        }
+
+        .side-menu-item i.fa-balance-scale {
+            color: #dc2626;
+        }
+
+        @media (min-width: 769px) {
+            .topnav-center {
+                display: flex;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .topnav-center {
+                display: none;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+    <!-- NAV SUPERIOR -->
+    <nav class="topnav">
+        <div class="topnav-left">
+            <button class="hamburger" id="hamburger-btn" aria-label="Abrir menu">
+                <i class="fa fa-bars"></i>
+            </button>
+            <img class="topnav-logo"
+                src="https://lh3.google.com/u/1/d/1AFkllEteK2G4I7QkAsqzwZrgo43DDGtE=w1878-h956-iv1?auditContext=prefetch"
+                alt="GLICO+"
+                onerror="this.style.display='none'; document.getElementById('topnav-fallback').style.display='inline-flex';">
+            <div id="topnav-fallback" class="topnav-logo-fallback" style="display: none;">
+                <span class="plus-icon">+</span>
+                <span>GLICO+</span>
+            </div>
+        </div>
+
+        <div class="topnav-center">
+            <a href="../index.html" class="topnav-link"><i class="fa fa-home"></i><span>Início</span></a>
+            <a href="../saude/agenda.html" class="topnav-link"><i class="fa fa-calendar"></i><span>Agenda</span></a>
+            <a href="../saude/calculadora.html" class="topnav-link"><i class="fa fa-heartbeat"></i><span>Glicemia</span></a>
+            <a href="../saude/receitas.html" class="topnav-link"><i class="fa fa-cutlery"></i><span>Receitas</span></a>
+        </div>
+    </nav>
+
+    <!-- OVERLAY -->
+    <div class="sidebar-overlay" id="overlay"></div>
+
+    <!-- MENU LATERAL -->
+    <aside class="side-menu" id="side-menu">
+        <div class="side-menu-header">
+            <img src="https://lh3.google.com/u/1/d/1AFkllEteK2G4I7QkAsqzwZrgo43DDGtE=w1878-h956-iv1?auditContext=prefetch"
+                alt="GLICO+"
+                onerror="this.style.display='none';">
+            <span>GLICO+</span>
+            <button class="side-menu-close" id="menu-close" aria-label="Fechar menu"><i class="fa fa-times"></i></button>
+        </div>
+
+        <div class="side-menu-section">
+            <div class="side-menu-label">Navegação &amp; Saúde</div>
+            <a href="../index.html" class="side-menu-item"><i class="fa fa-home"></i> Página Inicial</a>
+            <a href="../saude/consulta-exames.html" class="side-menu-item"><i class="fa fa-stethoscope"></i> Acesso a Consultas e Exames</a>
+            <a href="../saude/calculadora.html" class="side-menu-item"><i class="fa fa-heartbeat"></i> Acompanhe a Glicemia</a>
+            <a href="../saude/agenda.html" class="side-menu-item"><i class="fa fa-calendar"></i> Agenda</a>
+            <a href="../saude/oqueeh.html" class="side-menu-item"><i class="fa fa-question"></i> O Que é? | Tipos</a>
+            <a href="../saude/receitas.html" class="side-menu-item"><i class="fa fa-cutlery"></i> Receitas</a>
+        </div>
+
+        <div class="side-menu-section">
+            <div class="side-menu-label">Direitos &amp; SUS</div>
+            <a href="acoes-judiciais.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Ações Judiciais (Medicamentos)</a>
+            <a href="aposentadoria-bpc-loas.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Aposentadoria / BPC / LOAS</a>
+            <a href="canais-denuncia.html" class="side-menu-item"><i class="fa fa-bullhorn"></i> Canais de Denúncia e Reclamação</a>
+            <a href="medicamentos-fora-relacao.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Como Solicitar Medicamentos (Fora da Relação Oficial)</a>
+            <a href="criterios-justica.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Critérios para Conseguir Medicamentos pela Justiça</a>
+            <a href="defensoria-publica.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Defensoria Pública e Assistência Jurídica Gratuita</a>
+            <a href="padronizados.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Diferenças entre Medicamentos Padronizados e Não Padronizados no SUS</a>
+            <a href="direitos-diabetico.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Direitos da Pessoa com Diabetes</a>
+            <a href="vulnerabilidade.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Direitos da Pessoa com Diabetes em Situação de Vulnerabilidade</a>
+            <a href="incorporacao-conitec.html" class="side-menu-item active"><i class="fa fa-balance-scale"></i> Incorporação de Novos Medicamentos ao SUS</a>
+            <a href="instrumentos-juridicos.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Instrumentos Jurídicos Aplicáveis</a>
+            <a href="medicamentos-insumos-sus.html" class="side-menu-item"><i class="fa fa-medkit"></i> Medicamentos e Insumos Fornecidos pelo SUS</a>
+            <a href="politicas-publicas.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Políticas Públicas para Pessoas com Diabetes</a>
+            <a href="responsabilidade-estado.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Responsabilidade do Estado</a>
+            <a href="tratamentos-nao-disponibilizados.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Tratamentos Não Disponibilizados pelo SUS</a>
+        </div>
+    </aside>
+
+    <main class="page-body">
+        <nav class="breadcrumb-nav">
+            <a href="../index.html"><i class="fa fa-home"></i> Início</a>
+            <i class="fa fa-angle-right"></i>
+            <span>Tecnologia &amp; SUS</span>
+            <i class="fa fa-angle-right"></i>
+            <span style="color: var(--rosa-escuro); font-weight: 600;">Incorporação CONITEC</span>
+        </nav>
+
+        <header class="topic-header">
+            <span class="topic-tag"><i class="fa fa-plus-square"></i> Atualização Tecnológica do SUS</span>
+            <h1>Incorporação de Novos Medicamentos ao SUS</h1>
+            <p class="lead">
+                A aprovação de um fármaco pela ANVISA autoriza sua venda, mas não obriga sua entrega pública. Conheça como a CONITEC avalia novas tecnologias, os critérios científicos e econômicos, e o prazo legal de 180 dias para disponibilização na rede.
+            </p>
+        </header>
+
+        <!-- Como funciona -->
+        <section class="content-card">
+            <div class="card-header-row">
+                <div class="card-header-icon"><i class="fa fa-search-plus"></i></div>
+                <div>
+                    <h2 class="card-title">Como Funciona a Avaliação da CONITEC?</h2>
+                    <p style="font-size: 0.92rem; color: var(--texto-mudo);">Os 5 aspectos técnicos indispensáveis para uma nova tecnologia entrar no SUS:</p>
+                </div>
+            </div>
+
+            <div class="eval-grid">
+                <div class="eval-item">
+                    <strong><i class="fa fa-bullseye" style="color: var(--rosa-escuro);"></i> Eficácia Comprovada</strong>
+                    <p>Ensaios clínicos rigorosos que comprovem que a tecnologia produz resultados reais superiores ou iguais aos tratamentos atuais.</p>
+                </div>
+
+                <div class="eval-item">
+                    <strong><i class="fa fa-shield" style="color: #0284c7;"></i> Segurança Clínica</strong>
+                    <p>Avaliação detalhada dos efeitos colaterais, riscos e tolerabilidade para pacientes com diabetes de diferentes idades.</p>
+                </div>
+
+                <div class="eval-item">
+                    <strong><i class="fa fa-balance-scale" style="color: #d97706;"></i> Custo-Efetividade</strong>
+                    <p>Análise econômica para verificar se o ganho de saúde e sobrevida justifica o preço praticado pelo laboratório farmacêutico.</p>
+                </div>
+
+                <div class="eval-item">
+                    <strong><i class="fa fa-line-chart" style="color: #dc2626;"></i> Impacto Orçamentário</strong>
+                    <p>Cálculo de quantos milhões de reais o Ministério da Saúde precisará empenhar anualmente para atender a todos os pacientes elegíveis.</p>
+                </div>
+
+                <div class="eval-item">
+                    <strong><i class="fa fa-users" style="color: #059669;"></i> Necessidade dos Pacientes</strong>
+                    <p>Relevância epidemiológica, número de pessoas afetadas e ausência de alternativas eficazes já existentes na RENAME.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Etapas do Processo -->
+        <section class="content-card">
+            <div class="card-header-row">
+                <div class="card-header-icon"><i class="fa fa-tasks"></i></div>
+                <div>
+                    <h2 class="card-title">O Passo a Passo do Processo de Incorporação</h2>
+                    <p style="font-size: 0.92rem; color: var(--texto-mudo);">Da proposta inicial à publicação no Diário Oficial da União (DOU):</p>
+                </div>
+            </div>
+
+            <div class="conitec-steps-container">
+                <div class="conitec-step-item">
+                    <div class="conitec-step-badge">1</div>
+                    <div>
+                        <strong style="color: var(--texto); font-size: 0.95rem;">Solicitação Formal</strong>
+                        <p style="font-size: 0.88rem; color: var(--texto-mudo); margin-top: 2px;">Apresentação do dossiê pelo fabricante, associações de pacientes ou pelo próprio Ministério da Saúde.</p>
+                    </div>
+                </div>
+
+                <div class="conitec-step-item">
+                    <div class="conitec-step-badge">2</div>
+                    <div>
+                        <strong style="color: var(--texto); font-size: 0.95rem;">Análise Científica e Econômica</strong>
+                        <p style="font-size: 0.88rem; color: var(--texto-mudo); margin-top: 2px;">Pesquisadores e economistas da saúde avaliam ensaios controlados, revisões sistemáticas e custo por ano de vida ganho.</p>
+                    </div>
+                </div>
+
+                <div class="conitec-step-item">
+                    <div class="conitec-step-badge">3</div>
+                    <div>
+                        <strong style="color: var(--texto); font-size: 0.95rem;">Consulta Pública (Voz aos Pacientes)</strong>
+                        <p style="font-size: 0.88rem; color: var(--texto-mudo); margin-top: 2px;">Abertura para que cidadãos, médicos e pessoas com diabetes enviem relatos de experiência e contribuições técnicas.</p>
+                    </div>
+                </div>
+
+                <div class="conitec-step-item">
+                    <div class="conitec-step-badge">4</div>
+                    <div>
+                        <strong style="color: var(--texto); font-size: 0.95rem;">Recomendação e Parecer da CONITEC</strong>
+                        <p style="font-size: 0.88rem; color: var(--texto-mudo); margin-top: 2px;">O plenário vota a recomendação final (favorável ou desfavorável à incorporação) e encaminha ao Secretário de Ciência e Tecnologia.</p>
+                    </div>
+                </div>
+
+                <div class="conitec-step-item">
+                    <div class="conitec-step-badge">5</div>
+                    <div>
+                        <strong style="color: var(--texto); font-size: 0.95rem;">Decisão Final e Publicação em Portaria</strong>
+                        <p style="font-size: 0.88rem; color: var(--texto-mudo); margin-top: 2px;">O Ministério da Saúde publica a Portaria de Incorporação no Diário Oficial da União (DOU).</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Prazo de 180 dias -->
+            <div class="deadline-box">
+                <div class="deadline-val">180 DIAS</div>
+                <div style="font-size: 0.92rem; color: #065f46; line-height: 1.55;">
+                    <strong>Prazo Máximo Legal de Efetivação no SUS (Lei 12.401/2011):</strong><br>
+                    A partir da publicação da decisão no DOU, o SUS tem no máximo 180 dias para disponibilizar o medicamento nas farmácias públicas, organizar compras, logística e publicar o Protocolo Clínico (PCDT).
+                </div>
+            </div>
+        </section>
+
+        <!-- Exemplo Histórico em Diabetes -->
+        <section class="content-card">
+            <div class="card-header-row">
+                <div class="card-header-icon"><i class="fa fa-history"></i></div>
+                <div>
+                    <h2 class="card-title">Avanços Recentes: Análogos de Insulina no SUS</h2>
+                    <p style="font-size: 0.92rem; color: var(--texto-mudo);">Marcos importantes de incorporação tecnológica:</p>
+                </div>
+            </div>
+
+            <div style="background: var(--creme); border-left: 4px solid var(--rosa-escuro); border-radius: 0 12px 12px 0; padding: 1.25rem;">
+                <strong style="color: var(--texto); font-size: 1rem;">Decisões Históricas (Novembro de 2024):</strong>
+                <p style="font-size: 0.92rem; color: var(--texto-mudo); margin-top: 0.4rem; line-height: 1.6;">
+                    O Ministério da Saúde aprovou a incorporação oficial de <strong>análogos de insulina de ação rápida</strong> e <strong>análogos de ação prolongada para o tratamento do Diabetes Mellitus Tipo 2</strong>. Isso permitiu ampliar o leque terapêutico para além das insulinas humanas tradicionais (NPH e Regular), reduzindo episódios graves de hipoglicemia noturna.
+                </p>
+            </div>
+        </section>
+
+        <!-- Legislação -->
+        <section class="content-card">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 1.35rem; color: var(--texto);">Base Legal da Incorporação</h2>
+            <ul style="padding-left: 1.25rem; font-size: 0.92rem; color: var(--texto-mudo); display: flex; flex-direction: column; gap: 0.4rem;">
+                <li><strong>Artigo 196 da CF/88:</strong> Direito universal à saúde por políticas públicas sociais e econômicas.</li>
+                <li><strong>Lei Federal nº 12.401/2011:</strong> Instituiu a CONITEC, a avaliação de tecnologias em saúde e o prazo de 180 dias.</li>
+                <li><strong>Decreto Federal nº 7.646/2011:</strong> Regulamenta as consultas públicas, reuniões e rito procedimental.</li>
+                <li><strong>Lei Federal nº 8.080/1990:</strong> Garante assistência terapêutica integral aos cidadãos.</li>
+            </ul>
+        </section>
+
+        <!-- CTA -->
+        <section class="gov-cta-section">
+            <span class="topic-tag"><i class="fa fa-compass"></i> Navegação Integrada GLICO+</span>
+            <h2>Medicamento Ainda Não Incorporado?</h2>
+            <p style="font-size: 0.95rem; color: var(--texto-mudo); max-width: 580px;">
+                Veja como funciona o pedido administrativo fora da lista e os critérios fixados pelo STF:
+            </p>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+                <a href="medicamentos-fora-relacao.html" class="btn-primary"><i class="fa fa-file-text-o"></i> Pedido Fora da Relação</a>
+                <a href="criterios-justica.html" class="btn-secondary"><i class="fa fa-gavel"></i> Critérios do STF</a>
+                <a href="padronizados.html" class="btn-secondary"><i class="fa fa-cubes"></i> Ver Padronizados</a>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const hamburgerBtn = document.getElementById('hamburger-btn');
+        const sideMenu = document.getElementById('side-menu');
+        const overlay = document.getElementById('overlay');
+        const menuClose = document.getElementById('menu-close');
+
+        function openMenu() { sideMenu.classList.add('open'); overlay.classList.add('open'); document.body.style.overflow = 'hidden'; }
+        function closeMenu() { sideMenu.classList.remove('open'); overlay.classList.remove('open'); document.body.style.overflow = ''; }
+
+        hamburgerBtn.addEventListener('click', openMenu);
+        overlay.addEventListener('click', closeMenu);
+        menuClose.addEventListener('click', closeMenu);
+    </script>
+
+    <script>
+        (function () {
+            const sideMenuEl = document.getElementById('side-menu');
+            const overlayEl = document.getElementById('overlay');
+            function forceCloseMenu() {
+                if (sideMenuEl) sideMenuEl.classList.remove('open');
+                if (overlayEl) overlayEl.classList.remove('open');
+                document.body.style.overflow = '';
+            }
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') forceCloseMenu();
+            });
+            document.querySelectorAll('#side-menu a.side-menu-item').forEach(function (link) {
+                link.addEventListener('click', forceCloseMenu);
+            });
+        })();
+    </script>
+</body>
+</html>

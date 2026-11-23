@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLICO+ | Ações Judiciais (Medicamentos)</title>
+    <meta name="description"
+        content="Análise comparativa de jurisprudência real para obtenção de medicamentos e insulinas para diabetes na Justiça: casos aceitos e negados no TJ-SP e TRF-4.">
+
+    <!-- FONTES E ÍCONES OBRIGATÓRIOS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* ══ PALETA DE CORES E VARIÁVEIS OFICIAIS GLICO+ ══ */
+        :root {
+            --rosa: #DFB2B5;
+            --rosa-escuro: #c99699;
+            --rosa-suave: #f7ecec;
+            --rosa-claro: #fdf5f5;
+            --creme: #faf7f4;
+            --texto: #2c2422;
+            --texto-mudo: #7a6560;
+            --branco: #ffffff;
+            --nav-h: 60px;
+            --shadow-soft: 0 4px 20px rgba(180, 80, 90, 0.08);
+            --shadow-hover: 0 8px 30px rgba(180, 80, 90, 0.15);
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--creme);
+            color: var(--texto);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+            padding-top: var(--nav-h);
+        }
+
+        /* ══ TOPNAV FIXA (ESTRUTURA BASE EXATA) ══ */
+        .topnav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--nav-h);
+            background: var(--rosa);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1rem;
+            z-index: 200;
+            box-shadow: 0 2px 10px rgba(180, 80, 90, .18);
+        }
+
+        .topnav-left {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+        }
+
+        .hamburger {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .18);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            transition: 0.2s;
+            flex-shrink: 0;
+        }
+
+        .hamburger:hover {
+            background: rgba(255, 255, 255, .32);
+        }
+
+        .topnav-logo {
+            height: 34px;
+            object-fit: contain;
+        }
+
+        .topnav-logo-fallback {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: var(--branco);
+            font-size: 1.25rem;
+            letter-spacing: 0.5px;
+        }
+
+        .topnav-logo-fallback .plus-icon {
+            background: rgba(255, 255, 255, 0.25);
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .topnav-center {
+            display: flex;
+            align-items: center;
+            gap: .25rem;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .topnav-link {
+            display: flex;
+            align-items: center;
+            gap: .35rem;
+            padding: .45rem .85rem;
+            border-radius: 20px;
+            color: white;
+            text-decoration: none;
+            font-size: .84rem;
+            font-weight: 500;
+            transition: 0.2s;
+            white-space: nowrap;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .topnav-link:hover,
+        .topnav-link.active {
+            background: rgba(255, 255, 255, .25);
+        }
+
+        .topnav-link i {
+            font-size: 14px;
+        }
+
+        .topnav-right {
+            display: flex;
+            align-items: center;
+            width: 40px;
+        }
+
+        /* ══ OVERLAY ══ */
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(44, 36, 34, .45);
+            z-index: 299;
+            opacity: 0;
+            visibility: hidden;
+            transition: .3s;
+            backdrop-filter: blur(2px);
+        }
+
+        .sidebar-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* ══ MENU LATERAL (SIDE-MENU) ══ */
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 320px;
+            max-width: 86vw;
+            height: 100%;
+            background: var(--branco);
+            z-index: 300;
+            transform: translateX(-100%);
+            transition: transform .3s cubic-bezier(.4, 0, .2, 1);
+            overflow-y: auto;
+            box-shadow: 4px 0 24px rgba(44, 36, 34, .15);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .side-menu.open {
+            transform: translateX(0);
+        }
+
+        .side-menu-header {
+            background: var(--rosa);
+            padding: 1.25rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .side-menu-header img {
+            height: 36px;
+            object-fit: contain;
+        }
+
+        .side-menu-header span {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: white;
+            font-weight: 700;
+            flex: 1;
+        }
+
+        .side-menu-close {
+            background: rgba(255, 255, 255, .2);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: .2s;
+        }
+
+        .side-menu-close:hover {
+            background: rgba(255, 255, 255, .35);
+        }
+
+        .side-menu-section {
+            padding: .75rem 0 2rem;
+            flex: 1;
+        }
+
+        .side-menu-label {
+            font-size: .7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--texto-mudo);
+            padding: .6rem 1.25rem .3rem;
+        }
+
+        .side-menu-item {
+            display: flex;
+            align-items: center;
+            gap: .85rem;
+            padding: .75rem 1.25rem;
+            color: var(--texto);
+            text-decoration: none;
+            font-size: .88rem;
+            font-weight: 500;
+            transition: .15s;
+            border-left: 3px solid transparent;
+            line-height: 1.35;
+            background: none;
+            width: 100%;
+            text-align: left;
+            border-top: none;
+            border-right: none;
+            border-bottom: none;
+            cursor: pointer;
+        }
+
+        .side-menu-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 15px;
+            color: var(--rosa-escuro);
+            flex-shrink: 0;
+        }
+
+        .side-menu-item:hover,
+        .side-menu-item.active {
+            background: var(--rosa-suave);
+            border-left-color: var(--rosa-escuro);
+            color: var(--rosa-escuro);
+        }
+
+        .side-menu-item.active i {
+            color: var(--rosa-escuro);
+        }
+
+        /* ══ CONTEÚDO PRINCIPAL ══ */
+        .page-body {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.25rem 4rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.75rem;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--texto-mudo);
+            flex-wrap: wrap;
+        }
+
+        .breadcrumb-nav a {
+            color: var(--texto-mudo);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb-nav a:hover {
+            color: var(--rosa-escuro);
+        }
+
+        /* Cabeçalho do Tópico */
+        .topic-header {
+            background: linear-gradient(135deg, var(--rosa-claro) 0%, var(--rosa-suave) 100%);
+            border: 1px solid var(--rosa);
+            border-radius: 20px;
+            padding: 2.25rem 2rem;
+            box-shadow: var(--shadow-soft);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .topic-header::before {
+            content: '';
+            position: absolute;
+            top: -30px;
+            right: -30px;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(223, 178, 181, 0.2);
+            pointer-events: none;
+        }
+
+        .topic-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--branco);
+            color: var(--rosa-escuro);
+            border: 1px solid var(--rosa);
+            padding: 0.35rem 0.85rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.85rem;
+        }
+
+        .topic-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.1rem;
+            color: var(--texto);
+            margin-bottom: 0.75rem;
+            line-height: 1.25;
+        }
+
+        .topic-header .lead {
+            font-size: 1.05rem;
+            color: var(--texto-mudo);
+            max-width: 780px;
+            line-height: 1.6;
+        }
+
+        /* Card de Contexto */
+        .jurisprudence-intro-card {
+            background: var(--branco);
+            border: 1px solid var(--rosa-suave);
+            border-radius: 18px;
+            padding: 1.5rem 1.75rem;
+            box-shadow: var(--shadow-soft);
+            display: flex;
+            align-items: flex-start;
+            gap: 1.25rem;
+        }
+
+        .jurisprudence-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: #fee2e2;
+            color: #dc2626;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        .jurisprudence-text h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: var(--texto);
+            margin-bottom: 0.4rem;
+        }
+
+        .jurisprudence-text p {
+            font-size: 0.95rem;
+            color: var(--texto-mudo);
+            line-height: 1.6;
+        }
+
+        /* Cartões de Caso Jurisprudencial */
+        .case-card {
+            background: var(--branco);
+            border-radius: 20px;
+            box-shadow: var(--shadow-soft);
+            overflow: hidden;
+            transition: all 0.25s ease;
+            border: 1px solid var(--rosa-suave);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .case-card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
+        }
+
+        .case-card.accepted {
+            border-top: 5px solid #059669;
+        }
+
+        .case-card.denied {
+            border-top: 5px solid #dc2626;
+        }
+
+        .case-card-header {
+            padding: 1.5rem 1.75rem 1.25rem;
+            background: #fafaf9;
+            border-bottom: 1px solid #f0e6e6;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .case-badge-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .case-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.4rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+
+        .case-badge.accepted {
+            background: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .case-badge.denied {
+            background: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .case-court-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.8rem;
+            color: var(--texto-mudo);
+            background: var(--branco);
+            padding: 0.3rem 0.75rem;
+            border-radius: 8px;
+            border: 1px solid #e5e5e5;
+            font-weight: 500;
+        }
+
+        .case-card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.35rem;
+            color: var(--texto);
+            line-height: 1.35;
+        }
+
+        .case-card.accepted .case-card-title {
+            color: #064e3b;
+        }
+
+        .case-card.denied .case-card-title {
+            color: #7f1d1d;
+        }
+
+        .case-process-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            background: var(--branco);
+            border: 1px dashed #d1c0c2;
+            border-radius: 10px;
+            padding: 0.65rem 1rem;
+            font-size: 0.88rem;
+        }
+
+        .process-number {
+            font-family: monospace, sans-serif;
+            color: var(--texto);
+            font-weight: 600;
+        }
+
+        .case-link-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            background: var(--rosa-suave);
+            color: var(--texto);
+            text-decoration: none;
+            padding: 0.45rem 0.95rem;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            border: 1px solid var(--rosa);
+        }
+
+        .case-link-btn:hover {
+            background: var(--rosa-escuro);
+            color: var(--branco);
+            border-color: var(--rosa-escuro);
+        }
+
+        .case-card-body {
+            padding: 1.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .case-story-block {
+            background: var(--rosa-claro);
+            border-left: 4px solid var(--rosa-escuro);
+            border-radius: 0 12px 12px 0;
+            padding: 1.15rem 1.35rem;
+        }
+
+        .case-block-heading {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15rem;
+            color: var(--texto);
+            margin-bottom: 0.65rem;
+        }
+
+        .case-story-block p {
+            font-size: 0.95rem;
+            color: var(--texto);
+            line-height: 1.65;
+            margin-bottom: 0.5rem;
+        }
+
+        .case-story-block p:last-child {
+            margin-bottom: 0;
+        }
+
+        .case-analysis-block {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .case-analysis-block.success {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 14px;
+            padding: 1.25rem 1.4rem;
+        }
+
+        .case-analysis-block.failure {
+            background: #fff1f2;
+            border: 1px solid #fecdd3;
+            border-radius: 14px;
+            padding: 1.25rem 1.4rem;
+        }
+
+        .case-points-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+            padding: 0;
+            margin: 0;
+        }
+
+        .case-point-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            font-size: 0.92rem;
+            line-height: 1.55;
+            color: var(--texto);
+        }
+
+        .point-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .point-icon.success {
+            background: #10b981;
+            color: #ffffff;
+        }
+
+        .point-icon.failure {
+            background: #ef4444;
+            color: #ffffff;
+        }
+
+        .case-point-item strong {
+            color: var(--texto);
+            font-weight: 600;
+        }
+
+        /* ══ BLOCO COMPARATIVO ══ */
+        .comparative-takeaway-card {
+            background: var(--branco);
+            border: 2px solid var(--rosa);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow-soft);
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .comparative-header {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .comparative-header-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: var(--rosa-suave);
+            color: var(--rosa-escuro);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .comparative-header h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.35rem;
+            color: var(--texto);
+        }
+
+        .comparative-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.25rem;
+            margin-top: 0.5rem;
+        }
+
+        .takeaway-box {
+            border-radius: 14px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+
+        .takeaway-box.do {
+            background: #ecfdf5;
+            border: 1px solid #6ee7b7;
+        }
+
+        .takeaway-box.dont {
+            background: #fff1f2;
+            border: 1px solid #fda4af;
+        }
+
+        .takeaway-box-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .takeaway-box.do .takeaway-box-title {
+            color: #065f46;
+        }
+
+        .takeaway-box.dont .takeaway-box-title {
+            color: #9f1239;
+        }
+
+        .takeaway-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            font-size: 0.88rem;
+            line-height: 1.5;
+            color: var(--texto);
+        }
+
+        .takeaway-box li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        /* ══ SEÇÃO DE APOIO ══ */
+        .gov-cta-section {
+            background: linear-gradient(135deg, var(--branco) 0%, var(--rosa-claro) 100%);
+            border: 2px solid var(--rosa);
+            border-radius: 20px;
+            padding: 2.25rem 2rem;
+            box-shadow: 0 8px 32px rgba(201, 150, 153, 0.18);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 1.25rem;
+        }
+
+        .gov-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--rosa-suave);
+            color: var(--rosa-escuro);
+            padding: 0.4rem 0.9rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .gov-cta-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.7rem;
+            color: var(--texto);
+            max-width: 620px;
+            line-height: 1.3;
+        }
+
+        .gov-cta-section p {
+            color: var(--texto-mudo);
+            font-size: 0.95rem;
+            max-width: 580px;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--rosa-escuro);
+            color: var(--branco);
+            text-decoration: none;
+            padding: 0.85rem 1.6rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background: #ba787c;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--branco);
+            color: var(--texto);
+            border: 1px solid var(--rosa);
+            text-decoration: none;
+            padding: 0.85rem 1.6rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            background: var(--rosa-suave);
+            color: var(--rosa-escuro);
+        }
+
+        @media (max-width: 768px) {
+            .topnav-center {
+                display: none;
+            }
+
+            .topic-header h1 {
+                font-size: 1.65rem;
+            }
+
+            .case-card-title {
+                font-size: 1.15rem;
+            }
+
+            .case-process-box {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .case-link-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ══ TOPNAV FIXA (SEM PERFIL, NOTIFICAÇÃO OU BUSCA) ══ -->
+    <nav class="topnav">
+        <div class="topnav-left">
+            <button class="hamburger" id="hamburger-btn" aria-label="Abrir menu">
+                <i class="fa fa-bars"></i>
+            </button>
+            <img class="topnav-logo"
+                src="https://lh3.google.com/u/1/d/1AFkllEteK2G4I7QkAsqzwZrgo43DDGtE=w1878-h956-iv1?auditContext=prefetch"
+                alt="GLICO+"
+                onerror="this.style.display='none'; document.getElementById('topnav-fallback').style.display='inline-flex';">
+            <div id="topnav-fallback" class="topnav-logo-fallback" style="display: none;">
+                <span class="plus-icon">+</span>
+                <span>GLICO+</span>
+            </div>
+        </div>
+
+        <div class="topnav-center">
+            <a href="index.html" class="topnav-link"><i class="fa fa-home"></i><span>Início</span></a>
+            <a href="acoes-judiciais.html" class="topnav-link active"><i class="fa fa-balance-scale"></i><span>Ações
+                    Judiciais</span></a>
+            <a href="consultas-exames.html" class="topnav-link"><i class="fa fa-stethoscope"></i><span>Consultas &amp;
+                    Exames</span></a>
+            <a href="receitas.html" class="topnav-link"><i class="fa fa-cutlery"></i><span>Receitas</span></a>
+            <a href="calculadora.html" class="topnav-link"><i class="fa fa-heartbeat"></i><span>Glicemia</span></a>
+            <a href="agenda.html" class="topnav-link"><i class="fa fa-calendar"></i><span>Agenda</span></a>
+        </div>
+
+        <div class="topnav-right"></div>
+    </nav>
+
+    <!-- ══ OVERLAY ══ -->
+    <div class="sidebar-overlay" id="overlay"></div>
+
+    <!-- ══ MENU LATERAL (HAMBURGUER) EM ORDEM ALFABÉTICA RIGOROSA ══ -->
+    <aside class="side-menu" id="side-menu">
+        <div class="side-menu-header">
+            <img src="https://lh3.google.com/u/1/d/1AFkllEteK2G4I7QkAsqzwZrgo43DDGtE=w1878-h956-iv1?auditContext=prefetch"
+                alt="GLICO+" onerror="this.style.display='none';">
+            <span>GLICO+</span>
+            <button class="side-menu-close" id="menu-close"><i class="fa fa-times"></i></button>
+        </div>
+
+        <div class="side-menu-section">
+            <div class="side-menu-label">Navegação Principal</div>
+            <!-- 1º Lugar Obrigatório: Página Inicial -->
+            <a href="index.html" class="side-menu-item"><i class="fa fa-home"></i> Página Inicial</a>
+
+            <div class="side-menu-label">Tópicos e Direitos (Ordem Alfabética)</div>
+            <!-- 12 TÓPICOS RIGOROSAMENTE ALFABÉTICOS (com fa-balance-scale nos de Direito) -->
+            <a href="consultas-exames.html" class="side-menu-item"><i class="fa fa-stethoscope"></i> Acesso a Consultas
+                e Exames para Pessoas com Diabetes</a>
+            <a href="#" class="side-menu-item"><i class="fa fa-balance-scale"></i> Acesso à Justiça para Pessoas de
+                Baixa Renda</a>
+            <a href="acoes-judiciais.html" class="side-menu-item active"><i class="fa fa-balance-scale"></i> Ações
+                Judiciais para Obtenção de Medicamentos</a>
+            <a href="#" class="side-menu-item"><i class="fa fa-bullhorn"></i> Canais de Denúncia e Reclamação</a>
+            <a href="#" class="side-menu-item"><i class="fa fa-file-text-o"></i> Como Solicitar Medicamentos Fora da
+                Relação Oficial</a>
+            <a href="#" class="side-menu-item"><i class="fa fa-balance-scale"></i> Critérios para Conseguir Medicamentos
+                pela Justiça</a>
+            <a href="#" class="side-menu-item"><i class="fa fa-balance-scale"></i> Defensoria Pública e Assistência
+                Jurídica Gratuita</a>
+            <a href="#" class="side-menu-item"><i class="fa fa-cubes"></i> Diferenças entre Medicamentos Padronizados e
+                Não Padronizados no SUS</a>
+            <a href="#" class="side-menu-item"><i class="fa fa-balance-scale"></i> Direitos da Pessoa com Diabetes em
+                Situação de Vulnerabilidade</a>
+            <a href="#" class="side-menu-item"><i class="fa fa-plus-square"></i> Incorporação de Novos Medicamentos ao
+                SUS</a>
+            <a href="#" class="side-menu-item"><i class="fa fa-institution"></i> Políticas Públicas para Pessoas com
+                Diabetes</a>
+            <a href="#" class="side-menu-item"><i class="fa fa-medkit"></i> Tratamentos Não Disponibilizados pelo
+                SUS</a>
+        </div>
+    </aside>
+
+    <!-- ══ CONTEÚDO PRINCIPAL: AÇÕES JUDICIAIS (MEDICAMENTOS) ══ -->
+    <main class="page-body">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb-nav">
+            <a href="index.html"><i class="fa fa-home"></i> Início</a>
+            <i class="fa fa-angle-right"></i>
+            <span>Direitos &amp; Saúde</span>
+            <i class="fa fa-angle-right"></i>
+            <span style="color: var(--rosa-escuro); font-weight: 600;">Ações Judiciais (Medicamentos)</span>
+        </nav>
+
+        <!-- Cabeçalho do Tópico -->
+        <header class="topic-header">
+            <span class="topic-tag">
+                <i class="fa fa-balance-scale"></i> Direito à Saúde &amp; Jurisprudência
+            </span>
+            <h1>Ações Judiciais (Medicamentos)</h1>
+            <p class="lead">
+                Análise comparativa de casos reais na Justiça brasileira: entenda os critérios decisivos que levaram os
+                tribunais a conceder ou negar o fornecimento gratuito de insulinas modernas e tecnologias como FreeStyle
+                Libre para Diabetes Mellitus tipo 1.
+            </p>
+        </header>
+
+        <!-- Card de Contexto e Panorama -->
+        <div class="jurisprudence-intro-card">
+            <div class="jurisprudence-icon">
+                <i class="fa fa-gavel"></i>
+            </div>
+            <div class="jurisprudence-text">
+                <h2>Como a Justiça Avalia Pedidos de Medicamentos?</h2>
+                <p>
+                    Quando o SUS não fornece um medicamento ou tecnologia para o controle do diabetes, o paciente pode
+                    recorrer ao Judiciário. A jurisprudência dos tribunais mostra que a concessão depende
+                    fundamentalmente da solidez da comprovação médica e financeira apresentada nos autos. Veja abaixo a
+                    comparação detalhada de dois casos reais.
+                </p>
+            </div>
+        </div>
+
+        <!-- ══ CASO 1: PEDIDO FOI ACEITO ══ -->
+        <article class="case-card accepted">
+            <div class="case-card-header">
+                <div class="case-badge-row">
+                    <span class="case-badge accepted">
+                        <i class="fa fa-check-circle"></i> Pedido Aceito (Provido)
+                    </span>
+                    <span class="case-court-tag">
+                        <i class="fa fa-university"></i> Tribunal de Justiça de São Paulo (TJ-SP)
+                    </span>
+                </div>
+                <h2 class="case-card-title">
+                    Caso em que o pedido foi aceito: necessidade comprovada e medicamento incorporado ao SUS
+                </h2>
+                <div class="case-process-box">
+                    <div>
+                        <span
+                            style="font-size: 0.78rem; color: var(--texto-mudo); display: block; font-weight: 600;">Identificação
+                            do Processo</span>
+                        <span class="process-number">
+                            Tribunal de Justiça de São Paulo (TJ-SP) — Recurso Inominado Cível, processo nº
+                            XXXXX-15.2024.8.26.0459, de Pitangueiras (SP)
+                        </span>
+                    </div>
+                    <a href="https://www.jusbrasil.com.br/jurisprudencia/tj-sp/6463082476" target="_blank"
+                        rel="noopener noreferrer" class="case-link-btn" title="Acessar decisão no Jusbrasil">
+                        <span>Ver decisão no Jusbrasil</span>
+                        <i class="fa fa-external-link"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="case-card-body">
+                <!-- O que aconteceu? -->
+                <div class="case-story-block">
+                    <h3 class="case-block-heading">
+                        <i class="fa fa-file-text-o" style="color: var(--rosa-escuro);"></i>
+                        O que aconteceu?
+                    </h3>
+                    <p>
+                        Uma pessoa com <strong>Diabetes Mellitus tipo 1</strong> ajuizou uma ação contra o Município de
+                        Pitangueiras e o Estado de São Paulo para obter gratuitamente a <strong>insulina
+                            glargina</strong>.
+                    </p>
+                    <p>
+                        A paciente alegou <strong>não possuir condições financeiras</strong> para custear o tratamento.
+                    </p>
+                    <p>
+                        Em primeira instância, o caso não havia sido resolvido favoravelmente à pretensão da paciente.
+                        Ela recorreu, e o <strong>Tribunal de Justiça de São Paulo deu provimento ao recurso</strong>,
+                        reconhecendo o direito ao fornecimento do medicamento.
+                    </p>
+                </div>
+
+                <!-- Por que a ação teve sucesso? -->
+                <div class="case-analysis-block success">
+                    <h3 class="case-block-heading" style="color: #065f46;">
+                        <i class="fa fa-check-circle" style="color: #059669;"></i>
+                        Por que a ação teve sucesso?
+                    </h3>
+                    <p style="font-size: 0.92rem; color: #064e3b; margin-bottom: 0.65rem;">
+                        A ementa da decisão destaca <strong>três aspectos importantes</strong>:
+                    </p>
+                    <ul class="case-points-list">
+                        <li class="case-point-item">
+                            <span class="point-icon success"><i class="fa fa-check"></i></span>
+                            <div>
+                                <strong>Incorporação ao SUS:</strong> o medicamento solicitado estava incorporado ao
+                                sistema público de saúde.
+                            </div>
+                        </li>
+                        <li class="case-point-item">
+                            <span class="point-icon success"><i class="fa fa-check"></i></span>
+                            <div>
+                                <strong>Hipossuficiência financeira comprovada:</strong> a paciente demonstrou que não
+                                tinha condições econômicas de custear o tratamento.
+                            </div>
+                        </li>
+                        <li class="case-point-item">
+                            <span class="point-icon success"><i class="fa fa-check"></i></span>
+                            <div>
+                                <strong>Prescrição médica:</strong> havia indicação médica para o uso do medicamento.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </article>
+
+        <!-- ══ CASO 2: PEDIDO FOI NEGADO ══ -->
+        <article class="case-card denied">
+            <div class="case-card-header">
+                <div class="case-badge-row">
+                    <span class="case-badge denied">
+                        <i class="fa fa-times-circle"></i> Pedido Negado (Falta de Provas)
+                    </span>
+                    <span class="case-court-tag">
+                        <i class="fa fa-university"></i> Tribunal Regional Federal da 4ª Região (TRF-4)
+                    </span>
+                </div>
+                <h2 class="case-card-title">
+                    Caso em que o pedido foi negado: falta de provas suficientes
+                </h2>
+                <div class="case-process-box">
+                    <div>
+                        <span
+                            style="font-size: 0.78rem; color: var(--texto-mudo); display: block; font-weight: 600;">Identificação
+                            do Processo</span>
+                        <span class="process-number">
+                            Tribunal Regional Federal da 4ª Região (TRF-4) — Recurso Cível nº XXXXX-97.2023.4.04.7208/SC
+                        </span>
+                    </div>
+                    <a href="https://www.jusbrasil.com.br/jurisprudencia/trf-4/3808160457/inteiro-teor-3808160478"
+                        target="_blank" rel="noopener noreferrer" class="case-link-btn"
+                        title="Acessar inteiro teor no Jusbrasil">
+                        <span>Ver decisão no Jusbrasil</span>
+                        <i class="fa fa-external-link"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="case-card-body">
+                <!-- O que aconteceu? -->
+                <div class="case-story-block" style="border-left-color: #dc2626; background: #fff5f5;">
+                    <h3 class="case-block-heading">
+                        <i class="fa fa-file-text-o" style="color: #dc2626;"></i>
+                        O que aconteceu?
+                    </h3>
+                    <p>
+                        Uma pessoa com <strong>Diabetes Mellitus tipo 1</strong> entrou na Justiça para obter o
+                        fornecimento de <strong>insulina degludeca</strong>, <strong>insulina asparte</strong> e do
+                        aparelho <strong>FreeStyle Libre</strong>, utilizado para monitoramento da glicose.
+                    </p>
+                    <p>
+                        O pedido havia sido negado em primeira instância. A paciente recorreu, mas o tribunal
+                        <strong>manteve a decisão desfavorável</strong>.
+                    </p>
+                </div>
+
+                <!-- Por que a ação não teve sucesso? -->
+                <div class="case-analysis-block failure">
+                    <h3 class="case-block-heading" style="color: #991b1b;">
+                        <i class="fa fa-exclamation-triangle" style="color: #dc2626;"></i>
+                        Por que a ação não teve sucesso?
+                    </h3>
+                    <p style="font-size: 0.92rem; color: #7f1d1d; margin-bottom: 0.65rem;">
+                        Segundo a decisão, a documentação médica apresentada <strong>não foi suficiente para demonstrar
+                            detalhadamente a necessidade do tratamento solicitado</strong>. Entre os problemas
+                        identificados estavam:
+                    </p>
+                    <ul class="case-points-list">
+                        <li class="case-point-item">
+                            <span class="point-icon failure"><i class="fa fa-times"></i></span>
+                            <div>
+                                Os relatórios médicos não apresentavam informações detalhadas sobre a evolução do
+                                tratamento e do quadro clínico.
+                            </div>
+                        </li>
+                        <li class="case-point-item">
+                            <span class="point-icon failure"><i class="fa fa-times"></i></span>
+                            <div>
+                                Mesmo após determinação judicial para complementar a documentação, foram apresentados
+                                apenas dois exames de hemoglobina glicada.
+                            </div>
+                        </li>
+                        <li class="case-point-item">
+                            <span class="point-icon failure"><i class="fa fa-times"></i></span>
+                            <div>
+                                Não ficou suficientemente demonstrada a ineficácia ou inadequação das alternativas
+                                terapêuticas disponibilizadas pelo SUS para justificar o fornecimento da tecnologia não
+                                padronizada.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </article>
+
+        <!-- ══ QUADRO COMPARATIVO E LIÇÕES PRÁTICAS ══ -->
+        <section class="comparative-takeaway-card">
+            <div class="comparative-header">
+                <div class="comparative-header-icon">
+                    <i class="fa fa-balance-scale"></i>
+                </div>
+                <div>
+                    <h3>O que Aprendemos com a Jurisprudência?</h3>
+                    <p style="font-size: 0.88rem; color: var(--texto-mudo);">
+                        Orientações essenciais para evitar indeferimentos e garantir que seus relatórios atendam aos
+                        requisitos judiciais:
+                    </p>
+                </div>
+            </div>
+
+            <div class="comparative-grid">
+                <div class="takeaway-box do">
+                    <div class="takeaway-box-title">
+                        <i class="fa fa-check-circle"></i>
+                        O que a Justiça Exige (Indispensável)
+                    </div>
+                    <ul>
+                        <li>
+                            <i class="fa fa-check" style="color: #059669; margin-top: 3px;"></i>
+                            <span><strong>Relatório médico pormenorizado:</strong> indicando diagnóstico (DM1 ou DM2),
+                                tempo de doença, tentativas prévias com insulinas do SUS (NPH/Regular) e episódios de
+                                hipoglicemia severa.</span>
+                        </li>
+                        <li>
+                            <i class="fa fa-check" style="color: #059669; margin-top: 3px;"></i>
+                            <span><strong>Histórico robusto de exames:</strong> série continuada de Hemoglobina Glicada
+                                (HbA1c) e glicemias demonstrando que o alvo terapêutico não foi alcançado.</span>
+                        </li>
+                        <li>
+                            <i class="fa fa-check" style="color: #059669; margin-top: 3px;"></i>
+                            <span><strong>Justificativa da ineficácia dos fármacos do SUS:</strong> prova técnica pelo
+                                médico de que as opções padronizadas falharam ou geraram reações adversas.</span>
+                        </li>
+                        <li>
+                            <i class="fa fa-check" style="color: #059669; margin-top: 3px;"></i>
+                            <span><strong>Comprovação de hipossuficiência econômica:</strong> documentos demonstrando a
+                                impossibilidade financeira de arcar com o custo contínuo.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="takeaway-box dont">
+                    <div class="takeaway-box-title">
+                        <i class="fa fa-times-circle"></i>
+                        O que Gera a Negativa do Pedido (Erros a Evitar)
+                    </div>
+                    <ul>
+                        <li>
+                            <i class="fa fa-times" style="color: #dc2626; margin-top: 3px;"></i>
+                            <span><strong>Relatórios médicos sucintos ou genéricos:</strong> receitas que apenas pedem o
+                                remédio sem explicar a história clínica e a evolução do paciente.</span>
+                        </li>
+                        <li>
+                            <i class="fa fa-times" style="color: #dc2626; margin-top: 3px;"></i>
+                            <span><strong>Apresentação de poucos exames:</strong> juntar apenas um ou dois laudos de
+                                glicose sem demonstrar a descompensação prolongada.</span>
+                        </li>
+                        <li>
+                            <i class="fa fa-times" style="color: #dc2626; margin-top: 3px;"></i>
+                            <span><strong>Ignorar as determinações de complementação do juiz:</strong> deixar de
+                                apresentar esclarecimentos ou perícia médica solicitada.</span>
+                        </li>
+                        <li>
+                            <i class="fa fa-times" style="color: #dc2626; margin-top: 3px;"></i>
+                            <span><strong>Ausência de negativa administrativa prévia:</strong> não solicitar primeiro na
+                                Farmácia de Alto Custo / Secretaria de Saúde.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ══ SEÇÃO DE SUPORTE E ASSISTÊNCIA JURÍDICA ══ -->
+        <section class="gov-cta-section">
+            <span class="gov-badge">
+                <i class="fa fa-institution"></i> Acesso Gratuito à Justiça
+            </span>
+            <h2>Precisa de Assistência Jurídica Gratuita?</h2>
+            <p>
+                Se você não tem condições de arcar com os custos de um advogado e precisa de medicamentos ou insumos
+                para o diabetes, procure a Defensoria Pública do seu Estado ou a Defensoria Pública da União.
+            </p>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+                <a href="#" class="btn-primary">
+                    <i class="fa fa-balance-scale"></i>
+                    <span>Ver Orientações da Defensoria Pública</span>
+                </a>
+                <a href="consultas-exames.html" class="btn-secondary">
+                    <i class="fa fa-stethoscope"></i>
+                    <span>Ver Consultas e Exames SUS</span>
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ══ JAVASCRIPT BASE PARA MENU LATERAL ══ -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const hamburger = document.getElementById('hamburger-btn');
+            const sideMenu = document.getElementById('side-menu');
+            const overlay = document.getElementById('overlay');
+            const menuClose = document.getElementById('menu-close');
+
+            const openMenu = () => {
+                sideMenu.classList.add('open');
+                overlay.classList.add('open');
+            };
+
+            const closeMenu = () => {
+                sideMenu.classList.remove('open');
+                overlay.classList.remove('open');
+            };
+
+            if (hamburger) hamburger.addEventListener('click', openMenu);
+            if (menuClose) menuClose.addEventListener('click', closeMenu);
+            if (overlay) overlay.addEventListener('click', closeMenu);
+
+            document.querySelectorAll('.side-menu-item').forEach(link => {
+                link.addEventListener('click', closeMenu);
+            });
+        });
+    </script>
+</body>
+
+</html>

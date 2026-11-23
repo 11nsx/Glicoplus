@@ -1,0 +1,2447 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLICO+ | Minha Agenda</title>
+    <meta name="description"
+        content="Minha Agenda GLICO+ - Acompanhe suas consultas médicas, retirada de insumos no SUS, exames e lembretes de saúde para diabetes.">
+
+    <!-- FONTES E ÍCONES OBRIGATÓRIOS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* ══ PALETA DE CORES E VARIÁVEIS ══ */
+        :root {
+            --rosa: #DFB2B5;
+            --rosa-escuro: #c99699;
+            --rosa-suave: #f7ecec;
+            --rosa-claro: #fdf5f5;
+            --creme: #faf7f4;
+            --texto: #2c2422;
+            --texto-mudo: #7a6560;
+            --branco: #ffffff;
+            --nav-h: 60px;
+            --shadow-soft: 0 4px 20px rgba(180, 80, 90, 0.08);
+            --shadow-hover: 0 8px 30px rgba(180, 80, 90, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--creme);
+            color: var(--texto);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+
+        /* ══ TOPNAV BASE (OBRIGATÓRIO) ══ */
+        .topnav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--nav-h);
+            background: var(--rosa);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1rem;
+            z-index: 200;
+            box-shadow: 0 2px 10px rgba(180, 80, 90, .18);
+        }
+
+        .topnav-left {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+        }
+
+        .hamburger {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .18);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            transition: 0.2s;
+            flex-shrink: 0;
+        }
+
+        .hamburger:hover {
+            background: rgba(255, 255, 255, .32);
+        }
+
+        .topnav-logo {
+            height: 34px;
+            object-fit: contain;
+        }
+
+        .topnav-center {
+            display: flex;
+            align-items: center;
+            gap: .25rem;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .topnav-right {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+        }
+
+        .topnav-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            padding: 0 18px;
+            height: var(--nav-h);
+            color: rgba(255, 255, 255, .8);
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 500;
+            border-bottom: 3px solid transparent;
+            transition: all .2s;
+            white-space: nowrap;
+        }
+
+        .topnav-link i {
+            font-size: 18px;
+        }
+
+        .topnav-link:hover {
+            color: white;
+            background: rgba(255, 255, 255, .1);
+        }
+
+        .topnav-link.active {
+            color: white;
+            border-bottom-color: white;
+        }
+
+        .nav-icon-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .18);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            transition: background .2s;
+            position: relative;
+        }
+
+        .nav-icon-btn:hover {
+            background: rgba(255, 255, 255, .32);
+        }
+
+        .notif-badge {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 16px;
+            height: 16px;
+            background: #e03040;
+            border-radius: 50%;
+            font-size: 9px;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--rosa);
+        }
+
+        /* ══ MENU LATERAL (OBRIGATÓRIO) ══ */
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .35);
+            z-index: 300;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .3s;
+        }
+
+        .sidebar-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            height: 100%;
+            background: var(--branco);
+            z-index: 400;
+            transform: translateX(-100%);
+            transition: transform .35s cubic-bezier(.4, 0, .2, 1);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .side-menu.open {
+            transform: translateX(0);
+        }
+
+        .side-menu-header {
+            background: var(--rosa);
+            padding: 1.25rem 1.25rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            min-height: var(--nav-h);
+        }
+
+        .side-menu-header img {
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .side-menu-header span {
+            color: white;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .side-menu-close {
+            margin-left: auto;
+            background: rgba(255, 255, 255, .2);
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background .2s;
+        }
+
+        .side-menu-close:hover {
+            background: rgba(255, 255, 255, .35);
+        }
+
+        .side-menu-section {
+            padding: .75rem 0;
+            border-bottom: 1px solid var(--rosa-suave);
+        }
+
+        .side-menu-section:last-child {
+            border-bottom: none;
+        }
+
+        .side-menu-label {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--texto-mudo);
+            padding: .25rem 1.25rem .5rem;
+        }
+
+        .side-menu-item {
+            display: flex;
+            align-items: center;
+            gap: .9rem;
+            padding: .75rem 1.25rem;
+            color: var(--texto);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 400;
+            transition: background .2s, color .2s;
+            cursor: pointer;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .side-menu-item:hover {
+            background: var(--rosa-suave);
+            color: var(--rosa-escuro);
+        }
+
+        .side-menu-item.active {
+            color: var(--rosa-escuro);
+            font-weight: 500;
+            background: var(--rosa-suave);
+        }
+
+        .side-menu-item i {
+            width: 20px;
+            text-align: center;
+            color: var(--rosa-escuro);
+            font-size: 15px;
+        }
+
+        .side-submenu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height .3s ease;
+        }
+
+        .side-submenu.open {
+            max-height: 300px;
+        }
+
+        .side-submenu .side-menu-item {
+            padding-left: 3.25rem;
+            font-size: 13px;
+            color: var(--texto-mudo);
+        }
+
+        .chevron {
+            margin-left: auto;
+            font-size: 11px;
+            transition: transform .3s;
+            color: var(--texto-mudo);
+        }
+
+        .chevron.open {
+            transform: rotate(180deg);
+        }
+
+        /* ══ PÁGINA AGENDA (CONTEÚDO) ══ */
+        .page-body {
+            margin-top: var(--nav-h);
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 2rem 1.25rem 3.5rem;
+        }
+
+        .agenda-header {
+            background: linear-gradient(135deg, var(--branco) 0%, var(--rosa-claro) 100%);
+            border: 1px solid var(--rosa-suave);
+            border-radius: 18px;
+            padding: 1.75rem 2rem;
+            box-shadow: var(--shadow-soft);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .agenda-header-info h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.1rem;
+            color: var(--texto);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 0.35rem;
+        }
+
+        .agenda-header-info h1 span {
+            color: var(--rosa-escuro);
+        }
+
+        .agenda-header-info p {
+            color: var(--texto-mudo);
+            font-size: 0.95rem;
+            max-width: 600px;
+        }
+
+        .agenda-header-actions {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: var(--rosa-escuro);
+            color: var(--branco);
+            border: none;
+            border-radius: 12px;
+            padding: 0.75rem 1.4rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            box-shadow: 0 4px 14px rgba(201, 150, 153, 0.35);
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background: #b58084;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(201, 150, 153, 0.45);
+        }
+
+        .btn-secondary {
+            background: var(--branco);
+            color: var(--texto);
+            border: 1px solid var(--rosa);
+            border-radius: 12px;
+            padding: 0.75rem 1.2rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: var(--rosa-suave);
+            color: var(--rosa-escuro);
+        }
+
+        /* ══ STATS RÁPIDOS ══ */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--branco);
+            border: 1px solid var(--rosa-suave);
+            border-radius: 16px;
+            padding: 1.15rem 1.25rem;
+            box-shadow: var(--shadow-soft);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .stat-icon.consultas {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .stat-icon.remedios {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .stat-icon.exames {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .stat-icon.outros {
+            background: #f3e8ff;
+            color: #7e22ce;
+        }
+
+        .stat-info .stat-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--texto);
+            line-height: 1.2;
+        }
+
+        .stat-info .stat-label {
+            font-size: 0.8rem;
+            color: var(--texto-mudo);
+            font-weight: 500;
+        }
+
+        /* ══ LAYOUT (CALENDÁRIO + LISTA) ══ */
+        .agenda-layout {
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 1.75rem;
+            align-items: start;
+        }
+
+        .calendar-card {
+            background: var(--branco);
+            border: 1px solid var(--rosa-suave);
+            border-radius: 16px;
+            padding: 1.4rem;
+            box-shadow: var(--shadow-soft);
+            position: sticky;
+            top: calc(var(--nav-h) + 1.5rem);
+        }
+
+        .calendar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .calendar-title {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: var(--texto);
+            text-transform: capitalize;
+        }
+
+        .cal-nav-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: 1px solid var(--rosa-suave);
+            background: var(--creme);
+            color: var(--texto);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 13px;
+        }
+
+        .cal-nav-btn:hover {
+            background: var(--rosa-suave);
+            color: var(--rosa-escuro);
+        }
+
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--texto-mudo);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .calendar-days-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+
+        .cal-day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            font-size: 0.85rem;
+            color: var(--texto);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.15s;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .cal-day:hover:not(.empty) {
+            background: var(--rosa-suave);
+            color: var(--rosa-escuro);
+        }
+
+        .cal-day.today {
+            font-weight: 700;
+            color: var(--rosa-escuro);
+            border: 1px dashed var(--rosa-escuro);
+        }
+
+        .cal-day.selected {
+            background: var(--rosa-escuro) !important;
+            color: var(--branco) !important;
+            font-weight: 700;
+        }
+
+        .cal-day.selected .event-dot {
+            background-color: var(--branco) !important;
+        }
+
+        .cal-day.empty {
+            cursor: default;
+        }
+
+        .cal-day .dots-wrapper {
+            position: absolute;
+            bottom: 3px;
+            display: flex;
+            gap: 2px;
+            justify-content: center;
+        }
+
+        .event-dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+        }
+
+        .event-dot.consultas {
+            background-color: #ef4444;
+        }
+
+        .event-dot.remedios {
+            background-color: #0284c7;
+        }
+
+        .event-dot.exames {
+            background-color: #f59e0b;
+        }
+
+        .event-dot.outros {
+            background-color: #a855f7;
+        }
+
+        .cal-legend {
+            margin-top: 1.25rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--rosa-suave);
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+            font-size: 0.78rem;
+            color: var(--texto-mudo);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .legend-item span.bullet {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .legend-item.consultas span.bullet {
+            background: #ef4444;
+        }
+
+        .legend-item.remedios span.bullet {
+            background: #0284c7;
+        }
+
+        .legend-item.exames span.bullet {
+            background: #f59e0b;
+        }
+
+        .legend-item.outros span.bullet {
+            background: #a855f7;
+        }
+
+        /* ══ LISTA DE EVENTOS E FILTROS ══ */
+        .events-area {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .filters-bar {
+            background: var(--branco);
+            border: 1px solid var(--rosa-suave);
+            border-radius: 14px;
+            padding: 0.6rem 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            overflow-x: auto;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .filter-chip {
+            background: transparent;
+            border: 1px solid transparent;
+            padding: 0.45rem 0.9rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--texto-mudo);
+            cursor: pointer;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            transition: all 0.2s;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .filter-chip:hover {
+            background: var(--rosa-claro);
+            color: var(--texto);
+        }
+
+        .filter-chip.active {
+            background: var(--rosa-suave);
+            color: var(--rosa-escuro);
+            border-color: var(--rosa);
+            font-weight: 600;
+        }
+
+        .filter-chip .count {
+            background: rgba(0, 0, 0, 0.05);
+            padding: 1px 6px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+        }
+
+        .active-filter-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.88rem;
+            color: var(--texto-mudo);
+        }
+
+        .active-filter-indicator button {
+            background: none;
+            border: none;
+            color: var(--rosa-escuro);
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-decoration: underline;
+        }
+
+        .events-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .event-card {
+            background: var(--branco);
+            border: 1px solid var(--rosa-suave);
+            border-radius: 16px;
+            padding: 1.35rem 1.4rem;
+            box-shadow: var(--shadow-soft);
+            display: flex;
+            gap: 1.25rem;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .event-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+        }
+
+        .event-card.consultas::before {
+            background-color: #ef4444;
+        }
+
+        .event-card.remedios::before {
+            background-color: #0284c7;
+        }
+
+        .event-card.exames::before {
+            background-color: #f59e0b;
+        }
+
+        .event-card.outros::before {
+            background-color: #a855f7;
+        }
+
+        .event-card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
+            border-color: var(--rosa);
+        }
+
+        .event-card.completed {
+            opacity: 0.65;
+            background: #faf8f8;
+        }
+
+        .event-card.completed .event-title {
+            text-decoration: line-through;
+            color: var(--texto-mudo);
+        }
+
+        .event-date-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 65px;
+            height: 72px;
+            border-radius: 12px;
+            background: var(--rosa-claro);
+            border: 1px solid var(--rosa-suave);
+            flex-shrink: 0;
+            text-align: center;
+            padding: 4px;
+        }
+
+        .event-date-box .month {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--rosa-escuro);
+            letter-spacing: 0.5px;
+        }
+
+        .event-date-box .day {
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: var(--texto);
+            line-height: 1.1;
+        }
+
+        .event-date-box .time {
+            font-size: 0.7rem;
+            color: var(--texto-mudo);
+            font-weight: 500;
+        }
+
+        .event-main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .event-top-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .event-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.25rem 0.65rem;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+
+        .event-badge.consultas {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .event-badge.remedios {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .event-badge.exames {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .event-badge.outros {
+            background: #f3e8ff;
+            color: #7e22ce;
+        }
+
+        .event-countdown-badge {
+            font-size: 0.76rem;
+            font-weight: 600;
+            color: var(--texto-mudo);
+            background: var(--rosa-suave);
+            padding: 0.2rem 0.6rem;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .event-countdown-badge.urgent {
+            background: #fee2e2;
+            color: #dc2626;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.75;
+            }
+        }
+
+        .event-title {
+            font-size: 1.12rem;
+            font-weight: 600;
+            color: var(--texto);
+            line-height: 1.3;
+        }
+
+        .event-location {
+            font-size: 0.85rem;
+            color: var(--texto-mudo);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .event-location i {
+            color: var(--rosa-escuro);
+            font-size: 0.95rem;
+        }
+
+        .event-description {
+            font-size: 0.88rem;
+            color: #554441;
+            background: var(--creme);
+            border-left: 3px solid var(--rosa);
+            padding: 0.5rem 0.75rem;
+            border-radius: 0 8px 8px 0;
+            margin-top: 0.25rem;
+        }
+
+        .event-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            align-self: center;
+            margin-left: 0.5rem;
+        }
+
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            border: 1px solid var(--rosa-suave);
+            background: var(--branco);
+            color: var(--texto-mudo);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .action-btn:hover {
+            background: var(--rosa-suave);
+            color: var(--texto);
+        }
+
+        .action-btn.check:hover {
+            background: #dcfce7;
+            color: #15803d;
+            border-color: #86efac;
+        }
+
+        .action-btn.check.done {
+            background: #22c55e;
+            color: white;
+            border-color: #22c55e;
+        }
+
+        .action-btn.export:hover {
+            background: #e0f2fe;
+            color: #0369a1;
+            border-color: #7dd3fc;
+        }
+
+        .action-btn.delete:hover {
+            background: #fee2e2;
+            color: #dc2626;
+            border-color: #fca5a5;
+        }
+
+        /* ══ EMPTY STATE ══ */
+        .empty-state {
+            background: var(--branco);
+            border: 1px dashed var(--rosa);
+            border-radius: 16px;
+            padding: 3.5rem 2rem;
+            text-align: center;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .empty-state-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: var(--rosa-suave);
+            color: var(--rosa-escuro);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            color: var(--texto);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: var(--texto-mudo);
+            font-size: 0.95rem;
+            max-width: 440px;
+            margin: 0 auto 1.5rem;
+        }
+
+        /* ══ MODAL DE FORMULÁRIO ══ */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(44, 36, 34, 0.45);
+            backdrop-filter: blur(4px);
+            z-index: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.25rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-container {
+            background: var(--branco);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 540px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 50px rgba(44, 36, 34, 0.25);
+            border: 1px solid var(--rosa-suave);
+            transform: translateY(20px) scale(0.97);
+            transition: transform 0.25s ease;
+        }
+
+        .modal-overlay.open .modal-container {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--rosa-suave) 0%, var(--branco) 100%);
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--rosa-suave);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.35rem;
+            color: var(--texto);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .modal-header h2 i {
+            color: var(--rosa-escuro);
+        }
+
+        .modal-close-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: var(--rosa-claro);
+            color: var(--texto);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .modal-close-btn:hover {
+            background: var(--rosa);
+            color: white;
+        }
+
+        .modal-form {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.15rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--texto);
+        }
+
+        .form-group label .req {
+            color: #ef4444;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 0.9rem;
+            border-radius: 10px;
+            border: 1.5px solid var(--rosa-suave);
+            background: var(--creme);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.92rem;
+            color: var(--texto);
+            transition: all 0.2s;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--rosa-escuro);
+            background: var(--branco);
+            box-shadow: 0 0 0 3px rgba(223, 178, 181, 0.35);
+        }
+
+        .form-row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.85rem;
+        }
+
+        .category-options-hint {
+            font-size: 0.75rem;
+            color: var(--texto-mudo);
+            margin-top: 0.2rem;
+        }
+
+        .modal-footer {
+            padding: 1.25rem 1.5rem;
+            border-top: 1px solid var(--rosa-suave);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            background: #fdfbfb;
+            border-radius: 0 0 20px 20px;
+        }
+
+        /* ══ TOAST NOTIFICAÇÃO ══ */
+        .toast-msg {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--texto);
+            color: var(--branco);
+            padding: 0.85rem 1.35rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            z-index: 600;
+            transform: translateY(80px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        .toast-msg.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-msg i {
+            color: var(--rosa);
+            font-size: 1.1rem;
+        }
+
+        /* ══ RESPONSIVIDADE (OBRIGATÓRIO E APRIMORADO) ══ */
+        @media (max-width: 860px) {
+            .topnav-center {
+                display: none;
+            }
+
+            .agenda-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .calendar-card {
+                position: static;
+            }
+
+            .page-body {
+                grid-template-columns: 1fr;
+            }
+
+            .cover-wrapper {
+                height: 220px;
+            }
+
+            .profile-stats {
+                gap: 1.2rem;
+            }
+
+            .profile-info h1 {
+                font-size: 2.4rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-body {
+                padding: 1rem 0.85rem 2.5rem;
+            }
+
+            .agenda-header-actions {
+                width: 100%;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .event-card {
+                flex-direction: column;
+                gap: 0.85rem;
+                padding: 1.1rem;
+            }
+
+            .event-date-box {
+                flex-direction: row;
+                width: 100%;
+                height: auto;
+                min-width: unset;
+                gap: 0.75rem;
+                padding: 0.5rem;
+            }
+
+            .event-actions {
+                align-self: flex-end;
+                margin-left: 0;
+                margin-top: 0.5rem;
+            }
+
+            .form-row-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-avatar {
+                width: 180px;
+                height: 180px;
+            }
+
+            .profile-avatar-wrap {
+                top: -130px;
+            }
+        }
+    
+        /* ══ ESTILO PADRONIZADO DO NAV & SIDEBAR (medicamentos-insumos-sus.html + pílulas) ══ */
+        :root {
+            --rosa: #DFB2B5;
+            --rosa-escuro: #c99699;
+            --rosa-suave: #f7ecec;
+            --rosa-claro: #fdf5f5;
+            --creme: #faf7f4;
+            --texto: #2c2422;
+            --texto-mudo: #7a6560;
+            --branco: #ffffff;
+            --nav-h: 60px;
+            --shadow-soft: 0 4px 20px rgba(180, 80, 90, 0.08);
+            --shadow-hover: 0 8px 30px rgba(180, 80, 90, 0.15);
+        }
+
+        body {
+            padding-top: var(--nav-h);
+        }
+
+        .topnav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--nav-h);
+            background: var(--rosa);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1rem;
+            z-index: 200;
+            box-shadow: 0 2px 10px rgba(180, 80, 90, .18);
+        }
+
+        .topnav-left {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+        }
+
+        .hamburger {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .18);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            transition: 0.2s;
+            flex-shrink: 0;
+        }
+
+        .hamburger:hover {
+            background: rgba(255, 255, 255, .32);
+        }
+
+        .topnav-logo {
+            height: 34px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .topnav-logo-fallback {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: var(--branco);
+            font-size: 1.25rem;
+        }
+
+        .topnav-logo-fallback .plus-icon {
+            background: rgba(255, 255, 255, 0.25);
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .topnav-center {
+            display: flex;
+            align-items: center;
+            gap: .35rem;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .topnav-link {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: .35rem;
+            padding: .45rem .85rem;
+            height: auto;
+            border-radius: 20px;
+            border-bottom: none;
+            background: rgba(255, 255, 255, .14);
+            color: white;
+            text-decoration: none;
+            font-size: .84rem;
+            font-weight: 500;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+
+        .topnav-link i {
+            font-size: 14px;
+        }
+
+        .topnav-link:hover,
+        .topnav-link.active {
+            background: rgba(255, 255, 255, .30);
+            color: white;
+            border-bottom: none;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(44, 36, 34, .45);
+            z-index: 299;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: .3s;
+            backdrop-filter: blur(2px);
+        }
+
+        .sidebar-overlay.open {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: all;
+        }
+
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 320px;
+            max-width: 86vw;
+            height: 100%;
+            background: var(--branco);
+            z-index: 300;
+            transform: translateX(-100%);
+            transition: transform .3s cubic-bezier(.4, 0, .2, 1);
+            overflow-y: auto;
+            box-shadow: 4px 0 24px rgba(44, 36, 34, .15);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .side-menu.open {
+            transform: translateX(0);
+        }
+
+        .side-menu-header {
+            background: var(--rosa);
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            min-height: var(--nav-h);
+        }
+
+        .side-menu-header img {
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .side-menu-header span {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: white;
+            font-weight: 700;
+            flex: 1;
+        }
+
+        .side-menu-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+
+        .side-menu-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .side-menu-section {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--rosa-suave);
+        }
+
+        .side-menu-section:last-child {
+            border-bottom: none;
+        }
+
+        .side-menu-label {
+            padding: .5rem 1.25rem;
+            font-size: .75rem;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: var(--texto-mudo);
+            font-weight: 700;
+        }
+
+        .side-menu-item {
+            display: flex;
+            align-items: center;
+            gap: .85rem;
+            padding: .75rem 1.25rem;
+            color: var(--texto);
+            text-decoration: none;
+            font-size: .92rem;
+            font-weight: 500;
+            transition: 0.2s;
+            border: none;
+            border-left: 3px solid transparent;
+            background: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            line-height: 1.35;
+        }
+
+        .side-menu-item:hover {
+            background: var(--rosa-claro);
+            color: var(--rosa-escuro);
+        }
+
+        .side-menu-item.active {
+            background: var(--rosa-suave);
+            border-left-color: var(--rosa-escuro);
+            color: var(--rosa-escuro);
+            font-weight: 700;
+        }
+
+        .side-menu-item i {
+            width: 20px;
+            text-align: center;
+            color: var(--rosa-escuro);
+            flex-shrink: 0;
+        }
+
+        .side-menu-item i.fa-balance-scale {
+            color: #dc2626;
+        }
+
+        @media (min-width: 769px) {
+            .topnav-center {
+                display: flex;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .topnav-center {
+                display: none;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- NAV SUPERIOR -->
+    <nav class="topnav">
+        <div class="topnav-left">
+            <button class="hamburger" id="hamburger-btn" aria-label="Abrir menu">
+                <i class="fa fa-bars"></i>
+            </button>
+            <img class="topnav-logo"
+                src="https://lh3.google.com/u/1/d/1AFkllEteK2G4I7QkAsqzwZrgo43DDGtE=w1878-h956-iv1?auditContext=prefetch"
+                alt="GLICO+"
+                onerror="this.style.display='none'; document.getElementById('topnav-fallback').style.display='inline-flex';">
+            <div id="topnav-fallback" class="topnav-logo-fallback" style="display: none;">
+                <span class="plus-icon">+</span>
+                <span>GLICO+</span>
+            </div>
+        </div>
+
+        <div class="topnav-center">
+            <a href="../index.html" class="topnav-link"><i class="fa fa-home"></i><span>Início</span></a>
+            <a href="agenda.html" class="topnav-link active"><i class="fa fa-calendar"></i><span>Agenda</span></a>
+            <a href="calculadora.html" class="topnav-link"><i class="fa fa-heartbeat"></i><span>Glicemia</span></a>
+            <a href="receitas.html" class="topnav-link"><i class="fa fa-cutlery"></i><span>Receitas</span></a>
+        </div>
+    </nav>
+
+    <!-- OVERLAY -->
+    <div class="sidebar-overlay" id="overlay"></div>
+
+    <!-- MENU LATERAL -->
+    <aside class="side-menu" id="side-menu">
+        <div class="side-menu-header">
+            <img src="https://lh3.google.com/u/1/d/1AFkllEteK2G4I7QkAsqzwZrgo43DDGtE=w1878-h956-iv1?auditContext=prefetch"
+                alt="GLICO+"
+                onerror="this.style.display='none';">
+            <span>GLICO+</span>
+            <button class="side-menu-close" id="menu-close" aria-label="Fechar menu"><i class="fa fa-times"></i></button>
+        </div>
+
+        <div class="side-menu-section">
+            <div class="side-menu-label">Navegação &amp; Saúde</div>
+            <a href="../index.html" class="side-menu-item"><i class="fa fa-home"></i> Página Inicial</a>
+            <a href="consulta-exames.html" class="side-menu-item"><i class="fa fa-stethoscope"></i> Acesso a Consultas e Exames</a>
+            <a href="calculadora.html" class="side-menu-item"><i class="fa fa-heartbeat"></i> Acompanhe a Glicemia</a>
+            <a href="agenda.html" class="side-menu-item active"><i class="fa fa-calendar"></i> Agenda</a>
+            <a href="oqueeh.html" class="side-menu-item"><i class="fa fa-question"></i> O Que é? | Tipos</a>
+            <a href="receitas.html" class="side-menu-item"><i class="fa fa-cutlery"></i> Receitas</a>
+        </div>
+
+        <div class="side-menu-section">
+            <div class="side-menu-label">Direitos &amp; SUS</div>
+            <a href="../direitos/acoes-judiciais.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Ações Judiciais (Medicamentos)</a>
+            <a href="../direitos/aposentadoria-bpc-loas.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Aposentadoria / BPC / LOAS</a>
+            <a href="../direitos/canais-denuncia.html" class="side-menu-item"><i class="fa fa-bullhorn"></i> Canais de Denúncia e Reclamação</a>
+            <a href="../direitos/medicamentos-fora-relacao.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Como Solicitar Medicamentos (Fora da Relação Oficial)</a>
+            <a href="../direitos/criterios-justica.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Critérios para Conseguir Medicamentos pela Justiça</a>
+            <a href="../direitos/defensoria-publica.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Defensoria Pública e Assistência Jurídica Gratuita</a>
+            <a href="../direitos/padronizados.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Diferenças entre Medicamentos Padronizados e Não Padronizados no SUS</a>
+            <a href="../direitos/direitos-diabetico.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Direitos da Pessoa com Diabetes</a>
+            <a href="../direitos/vulnerabilidade.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Direitos da Pessoa com Diabetes em Situação de Vulnerabilidade</a>
+            <a href="../direitos/incorporacao-conitec.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Incorporação de Novos Medicamentos ao SUS</a>
+            <a href="../direitos/instrumentos-juridicos.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Instrumentos Jurídicos Aplicáveis</a>
+            <a href="../direitos/medicamentos-insumos-sus.html" class="side-menu-item"><i class="fa fa-medkit"></i> Medicamentos e Insumos Fornecidos pelo SUS</a>
+            <a href="../direitos/politicas-publicas.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Políticas Públicas para Pessoas com Diabetes</a>
+            <a href="../direitos/responsabilidade-estado.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Responsabilidade do Estado</a>
+            <a href="../direitos/tratamentos-nao-disponibilizados.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Tratamentos Não Disponibilizados pelo SUS</a>
+        </div>
+    </aside>
+
+    <!-- ══ CONTEÚDO PRINCIPAL DA AGENDA ══ -->
+    <main class="page-body">
+        <!-- A) Cabeçalho da Agenda -->
+        <header class="agenda-header">
+            <div class="agenda-header-info">
+                <h1>Minha <span>Agenda</span> GLICO+</h1>
+                <p>Organize suas consultas médicas, prazos para retirada de medicamentos e insumos no SUS, exames
+                    laboratoriais e rotina de controle glicêmico.</p>
+            </div>
+            <div class="agenda-header-actions">
+                <button class="btn-primary" id="open-modal-btn">
+                    <i class="fa fa-plus-circle"></i>
+                    <span>Novo Lembrete / Consulta</span>
+                </button>
+                <button class="btn-secondary" id="today-btn">
+                    <i class="fa fa-calendar-check-o"></i>
+                    <span>Hoje</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Cards de Resumo Rápido -->
+        <section class="stats-grid">
+            <div class="stat-card" data-filter="consultas">
+                <div class="stat-icon consultas"><i class="fa fa-stethoscope"></i></div>
+                <div class="stat-info">
+                    <div class="stat-value" id="stat-consultas">0</div>
+                    <div class="stat-label">Consultas Médicas</div>
+                </div>
+            </div>
+            <div class="stat-card" data-filter="remedios">
+                <div class="stat-icon remedios"><i class="fa fa-medkit"></i></div>
+                <div class="stat-info">
+                    <div class="stat-value" id="stat-remedios">0</div>
+                    <div class="stat-label">Retirada SUS / Farmácia</div>
+                </div>
+            </div>
+            <div class="stat-card" data-filter="exames">
+                <div class="stat-icon exames"><i class="fa fa-flask"></i></div>
+                <div class="stat-info">
+                    <div class="stat-value" id="stat-exames">0</div>
+                    <div class="stat-label">Exames (HbA1c)</div>
+                </div>
+            </div>
+            <div class="stat-card" data-filter="outros">
+                <div class="stat-icon outros"><i class="fa fa-bell"></i></div>
+                <div class="stat-info">
+                    <div class="stat-value" id="stat-outros">0</div>
+                    <div class="stat-label">Outros Cuidados</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- B) Visão de Calendário / Lista Integrada -->
+        <div class="agenda-layout">
+            <!-- Calendário Mensal Interativo -->
+            <aside class="calendar-card">
+                <div class="calendar-header">
+                    <div class="calendar-title" id="calendar-month-year">Outubro 2026</div>
+                    <div style="display: flex; gap: 4px;">
+                        <button class="cal-nav-btn" id="prev-month-btn" title="Mês Anterior"><i
+                                class="fa fa-chevron-left"></i></button>
+                        <button class="cal-nav-btn" id="next-month-btn" title="Próximo Mês"><i
+                                class="fa fa-chevron-right"></i></button>
+                    </div>
+                </div>
+
+                <div class="calendar-weekdays">
+                    <span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span>
+                </div>
+
+                <div class="calendar-days-grid" id="calendar-days">
+                    <!-- Gerado dinamicamente via JavaScript -->
+                </div>
+
+                <div class="cal-legend">
+                    <div class="legend-item consultas"><span class="bullet"></span><span>🩺 Consultas Médicas</span>
+                    </div>
+                    <div class="legend-item remedios"><span class="bullet"></span><span>💊 Retirada Remédios /
+                            SUS</span></div>
+                    <div class="legend-item exames"><span class="bullet"></span><span>🩸 Exames (Hemoglobina A1c)</span>
+                    </div>
+                    <div class="legend-item outros"><span class="bullet"></span><span>⚠️ Outros Cuidados &
+                            Sensores</span></div>
+                </div>
+            </aside>
+
+            <!-- Lista de Eventos e Filtros -->
+            <section class="events-area">
+                <div class="filters-bar" id="filters-container">
+                    <button class="filter-chip active" data-category="todos">
+                        <span>Todos</span>
+                        <span class="count" id="count-todos">0</span>
+                    </button>
+                    <button class="filter-chip" data-category="consultas">
+                        <span>🩺 Consultas Médicas</span>
+                        <span class="count" id="count-consultas">0</span>
+                    </button>
+                    <button class="filter-chip" data-category="remedios">
+                        <span>💊 Retirada SUS</span>
+                        <span class="count" id="count-remedios">0</span>
+                    </button>
+                    <button class="filter-chip" data-category="exames">
+                        <span>🩸 Exames</span>
+                        <span class="count" id="count-exames">0</span>
+                    </button>
+                    <button class="filter-chip" data-category="outros">
+                        <span>⚠️ Outros</span>
+                        <span class="count" id="count-outros">0</span>
+                    </button>
+                </div>
+
+                <div class="active-filter-indicator" id="filter-date-indicator" style="display: none;">
+                    <span id="filter-date-text"></span>
+                    <button type="button" id="clear-date-filter">Ver todas as datas</button>
+                </div>
+
+                <!-- C) Cards de Eventos -->
+                <div class="events-list" id="events-container">
+                    <!-- Gerado dinamicamente via JS -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- D) MODAL DE ADIÇÃO DE NOVO EVENTO -->
+    <div class="modal-overlay" id="event-modal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2><i class="fa fa-calendar-plus-o"></i> Novo Lembrete / Consulta</h2>
+                <button class="modal-close-btn" id="modal-close-btn" aria-label="Fechar"><i
+                        class="fa fa-times"></i></button>
+            </div>
+            <form class="modal-form" id="event-form">
+                <div class="form-group">
+                    <label for="event-title">Título do Evento <span class="req">*</span></label>
+                    <input type="text" id="event-title" class="form-control"
+                        placeholder="Ex: Consulta com Endocrinologista, Retirada SUS..." required>
+                </div>
+
+                <div class="form-group">
+                    <label for="event-category">Tipo do Evento <span class="req">*</span></label>
+                    <select id="event-category" class="form-control" required>
+                        <option value="consultas">🩺 Consultas Médicas</option>
+                        <option value="remedios">💊 Retirada de Remédio/Insumos (SUS/Farmácia)</option>
+                        <option value="exames">🩸 Exames (Ex: Hemoglobina Glicada)</option>
+                        <option value="outros">⚠️ Outros lembretes importantes</option>
+                    </select>
+                    <span class="category-options-hint">Identifica visualmente o card e a bolinha colorida no
+                        calendário.</span>
+                </div>
+
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label for="event-date">Data <span class="req">*</span></label>
+                        <input type="date" id="event-date" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="event-time">Horário <span class="req">*</span></label>
+                        <input type="time" id="event-time" class="form-control" value="09:00" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="event-location">Local / Unidade de Saúde (Opcional)</label>
+                    <input type="text" id="event-location" class="form-control"
+                        placeholder="Ex: UBS Central, Farmácia de Alto Custo, Laboratório...">
+                </div>
+
+                <div class="form-group">
+                    <label for="event-notes">Descrição / Observações</label>
+                    <textarea id="event-notes" class="form-control" rows="3"
+                        placeholder="Ex: Levar receita em duas vias, cartão do SUS e mapa glicêmico; Estar em jejum de 8 a 10 horas..."></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" id="modal-cancel-btn">Cancelar</button>
+                    <button type="submit" class="btn-primary"><i class="fa fa-check"></i> Salvar na Agenda</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- TOAST DE NOTIFICAÇÃO -->
+    <div class="toast-msg" id="toast"><i class="fa fa-info-circle"></i><span id="toast-text"></span></div>
+
+    <!-- ══ JAVASCRIPT FUNCIONALIDADE ══ -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            /* 1. CONTROLE DO MENU LATERAL E OVERLAY */
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const sideMenu = document.getElementById('side-menu');
+            const overlay = document.getElementById('overlay');
+            const menuCloseBtn = document.getElementById('menu-close');
+            const submenuBtn = document.getElementById('submenu-insulina-btn');
+            const submenu = document.getElementById('submenu-insulina');
+            const chevron = document.getElementById('chevron-insulina');
+
+            function openSidebar() {
+                sideMenu.classList.add('open');
+                overlay.classList.add('open');
+            }
+
+            function closeSidebar() {
+                sideMenu.classList.remove('open');
+                overlay.classList.remove('open');
+            }
+
+            if (hamburgerBtn) hamburgerBtn.addEventListener('click', openSidebar);
+            if (menuCloseBtn) menuCloseBtn.addEventListener('click', closeSidebar);
+            if (overlay) overlay.addEventListener('click', closeSidebar);
+
+            // Dropdown do submenu SUS
+            if (submenuBtn) {
+                submenuBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    submenu.classList.toggle('open');
+                    chevron.classList.toggle('open');
+                });
+            }
+
+            /* 2. DADOS E PERSISTÊNCIA NO LOCALSTORAGE */
+            const STORAGE_KEY = 'glico_agenda_events';
+
+            // Exemplos iniciais realistas para diabetes
+            const initialDemoEvents = [
+                {
+                    id: '1',
+                    title: 'Consulta Trimestral com Endocrinologista',
+                    category: 'consultas',
+                    date: getFutureDate(2),
+                    time: '09:30',
+                    location: 'Ambulatório Médico Especializado - Sala 04',
+                    notes: 'Levar mapa glicêmico dos últimos 30 dias e exames de sangue recentes.',
+                    completed: false
+                },
+                {
+                    id: '2',
+                    title: 'Retirada de Insulina e Fitas no SUS',
+                    category: 'remedios',
+                    date: getFutureDate(5),
+                    time: '14:00',
+                    location: 'Farmácia Cidadã / UBS Central',
+                    notes: 'Apresentar Cartão SUS, receita médica em 2 vias atualizada e documento com foto.',
+                    completed: false
+                },
+                {
+                    id: '3',
+                    title: 'Coleta: Hemoglobina Glicada (HbA1c) e Perfil Lipídico',
+                    category: 'exames',
+                    date: getFutureDate(9),
+                    time: '07:15',
+                    location: 'Laboratório Central Municipal',
+                    notes: 'Necessário jejum calórico de 8 a 10 horas. Água é permitida.',
+                    completed: false
+                },
+                {
+                    id: '4',
+                    title: 'Troca do Sensor de Glicose & Calibração',
+                    category: 'outros',
+                    date: getFutureDate(1),
+                    time: '19:00',
+                    location: 'Em casa',
+                    notes: 'Higienizar bem a região posterior do braço com álcool 70% e aguardar secar totalmente.',
+                    completed: false
+                }
+            ];
+
+            function getFutureDate(daysAhead) {
+                const d = new Date();
+                d.setDate(d.getDate() + daysAhead);
+                return d.toISOString().split('T')[0];
+            }
+
+            function loadEvents() {
+                try {
+                    const saved = localStorage.getItem(STORAGE_KEY);
+                    if (saved) {
+                        const parsed = JSON.parse(saved);
+                        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+                    }
+                } catch (e) {
+                    console.error('Erro ao ler localStorage', e);
+                }
+                return initialDemoEvents;
+            }
+
+            let events = loadEvents();
+
+            function saveEvents() {
+                try {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
+                } catch (e) {
+                    console.error('Erro ao salvar localStorage', e);
+                }
+                updateUI();
+            }
+
+            /* 3. ESTADO DA INTERFACE */
+            let currentFilter = 'todos';
+            let selectedDate = null;
+            let currentMonth = new Date();
+
+            /* 4. NOTIFICAÇÕES TOAST */
+            const toastEl = document.getElementById('toast');
+            const toastText = document.getElementById('toast-text');
+            let toastTimeout = null;
+
+            function showToast(message) {
+                if (toastTimeout) clearTimeout(toastTimeout);
+                toastText.textContent = message;
+                toastEl.classList.add('show');
+                toastTimeout = setTimeout(() => {
+                    toastEl.classList.remove('show');
+                }, 3200);
+            }
+
+            /* 5. CATEGORIAS E FORMATAÇÃO */
+            const categoryConfig = {
+                consultas: { label: 'Consulta Médica', emoji: '🩺', icon: 'fa-stethoscope' },
+                remedios: { label: 'Retirada SUS / Farmácia', emoji: '💊', icon: 'fa-medkit' },
+                exames: { label: 'Exame de Saúde', emoji: '🩸', icon: 'fa-flask' },
+                outros: { label: 'Outro Lembrete', emoji: '⚠️', icon: 'fa-bell' }
+            };
+
+            function formatFriendlyDate(dateStr) {
+                if (!dateStr) return { day: '', month: '', weekday: '', full: '' };
+                const [y, m, d] = dateStr.split('-').map(Number);
+                const dateObj = new Date(y, m - 1, d);
+                return {
+                    day: String(d).padStart(2, '0'),
+                    month: dateObj.toLocaleDateString('pt-BR', { month: 'short' }).replace('.', ''),
+                    weekday: dateObj.toLocaleDateString('pt-BR', { weekday: 'long' }),
+                    full: dateObj.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })
+                };
+            }
+
+            function getCountdown(dateStr, completed) {
+                if (completed) return { text: 'Concluído', urgent: false, icon: 'fa-check' };
+                const todayStr = new Date().toISOString().split('T')[0];
+                if (dateStr === todayStr) return { text: 'Hoje!', urgent: true, icon: 'fa-clock-o' };
+
+                const todayMs = new Date(todayStr).getTime();
+                const targetMs = new Date(dateStr).getTime();
+                const diffDays = Math.round((targetMs - todayMs) / (1000 * 60 * 60 * 24));
+
+                if (diffDays === 1) return { text: 'Amanhã', urgent: true, icon: 'fa-exclamation' };
+                if (diffDays > 1) return { text: `Em ${diffDays} dias`, urgent: false, icon: 'fa-calendar-o' };
+                return { text: `Passou há ${Math.abs(diffDays)} d`, urgent: false, icon: 'fa-history' };
+            }
+
+            /* 6. RENDERIZAÇÃO DO CALENDÁRIO */
+            const calendarDaysEl = document.getElementById('calendar-days');
+            const calendarMonthYearEl = document.getElementById('calendar-month-year');
+            const prevMonthBtn = document.getElementById('prev-month-btn');
+            const nextMonthBtn = document.getElementById('next-month-btn');
+
+            function renderCalendar() {
+                const year = currentMonth.getFullYear();
+                const month = currentMonth.getMonth();
+
+                calendarMonthYearEl.textContent = currentMonth.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+
+                const firstDayIndex = new Date(year, month, 1).getDay();
+                const totalDays = new Date(year, month + 1, 0).getDate();
+                const todayStr = new Date().toISOString().split('T')[0];
+
+                calendarDaysEl.innerHTML = '';
+
+                // Espaços em branco
+                for (let i = 0; i < firstDayIndex; i++) {
+                    const emptyCell = document.createElement('div');
+                    emptyCell.className = 'cal-day empty';
+                    calendarDaysEl.appendChild(emptyCell);
+                }
+
+                // Dias do mês
+                for (let day = 1; day <= totalDays; day++) {
+                    const monthStr = String(month + 1).padStart(2, '0');
+                    const dayStr = String(day).padStart(2, '0');
+                    const dateStr = `${year}-${monthStr}-${dayStr}`;
+
+                    const dayBtn = document.createElement('button');
+                    dayBtn.type = 'button';
+                    dayBtn.className = 'cal-day';
+                    if (dateStr === todayStr) dayBtn.classList.add('today');
+                    if (selectedDate === dateStr) dayBtn.classList.add('selected');
+
+                    const daySpan = document.createElement('span');
+                    daySpan.textContent = day;
+                    dayBtn.appendChild(daySpan);
+
+                    // Indicadores de eventos
+                    const dayEvents = events.filter(e => e.date === dateStr);
+                    if (dayEvents.length > 0) {
+                        const dotsWrap = document.createElement('div');
+                        dotsWrap.className = 'dots-wrapper';
+                        dayEvents.slice(0, 3).forEach(ev => {
+                            const dot = document.createElement('span');
+                            dot.className = `event-dot ${ev.category}`;
+                            dotsWrap.appendChild(dot);
+                        });
+                        dayBtn.appendChild(dotsWrap);
+                    }
+
+                    dayBtn.addEventListener('click', () => {
+                        if (selectedDate === dateStr) {
+                            selectedDate = null;
+                        } else {
+                            selectedDate = dateStr;
+                        }
+                        updateUI();
+                    });
+
+                    calendarDaysEl.appendChild(dayBtn);
+                }
+            }
+
+            prevMonthBtn.addEventListener('click', () => {
+                currentMonth.setMonth(currentMonth.getMonth() - 1);
+                renderCalendar();
+            });
+
+            nextMonthBtn.addEventListener('click', () => {
+                currentMonth.setMonth(currentMonth.getMonth() + 1);
+                renderCalendar();
+            });
+
+            document.getElementById('today-btn').addEventListener('click', () => {
+                const now = new Date();
+                currentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+                selectedDate = now.toISOString().split('T')[0];
+                updateUI();
+                showToast('Exibindo compromissos de hoje.');
+            });
+
+            /* 7. FILTROS E CONTAGENS */
+            const filterChips = document.querySelectorAll('.filter-chip');
+            filterChips.forEach(chip => {
+                chip.addEventListener('click', () => {
+                    filterChips.forEach(c => c.classList.remove('active'));
+                    chip.classList.add('active');
+                    currentFilter = chip.dataset.category;
+                    renderEvents();
+                });
+            });
+
+            document.querySelectorAll('.stat-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const cat = card.dataset.filter;
+                    selectedDate = null;
+                    currentFilter = cat;
+                    filterChips.forEach(c => {
+                        c.classList.toggle('active', c.dataset.category === cat);
+                    });
+                    updateUI();
+                });
+            });
+
+            const clearDateBtn = document.getElementById('clear-date-filter');
+            if (clearDateBtn) {
+                clearDateBtn.addEventListener('click', () => {
+                    selectedDate = null;
+                    updateUI();
+                });
+            }
+
+            function updateStats() {
+                const counts = {
+                    todos: events.length,
+                    consultas: events.filter(e => e.category === 'consultas').length,
+                    remedios: events.filter(e => e.category === 'remedios').length,
+                    exames: events.filter(e => e.category === 'exames').length,
+                    outros: events.filter(e => e.category === 'outros').length
+                };
+
+                document.getElementById('stat-consultas').textContent = counts.consultas;
+                document.getElementById('stat-remedios').textContent = counts.remedios;
+                document.getElementById('stat-exames').textContent = counts.exames;
+                document.getElementById('stat-outros').textContent = counts.outros;
+
+                document.getElementById('count-todos').textContent = counts.todos;
+                document.getElementById('count-consultas').textContent = counts.consultas;
+                document.getElementById('count-remedios').textContent = counts.remedios;
+                document.getElementById('count-exames').textContent = counts.exames;
+                document.getElementById('count-outros').textContent = counts.outros;
+
+                const pendingCount = events.filter(e => !e.completed).length;
+                const badge = document.getElementById('notif-counter');
+                if (badge) badge.textContent = pendingCount;
+            }
+
+            /* 8. RENDERIZAÇÃO DOS EVENTOS */
+            const eventsContainer = document.getElementById('events-container');
+            const filterDateIndicator = document.getElementById('filter-date-indicator');
+            const filterDateText = document.getElementById('filter-date-text');
+
+            function renderEvents() {
+                if (selectedDate) {
+                    filterDateIndicator.style.display = 'flex';
+                    filterDateText.innerHTML = `Exibindo eventos de: <strong>${formatFriendlyDate(selectedDate).full}</strong>`;
+                } else {
+                    filterDateIndicator.style.display = 'none';
+                }
+
+                // Filtrar e ordenar pela data/hora mais próxima
+                const filtered = events
+                    .filter(ev => {
+                        if (currentFilter !== 'todos' && ev.category !== currentFilter) return false;
+                        if (selectedDate && ev.date !== selectedDate) return false;
+                        return true;
+                    })
+                    .sort((a, b) => {
+                        const dtA = `${a.date}T${a.time || '00:00'}`;
+                        const dtB = `${b.date}T${b.time || '00:00'}`;
+                        return dtA.localeCompare(dtB);
+                    });
+
+                if (filtered.length === 0) {
+                    eventsContainer.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon"><i class="fa fa-calendar-times-o"></i></div>
+                            <h3>Nenhum compromisso encontrado</h3>
+                            <p>${selectedDate ? 'Não há eventos cadastrados para a data selecionada.' : 'Você ainda não possui lembretes nesta categoria.'}</p>
+                            <button class="btn-primary" id="empty-add-btn">
+                                <i class="fa fa-plus"></i> Agendar Novo Compromisso
+                            </button>
+                        </div>
+                    `;
+                    document.getElementById('empty-add-btn')?.addEventListener('click', openModal);
+                    return;
+                }
+
+                eventsContainer.innerHTML = '';
+
+                filtered.forEach(item => {
+                    const dateInfo = formatFriendlyDate(item.date);
+                    const countdown = getCountdown(item.date, item.completed);
+                    const catInfo = categoryConfig[item.category] || categoryConfig.outros;
+
+                    const card = document.createElement('div');
+                    card.className = `event-card ${item.category} ${item.completed ? 'completed' : ''}`;
+
+                    card.innerHTML = `
+                        <div class="event-date-box">
+                            <span class="month">${dateInfo.month}</span>
+                            <span class="day">${dateInfo.day}</span>
+                            <span class="time">${item.time || '--:--'}</span>
+                        </div>
+                        <div class="event-main-content">
+                            <div class="event-top-meta">
+                                <span class="event-badge ${item.category}">
+                                    <i class="fa ${catInfo.icon}"></i> ${catInfo.label}
+                                </span>
+                                <span class="event-countdown-badge ${countdown.urgent ? 'urgent' : ''}">
+                                    <i class="fa ${countdown.icon}"></i> ${countdown.text}
+                                </span>
+                            </div>
+                            <h3 class="event-title">${escapeHtml(item.title)}</h3>
+                            ${item.location ? `
+                                <div class="event-location">
+                                    <i class="fa fa-map-marker"></i>
+                                    <span>${escapeHtml(item.location)}</span>
+                                </div>
+                            ` : ''}
+                            ${item.notes ? `
+                                <div class="event-description">
+                                    <i class="fa fa-info-circle" style="margin-right: 6px; color: var(--rosa-escuro);"></i>
+                                    ${escapeHtml(item.notes)}
+                                </div>
+                            ` : ''}
+                        </div>
+                        <div class="event-actions">
+                            <button class="action-btn check ${item.completed ? 'done' : ''}" data-action="toggle" data-id="${item.id}" title="${item.completed ? 'Desmarcar' : 'Concluir'}">
+                                <i class="fa ${item.completed ? 'fa-check-circle' : 'fa-circle-o'}"></i>
+                            </button>
+                            <button class="action-btn export" data-action="export" data-id="${item.id}" title="Exportar para Calendário (.ics)">
+                                <i class="fa fa-calendar-plus-o"></i>
+                            </button>
+                            <button class="action-btn delete" data-action="delete" data-id="${item.id}" title="Remover da agenda">
+                                <i class="fa fa-trash-o"></i>
+                            </button>
+                        </div>
+                    `;
+
+                    // Listeners dos botões de ação
+                    card.querySelector('[data-action="toggle"]').addEventListener('click', () => {
+                        item.completed = !item.completed;
+                        showToast(item.completed ? 'Compromisso marcado como concluído!' : 'Compromisso reativado.');
+                        saveEvents();
+                    });
+
+                    card.querySelector('[data-action="export"]').addEventListener('click', () => {
+                        exportEventIcs(item);
+                    });
+
+                    card.querySelector('[data-action="delete"]').addEventListener('click', () => {
+                        if (confirm(`Remover "${item.title}" da sua agenda?`)) {
+                            events = events.filter(e => e.id !== item.id);
+                            showToast('Lembrete removido.');
+                            saveEvents();
+                        }
+                    });
+
+                    eventsContainer.appendChild(card);
+                });
+            }
+
+            // Exportação de evento individual para arquivo .ics (iCalendar)
+            function exportEventIcs(item) {
+                const [y, m, d] = item.date.split('-').map(Number);
+                const [hours, minutes] = (item.time || '09:00').split(':').map(Number);
+
+                const startDate = new Date(y, m - 1, d, hours || 0, minutes || 0, 0);
+                const endDate = new Date(startDate.getTime() + 60 * 60 * 1000); // 1 hora de duração padrão
+
+                function formatIcsUtc(date) {
+                    const pad = n => String(n).padStart(2, '0');
+                    return (
+                        date.getUTCFullYear() +
+                        pad(date.getUTCMonth() + 1) +
+                        pad(date.getUTCDate()) +
+                        'T' +
+                        pad(date.getUTCHours()) +
+                        pad(date.getUTCMinutes()) +
+                        pad(date.getUTCSeconds()) +
+                        'Z'
+                    );
+                }
+
+                function escapeIcsText(str) {
+                    return (str || '')
+                        .replace(/\\/g, '\\\\')
+                        .replace(/;/g, '\\;')
+                        .replace(/,/g, '\\,')
+                        .replace(/\n/g, '\\n');
+                }
+
+                const catLabels = {
+                    consultas: 'Consulta Médica',
+                    remedios: 'Retirada de Remédio/Insumos SUS',
+                    exames: 'Exame de Saúde',
+                    outros: 'Lembrete'
+                };
+
+                const catName = catLabels[item.category] || 'Saúde';
+                const summary = escapeIcsText(`[GLICO+] ${item.title}`);
+                let descriptionText = `Tipo: ${catName}\\n`;
+                if (item.notes) {
+                    descriptionText += `Observações: ${item.notes}\\n`;
+                }
+                descriptionText += `Registrado pelo sistema GLICO+ (Acompanhamento e Saúde no Diabetes)`;
+                const description = escapeIcsText(descriptionText);
+                const location = escapeIcsText(item.location || 'Conforme agendamento GLICO+');
+
+                const icsLines = [
+                    'BEGIN:VCALENDAR',
+                    'VERSION:2.0',
+                    'PRODID:-//GLICO+//Agenda Diabetes//PT-BR',
+                    'CALSCALE:GREGORIAN',
+                    'METHOD:PUBLISH',
+                    'BEGIN:VEVENT',
+                    `UID:glico-${item.id}-${Date.now()}@glicomais.com.br`,
+                    `DTSTAMP:${formatIcsUtc(new Date())}`,
+                    `DTSTART:${formatIcsUtc(startDate)}`,
+                    `DTEND:${formatIcsUtc(endDate)}`,
+                    `SUMMARY:${summary}`,
+                    `DESCRIPTION:${description}`,
+                    `LOCATION:${location}`,
+                    'STATUS:CONFIRMED',
+                    'BEGIN:VALARM',
+                    'TRIGGER:-PT1H',
+                    'ACTION:DISPLAY',
+                    `DESCRIPTION:Lembrete GLICO+: ${escapeIcsText(item.title)}`,
+                    'END:VALARM',
+                    'END:VEVENT',
+                    'END:VCALENDAR'
+                ];
+
+                const blob = new Blob([icsLines.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+                const downloadUrl = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+
+                const safeSlug = item.title
+                    .toLowerCase()
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '')
+                    .replace(/[^a-z0-9]/g, '-')
+                    .replace(/-+/g, '-')
+                    .replace(/^-|-$/g, '')
+                    .slice(0, 30);
+
+                link.download = `glico-${safeSlug || 'lembrete'}-${item.date}.ics`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(downloadUrl);
+
+                showToast('Arquivo .ics baixado! Abra para salvar no Google Calendar ou Outlook.');
+            }
+
+            function escapeHtml(text) {
+                if (!text) return '';
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            function updateUI() {
+                renderCalendar();
+                updateStats();
+                renderEvents();
+            }
+
+            /* 9. MODAL DE ADIÇÃO DE NOVO EVENTO */
+            const modal = document.getElementById('event-modal');
+            const openModalBtn = document.getElementById('open-modal-btn');
+            const closeModalBtn = document.getElementById('modal-close-btn');
+            const cancelModalBtn = document.getElementById('modal-cancel-btn');
+            const eventForm = document.getElementById('event-form');
+            const inputDate = document.getElementById('event-date');
+
+            function openModal() {
+                inputDate.value = selectedDate || new Date().toISOString().split('T')[0];
+                modal.classList.add('open');
+            }
+
+            function closeModal() {
+                modal.classList.remove('open');
+                eventForm.reset();
+            }
+
+            if (openModalBtn) openModalBtn.addEventListener('click', openModal);
+            if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+            if (cancelModalBtn) cancelModalBtn.addEventListener('click', closeModal);
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+
+            eventForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const title = document.getElementById('event-title').value.trim();
+                const category = document.getElementById('event-category').value;
+                const date = document.getElementById('event-date').value;
+                const time = document.getElementById('event-time').value;
+                const location = document.getElementById('event-location').value.trim();
+                const notes = document.getElementById('event-notes').value.trim();
+
+                if (!title || !date || !time) return;
+
+                const newEvent = {
+                    id: Date.now().toString(),
+                    title,
+                    category,
+                    date,
+                    time,
+                    location: location || undefined,
+                    notes: notes || undefined,
+                    completed: false
+                };
+
+                events.push(newEvent);
+                closeModal();
+                showToast('Lembrete salvo com sucesso na sua agenda!');
+                saveEvents();
+            });
+
+            // Inicialização
+            updateUI();
+        });
+    </script>
+
+    <script>
+        (function () {
+            const sideMenuEl = document.getElementById('side-menu');
+            const overlayEl = document.getElementById('overlay');
+            function forceCloseMenu() {
+                if (sideMenuEl) sideMenuEl.classList.remove('open');
+                if (overlayEl) overlayEl.classList.remove('open');
+                document.body.style.overflow = '';
+            }
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') forceCloseMenu();
+            });
+            document.querySelectorAll('#side-menu a.side-menu-item').forEach(function (link) {
+                link.addEventListener('click', forceCloseMenu);
+            });
+        })();
+    </script>
+</body>
+
+</html>

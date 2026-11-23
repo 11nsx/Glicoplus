@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLICO+ | Medicamentos Padronizados e Não Padronizados pelo SUS</title>
+    <meta name="description" content="Entenda as diferenças entre medicamentos padronizados e não padronizados no SUS, PCDT, regras de competência da Justiça Federal e Estadual (Temas 500 e 1234 do STF) e requisitos para fornecimento.">
+
+    <!-- FONTES E ÍCONES OBRIGATÓRIOS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ══ PALETA DE CORES E VARIÁVEIS OFICIAIS GLICO+ ══ */
+        :root {
+            --rosa: #DFB2B5;
+            --rosa-escuro: #c99699;
+            --rosa-suave: #f7ecec;
+            --rosa-claro: #fdf5f5;
+            --creme: #faf7f4;
+            --texto: #2c2422;
+            --texto-mudo: #7a6560;
+            --branco: #ffffff;
+            --nav-h: 60px;
+            --shadow-soft: 0 4px 20px rgba(180, 80, 90, 0.08);
+            --shadow-hover: 0 8px 30px rgba(180, 80, 90, 0.15);
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--creme);
+            color: var(--texto);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+            padding-top: var(--nav-h);
+        }
+
+        /* ══ TOPNAV FIXA (ESTRUTURA BASE EXATA) ══ */
+        .topnav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--nav-h);
+            background: var(--rosa);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1rem;
+            z-index: 200;
+            box-shadow: 0 2px 10px rgba(180, 80, 90, .18);
+        }
+
+        .topnav-left {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+        }
+
+        .hamburger {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .18);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            transition: 0.2s;
+            flex-shrink: 0;
+        }
+
+        .hamburger:hover {
+            background: rgba(255, 255, 255, .32);
+        }
+
+        .topnav-logo {
+            height: 34px;
+            object-fit: contain;
+        }
+
+        .topnav-logo-fallback {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: var(--branco);
+            font-size: 1.25rem;
+            letter-spacing: 0.5px;
+        }
+
+        .topnav-logo-fallback .plus-icon {
+            background: rgba(255, 255, 255, 0.25);
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .topnav-center {
+            display: flex;
+            align-items: center;
+            gap: .25rem;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .topnav-link {
+            display: flex;
+            align-items: center;
+            gap: .35rem;
+            padding: .45rem .85rem;
+            border-radius: 20px;
+            color: white;
+            text-decoration: none;
+            font-size: .84rem;
+            font-weight: 500;
+            transition: 0.2s;
+            white-space: nowrap;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .topnav-link:hover,
+        .topnav-link.active {
+            background: rgba(255, 255, 255, .25);
+        }
+
+        .topnav-link i {
+            font-size: 14px;
+        }
+
+        .topnav-right {
+            display: flex;
+            align-items: center;
+            width: 40px;
+        }
+
+        /* ══ OVERLAY ══ */
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(44, 36, 34, .45);
+            z-index: 299;
+            opacity: 0;
+            visibility: hidden;
+            transition: .3s;
+            backdrop-filter: blur(2px);
+        }
+
+        .sidebar-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* ══ MENU LATERAL (SIDE-MENU) ══ */
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 320px;
+            max-width: 86vw;
+            height: 100%;
+            background: var(--branco);
+            z-index: 300;
+            transform: translateX(-100%);
+            transition: transform .3s cubic-bezier(.4, 0, .2, 1);
+            overflow-y: auto;
+            box-shadow: 4px 0 24px rgba(44, 36, 34, .15);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .side-menu.open {
+            transform: translateX(0);
+        }
+
+        .side-menu-header {
+            background: var(--rosa);
+            padding: 1.25rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .side-menu-header img {
+            height: 36px;
+            object-fit: contain;
+        }
+
+        .side-menu-header span {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: white;
+            font-weight: 700;
+            flex: 1;
+        }
+
+        .side-menu-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: 0.2s;
+        }
+
+        .side-menu-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .side-menu-section {
+            padding: 1rem 0;
+        }
+
+        .side-menu-label {
+            padding: .5rem 1.25rem;
+            font-size: .75rem;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: var(--texto-mudo);
+            font-weight: 700;
+        }
+
+        .side-menu-item {
+            display: flex;
+            align-items: center;
+            gap: .85rem;
+            padding: .75rem 1.25rem;
+            color: var(--texto);
+            text-decoration: none;
+            font-size: .92rem;
+            font-weight: 500;
+            transition: 0.2s;
+            border-left: 3px solid transparent;
+            cursor: pointer;
+            background: none;
+            width: 100%;
+            text-align: left;
+            border-top: none;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .side-menu-item:hover {
+            background: var(--rosa-claro);
+            color: var(--rosa-escuro);
+        }
+
+        .side-menu-item.active {
+            background: var(--rosa-suave);
+            border-left-color: var(--rosa-escuro);
+            color: var(--rosa-escuro);
+            font-weight: 700;
+        }
+
+        .side-menu-item i {
+            width: 20px;
+            text-align: center;
+            color: var(--rosa-escuro);
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .side-menu-item i.fa-balance-scale {
+            color: #dc2626;
+        }
+
+        /* ══ CONTEÚDO PRINCIPAL ══ */
+        .page-body {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.25rem 4rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.75rem;
+        }
+
+        .breadcrumb-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--texto-mudo);
+        }
+
+        .breadcrumb-nav a {
+            color: var(--texto-mudo);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb-nav a:hover {
+            color: var(--rosa-escuro);
+        }
+
+        .topic-header {
+            background: linear-gradient(135deg, var(--branco) 0%, var(--rosa-claro) 100%);
+            border: 1px solid var(--rosa-suave);
+            border-radius: 20px;
+            padding: 2.25rem;
+            box-shadow: var(--shadow-soft);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .topic-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background: var(--rosa-escuro);
+        }
+
+        .topic-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--rosa-suave);
+            color: var(--rosa-escuro);
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.85rem;
+        }
+
+        .topic-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.15rem;
+            color: var(--texto);
+            line-height: 1.25;
+            margin-bottom: 0.85rem;
+        }
+
+        .topic-header p.lead {
+            font-size: 1.05rem;
+            color: var(--texto-mudo);
+            max-width: 820px;
+            line-height: 1.6;
+        }
+
+        /* ══ SEÇÃO 1: COMPARATIVO HERO GRID ══ */
+        .comparison-hero-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .compare-card {
+            background: var(--branco);
+            border-radius: 18px;
+            padding: 1.75rem;
+            box-shadow: var(--shadow-soft);
+            border: 2px solid transparent;
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+        }
+
+        .compare-card.padronizado {
+            border-color: #a7f3d0;
+            background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%);
+        }
+
+        .compare-card.nao-padronizado {
+            border-color: #fde68a;
+            background: linear-gradient(180deg, #ffffff 0%, #fffbeb 100%);
+        }
+
+        .compare-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.35rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            width: fit-content;
+        }
+
+        .compare-badge.padronizado {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .compare-badge.nao-padronizado {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .compare-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.35rem;
+            color: var(--texto);
+        }
+
+        .compare-card p {
+            font-size: 0.95rem;
+            color: var(--texto);
+            line-height: 1.6;
+        }
+
+        /* ══ CARDS GERAIS / CHECKLISTS ══ */
+        .checklist-card {
+            background: var(--branco);
+            border: 1px solid var(--rosa-suave);
+            border-radius: 18px;
+            padding: 1.75rem;
+            box-shadow: var(--shadow-soft);
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .help-card {
+            background: var(--creme);
+            border: 1px solid var(--rosa-suave);
+            border-radius: 14px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .link-anvisa-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--rosa-suave);
+            border: 1px solid var(--rosa);
+            color: var(--rosa-escuro);
+            padding: 0.6rem 1rem;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            text-decoration: none;
+            width: fit-content;
+            transition: 0.2s;
+        }
+
+        .link-anvisa-btn:hover {
+            background: var(--rosa-escuro);
+            color: var(--branco);
+        }
+
+        .right-highlight-box {
+            background: var(--creme);
+            border-left: 3px solid var(--rosa-escuro);
+            padding: 0.85rem 1.15rem;
+            border-radius: 0 10px 10px 0;
+            font-size: 0.92rem;
+            color: var(--texto);
+            line-height: 1.55;
+        }
+
+        /* ══ QUADRO RESUMO DE COMPETÊNCIA ══ */
+        .competence-rules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .competence-item {
+            background: var(--branco);
+            border: 1px solid var(--rosa-suave);
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .competence-item-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+        }
+
+        .competence-item-title {
+            font-weight: 700;
+            font-size: 0.92rem;
+            color: var(--texto);
+        }
+
+        .competence-tag {
+            font-size: 0.72rem;
+            padding: 0.2rem 0.55rem;
+            border-radius: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .competence-tag.federal {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .competence-tag.estadual {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .competence-tag.reparticao {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .competence-item-desc {
+            font-size: 0.84rem;
+            color: var(--texto-mudo);
+            line-height: 1.45;
+        }
+
+        /* ══ GRID CONITEC ══ */
+        .conitec-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.85rem;
+            margin-top: 0.75rem;
+        }
+
+        .conitec-card {
+            background: var(--branco);
+            border: 1px solid #fed7aa;
+            border-radius: 10px;
+            padding: 0.85rem 1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.65rem;
+        }
+
+        .conitec-letter {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: #f97316;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .conitec-card-text {
+            font-size: 0.85rem;
+            color: var(--texto);
+            line-height: 1.45;
+        }
+
+        /* ══ GRID CONCEITOS CIENTÍFICOS ══ */
+        .science-concepts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 0.85rem;
+            margin-top: 0.75rem;
+        }
+
+        .science-concept-box {
+            background: var(--branco);
+            border: 1px solid var(--rosa-suave);
+            border-radius: 12px;
+            padding: 0.9rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .science-concept-header {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--rosa-escuro);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .science-concept-box p {
+            font-size: 0.82rem;
+            color: var(--texto-mudo);
+            line-height: 1.4;
+        }
+
+        /* ══ CARD DIGNIDADE / CONSCIENTE ══ */
+        .dignity-card {
+            background: linear-gradient(135deg, var(--branco) 0%, #fdf6f6 100%);
+            border: 2px solid var(--rosa);
+            border-radius: 20px;
+            padding: 2rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1.35rem;
+            box-shadow: 0 6px 24px rgba(223, 178, 181, 0.2);
+        }
+
+        .dignity-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: var(--rosa-suave);
+            color: var(--rosa-escuro);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(201, 150, 153, 0.25);
+        }
+
+        .dignity-text h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.35rem;
+            color: var(--texto);
+            margin-bottom: 0.5rem;
+        }
+
+        .dignity-text p {
+            font-size: 0.95rem;
+            color: var(--texto);
+            line-height: 1.65;
+            margin-bottom: 0.5rem;
+        }
+
+        /* ══ BANNER CTA FINAL ══ */
+        .gov-cta-section {
+            background: linear-gradient(135deg, var(--branco) 0%, var(--rosa-claro) 100%);
+            border: 2px dashed var(--rosa);
+            border-radius: 20px;
+            padding: 2.25rem 1.5rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .gov-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--rosa-suave);
+            color: var(--rosa-escuro);
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .gov-cta-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.7rem;
+            color: var(--texto);
+            max-width: 620px;
+            line-height: 1.3;
+        }
+
+        .gov-cta-section p {
+            color: var(--texto-mudo);
+            font-size: 0.95rem;
+            max-width: 580px;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--rosa-escuro);
+            color: var(--branco);
+            text-decoration: none;
+            padding: 0.85rem 1.6rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background: #ba787c;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--branco);
+            color: var(--texto);
+            border: 1px solid var(--rosa);
+            text-decoration: none;
+            padding: 0.85rem 1.6rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            background: var(--rosa-suave);
+            color: var(--rosa-escuro);
+        }
+
+        /* ══ MODAL DE DETALHES ══ */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(44, 36, 34, 0.5);
+            z-index: 400;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            backdrop-filter: blur(2px);
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal-container {
+            background: var(--branco);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 580px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            animation: modalFadeIn 0.25s ease-out;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            background: var(--rosa);
+            padding: 1.15rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--branco);
+        }
+
+        .modal-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .modal-close-btn {
+            background: none;
+            border: none;
+            color: var(--branco);
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .modal-close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            background: var(--creme);
+            border-top: 1px solid var(--rosa-suave);
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        @media (max-width: 768px) {
+            .topnav-center {
+                display: none;
+            }
+
+            .topic-header h1 {
+                font-size: 1.65rem;
+            }
+
+            .comparison-hero-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ══ TOPNAV FIXA (SEM PERFIL, NOTIFICAÇÃO OU BUSCA) ══ -->
+    <nav class="topnav">
+        <div class="topnav-left">
+            <button class="hamburger" id="hamburger-btn" aria-label="Abrir menu">
+                <i class="fa fa-bars"></i>
+            </button>
+            <img class="topnav-logo"
+                src="https://lh3.google.com/u/1/d/1AFkllEteK2G4I7QkAsqzwZrgo43DDGtE=w1878-h956-iv1?auditContext=prefetch"
+                alt="GLICO+"
+                onerror="this.style.display='none'; document.getElementById('topnav-fallback').style.display='inline-flex';">
+            <div id="topnav-fallback" class="topnav-logo-fallback" style="display: none;">
+                <span class="plus-icon">+</span>
+                <span>GLICO+</span>
+            </div>
+        </div>
+
+        <div class="topnav-center">
+            <a href="index.html" class="topnav-link"><i class="fa fa-home"></i><span>Início</span></a>
+            <a href="padronizados.html" class="topnav-link active"><i class="fa fa-cubes"></i><span>Padronizados SUS</span></a>
+            <a href="aposentadoria-bpc-loas.html" class="topnav-link"><i class="fa fa-wheelchair"></i><span>Aposentadoria &amp; BPC</span></a>
+            <a href="canais-denuncia.html" class="topnav-link"><i class="fa fa-bullhorn"></i><span>Denúncias SUS</span></a>
+            <a href="medicamentos-fora-relacao.html" class="topnav-link"><i class="fa fa-file-text-o"></i><span>Fora da Relação</span></a>
+            <a href="vulnerabilidade.html" class="topnav-link"><i class="fa fa-shield"></i><span>Vulnerabilidade</span></a>
+            <a href="criterios-justica.html" class="topnav-link"><i class="fa fa-gavel"></i><span>Critérios STF</span></a>
+            <a href="acoes-judiciais.html" class="topnav-link"><i class="fa fa-balance-scale"></i><span>Ações Judiciais</span></a>
+            <a href="consultas-exames.html" class="topnav-link"><i class="fa fa-stethoscope"></i><span>Consultas &amp; Exames</span></a>
+            <a href="agenda.html" class="topnav-link"><i class="fa fa-calendar"></i><span>Agenda</span></a>
+        </div>
+
+        <div class="topnav-right"></div>
+    </nav>
+
+    <!-- ══ OVERLAY ══ -->
+    <div class="sidebar-overlay" id="overlay"></div>
+
+    <!-- ══ MENU LATERAL (HAMBURGUER) EM ORDEM ALFABÉTICA RIGOROSA ══ -->
+    <aside class="side-menu" id="side-menu">
+        <div class="side-menu-header">
+            <img src="https://lh3.google.com/u/1/d/1AFkllEteK2G4I7QkAsqzwZrgo43DDGtE=w1878-h956-iv1?auditContext=prefetch"
+                alt="GLICO+"
+                onerror="this.style.display='none';">
+            <span>GLICO+</span>
+            <button class="side-menu-close" id="menu-close"><i class="fa fa-times"></i></button>
+        </div>
+
+        <div class="side-menu-section">
+            <div class="side-menu-label">Navegação Principal</div>
+            <!-- 1º Lugar Obrigatório: Página Inicial -->
+            <a href="index.html" class="side-menu-item"><i class="fa fa-home"></i> Página Inicial</a>
+
+            <div class="side-menu-label">Tópicos e Direitos (Ordem Alfabética)</div>
+            <!-- 12 TÓPICOS RIGOROSAMENTE ALFABÉTICOS (com fa-balance-scale nos de Direito) -->
+            <a href="consultas-exames.html" class="side-menu-item"><i class="fa fa-stethoscope"></i> Acesso a Consultas e Exames para Pessoas com Diabetes</a>
+            <a href="vulnerabilidade.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Acesso à Justiça para Pessoas de Baixa Renda</a>
+            <a href="acoes-judiciais.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Ações Judiciais para Obtenção de Medicamentos</a>
+            <a href="aposentadoria-bpc-loas.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Aposentadoria por Incapacidade &amp; BPC/LOAS</a>
+            <a href="canais-denuncia.html" class="side-menu-item"><i class="fa fa-bullhorn"></i> Canais de Denúncia e Reclamação</a>
+            <a href="medicamentos-fora-relacao.html" class="side-menu-item"><i class="fa fa-file-text-o"></i> Como Solicitar Medicamentos Fora da Relação Oficial</a>
+            <a href="criterios-justica.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Critérios para Conseguir Medicamentos pela Justiça</a>
+            <a href="vulnerabilidade.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Defensoria Pública e Assistência Jurídica Gratuita</a>
+            <a href="padronizados.html" class="side-menu-item active"><i class="fa fa-cubes"></i> Diferenças entre Medicamentos Padronizados e Não Padronizados no SUS</a>
+            <a href="vulnerabilidade.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Direitos da Pessoa com Diabetes em Situação de Vulnerabilidade</a>
+            <button class="side-menu-item topic-btn" data-topic="9"><i class="fa fa-plus-square"></i> Incorporação de Novos Medicamentos ao SUS</button>
+            <button class="side-menu-item topic-btn" data-topic="10"><i class="fa fa-institution"></i> Políticas Públicas para Pessoas com Diabetes</button>
+            <button class="side-menu-item topic-btn" data-topic="11"><i class="fa fa-medkit"></i> Tratamentos Não Disponibilizados pelo SUS</button>
+        </div>
+    </aside>
+
+    <!-- ══ CONTEÚDO PRINCIPAL: MEDICAMENTOS PADRONIZADOS E NÃO PADRONIZADOS ══ -->
+    <main class="page-body">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb-nav">
+            <a href="index.html"><i class="fa fa-home"></i> Início</a>
+            <i class="fa fa-angle-right"></i>
+            <span>Direitos &amp; Saúde</span>
+            <i class="fa fa-angle-right"></i>
+            <span style="color: var(--rosa-escuro); font-weight: 600;">Medicamentos Padronizados e Não Padronizados</span>
+        </nav>
+
+        <!-- Cabeçalho do Tópico -->
+        <header class="topic-header">
+            <span class="topic-tag">
+                <i class="fa fa-cubes"></i> Assistência Farmacêutica &amp; PCDT
+            </span>
+            <h1>Medicamento Padronizado e Não Padronizado pelo SUS</h1>
+            <p class="lead">
+                Compreenda as regras de incorporação pública, protocolos PCDT, competência jurisdicional da Justiça Federal ou Estadual (Temas 500 e 1234 do STF) e os requisitos essenciais para fornecimento judicial.
+            </p>
+        </header>
+
+        <!-- 1. Grade de Conceitos: Padronizado vs Não Padronizado -->
+        <section class="comparison-hero-grid">
+            <div class="compare-card padronizado">
+                <span class="compare-badge padronizado">
+                    <i class="fa fa-check-circle"></i> Incorporado ao SUS
+                </span>
+                <h3>Medicamento Padronizado</h3>
+                <p>
+                    O medicamento padronizado é aquele que, além de ser <strong>registrado pela ANVISA</strong>, foi <strong>incorporado pelo SUS</strong> para o fornecimento à população.
+                </p>
+                <div class="right-highlight-box" style="background: #f0fdf4; border-color: #10b981;">
+                    A padronização segue critérios estabelecidos em <strong>Protocolos Clínicos e Diretrizes Terapêuticas (PCDT)</strong>, que determinam que a incorporação do medicamento na rede pública seja direcionada para tratamentos específicos. Assim, um medicamento pode ser fornecido pelo SUS para uma enfermidade, mas não para outra, e também pode ser fornecido apenas para faixas etárias específicas, por exemplo.
+                </div>
+            </div>
+
+            <div class="compare-card nao-padronizado">
+                <span class="compare-badge nao-padronizado">
+                    <i class="fa fa-exclamation-circle"></i> Não Incorporado
+                </span>
+                <h3>Medicamento Não Padronizado</h3>
+                <p>
+                    Já o <strong>não padronizado</strong> não foi inserido nas relações oficiais e <strong>não se encontra disponível na rede pública</strong>.
+                </p>
+                <div class="right-highlight-box" style="background: #fffbeb; border-color: #f59e0b;">
+                    Para sua obtenção judicial, a concessão é excepcional e depende do cumprimento estrito de requisitos fixados pelo Supremo Tribunal Federal (STF), comprovando a ineficácia das opções padronizadas e a impossibilidade financeira do paciente.
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Onde Verificar Registro na ANVISA e Padronização no SUS -->
+        <section class="checklist-card">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 1.35rem; color: var(--texto); margin-bottom: 0.25rem;">
+                <i class="fa fa-search" style="color: var(--rosa-escuro); margin-right: 8px;"></i>
+                Como Verificar o Registro e a Padronização?
+            </h2>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
+                <div class="help-card">
+                    <h4 style="font-weight: 700; color: var(--texto); display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fa fa-file-text-o" style="color: var(--rosa-escuro);"></i>
+                        Onde verificar se está registrado na ANVISA?
+                    </h4>
+                    <p style="font-size: 0.9rem; color: var(--texto-mudo); line-height: 1.55;">
+                        Além de poder obter a informação através do site oficial de pareceres da Anvisa, o registro ou não do medicamento também deve ser indicado pelo médico no Formulário Médico.
+                    </p>
+                    <a href="https://consultas.anvisa.gov.br/#/pareceres/" target="_blank" rel="noopener noreferrer" class="link-anvisa-btn">
+                        <i class="fa fa-external-link"></i> Consultar Pareceres na ANVISA
+                    </a>
+                </div>
+
+                <div class="help-card">
+                    <h4 style="font-weight: 700; color: var(--texto); display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fa fa-ban" style="color: #dc2626;"></i>
+                        Como saber se está ou não padronizado pelo SUS?
+                    </h4>
+                    <p style="font-size: 0.9rem; color: var(--texto-mudo); line-height: 1.55;">
+                        A maneira mais fácil é por meio da <strong>negativa fornecida pela Secretaria de Estado de Saúde ou Secretaria Municipal de Saúde</strong>. O documento comprova a solicitação do fármaco pela via administrativa, bem como o seu indeferimento, que é uma exigência judicial indispensável.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Competência Jurisdicional (Quem julga a ação?) -->
+        <section class="checklist-card">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 1.35rem; color: var(--texto); margin-bottom: 0.25rem;">
+                <i class="fa fa-gavel" style="color: var(--rosa-escuro); margin-right: 8px;"></i>
+                Competência Jurisdicional: Justiça Federal ou Estadual?
+            </h2>
+            <p style="font-size: 0.9rem; color: var(--texto-mudo);">
+                A definição de qual Tribunal deve julgar o processo depende do registro na ANVISA, da padronização e do valor anual do tratamento:
+            </p>
+
+            <div style="display: flex; flex-direction: column; gap: 1.25rem; margin-top: 0.5rem;">
+                <!-- Medicamento Não Registrado -->
+                <div style="background: #fff1f2; border: 1px solid #fecdd3; border-radius: 14px; padding: 1.25rem;">
+                    <h3 style="font-size: 1.1rem; color: #9f1239; font-weight: 700; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fa fa-times-circle"></i> Medicamento NÃO Registrado na ANVISA
+                    </h3>
+                    <p style="font-size: 0.92rem; color: #881337; line-height: 1.6;">
+                        A competência será da <strong>Justiça Federal</strong>, em face da União, conforme decidido pelo STF no <strong>Tema 500</strong>. O entendimento dos Tribunais Superiores é o de que a ANVISA integra a Administração Pública Federal e que Estados e Municípios (não responsáveis pelo registro de medicamentos) não podem ser condenados a custear as prestações de saúde quando não são responsáveis pelo atraso no cumprimento de uma obrigação da Agência, nem podem saná-la.
+                    </p>
+                </div>
+
+                <!-- Medicamento Registrado -->
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 1.25rem;">
+                    <h3 style="font-size: 1.1rem; color: #0f172a; font-weight: 700; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fa fa-check-circle" style="color: #059669;"></i> Medicamento REGISTRADO na ANVISA
+                    </h3>
+                    <p style="font-size: 0.92rem; color: #334155; line-height: 1.6; margin-bottom: 0.75rem;">
+                        A competência dependerá se o medicamento é padronizado ou não:
+                    </p>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+                        <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 1rem;">
+                            <strong style="color: #0f172a; display: block; margin-bottom: 0.35rem;">Se for PADRONIZADO:</strong>
+                            <span style="font-size: 0.88rem; color: #475569; line-height: 1.5; display: block;">
+                                O polo passivo deve observar a repartição de responsabilidades estruturada no SUS:
+                            </span>
+                            <ul style="list-style: disc; padding-left: 1.25rem; font-size: 0.86rem; color: #475569; margin-top: 0.4rem; line-height: 1.5;">
+                                <li>Responsabilidade da União: <strong>Justiça Federal</strong>.</li>
+                                <li>Responsabilidade do Estado: ajuizada apenas em face do <strong>Estado</strong>.</li>
+                                <li>Responsabilidade do Município: ajuizada apenas em face do <strong>Município</strong>.</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 1rem;">
+                            <strong style="color: #0f172a; display: block; margin-bottom: 0.35rem;">Se for NÃO PADRONIZADO (Tema 1234 STF):</strong>
+                            <span style="font-size: 0.88rem; color: #475569; line-height: 1.5; display: block;">
+                                A competência dependerá do valor anual da causa (com base no PMVG alíquota zero divulgado pela CMED):
+                            </span>
+                            <ul style="list-style: disc; padding-left: 1.25rem; font-size: 0.86rem; color: #475569; margin-top: 0.4rem; line-height: 1.5;">
+                                <li><strong>Igual ou superior a 210 salários mínimos:</strong> Justiça Federal.</li>
+                                <li><strong>Inferior a 210 salários mínimos:</strong> Justiça Estadual.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Destaque Importante sobre a mudança de cálculo -->
+                    <div class="right-highlight-box" style="margin-top: 1rem; background: #fef3c7; border-color: #d97706;">
+                        <strong style="color: #92400e;">Mudança crucial de entendimento jurisprudencial:</strong>
+                        <p style="font-size: 0.88rem; color: #78350f; margin-top: 0.25rem;">
+                            O valor da causa <strong>não será mais definido por orçamentos de farmácia obtidos pelo paciente ou triagem</strong>, mas sim pelo valor oficial indicado pela <strong>Câmara de Regulação do Mercado de Medicamentos (CMED - Lei 10.742/03)</strong> no Preço Máximo de Venda do Governo (PMVG).
+                        </p>
+                        <a href="https://app.powerbi.com/view?r=eyJrIjoiYjZkZjEyM2YtNzNjYS00ZmQyLTliYTEtNDE2MDc4ZmE1NDEyIiwidCI6ImI2N2FmMjNmLWMzZjMtNGQzNS04MGM3LWI3MDg1ZjVlZGQ4MSJ9&pageName=ReportSection20c576fb69cd2edaea29"
+                            target="_blank" rel="noopener noreferrer" class="link-anvisa-btn" style="margin-top: 0.75rem; background: #ffffff; border-color: #f59e0b; color: #92400e;">
+                            <i class="fa fa-line-chart"></i> Acessar Painel de Consulta de Preços da ANVISA (PowerBI)
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quadro Resumo de Competência -->
+            <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--texto); margin-top: 0.75rem;">
+                Resumo da Competência:
+            </h3>
+            <div class="competence-rules-grid">
+                <div class="competence-item">
+                    <div class="competence-item-header">
+                        <span class="competence-item-title">Sem Registro Anvisa</span>
+                        <span class="competence-tag federal">Federal</span>
+                    </div>
+                    <p class="competence-item-desc">Ação obrigatoriamente ajuizada na Justiça Federal contra a União (Tema 500 STF).</p>
+                </div>
+
+                <div class="competence-item">
+                    <div class="competence-item-header">
+                        <span class="competence-item-title">Com Registro Padronizado</span>
+                        <span class="competence-tag reparticao">SUS</span>
+                    </div>
+                    <p class="competence-item-desc">Segue a repartição de competências e financiamento do SUS (Município, Estado ou União).</p>
+                </div>
+
+                <div class="competence-item">
+                    <div class="competence-item-header">
+                        <span class="competence-item-title">Não Padronizado &le; 210 SM</span>
+                        <span class="competence-tag estadual">Estadual</span>
+                    </div>
+                    <p class="competence-item-desc">Valor anual de tratamento inferior ou igual a 210 salários mínimos: tramita na Justiça Estadual.</p>
+                </div>
+
+                <div class="competence-item">
+                    <div class="competence-item-header">
+                        <span class="competence-item-title">Não Padronizado &gt; 210 SM</span>
+                        <span class="competence-tag federal">Federal</span>
+                    </div>
+                    <p class="competence-item-desc">Valor anual de tratamento superior a 210 salários mínimos: tramita na Justiça Federal com a União.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Atuação da Defensoria Pública para Ações da Justiça Federal -->
+        <section class="checklist-card">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 1.35rem; color: var(--texto); margin-bottom: 0.4rem;">
+                <i class="fa fa-university" style="color: var(--rosa-escuro); margin-right: 8px;"></i>
+                Medicamentos Não Padronizados com Competência da Justiça Federal
+            </h2>
+            <p style="font-size: 0.92rem; color: var(--texto-mudo); line-height: 1.6;">
+                Para as ações que sejam de competência da Justiça Federal, atualmente existem <strong>duas alternativas possíveis à Defensoria Pública do Estado (DPE)</strong>:
+            </p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 0.5rem;">
+                <div class="help-card">
+                    <strong style="color: var(--texto); font-size: 0.95rem;">(1) Encaminhar à Defensoria Pública da União (DPU)</strong>
+                    <p style="font-size: 0.88rem; color: var(--texto-mudo); line-height: 1.5;">
+                        A DPE orienta e encaminha o assistido diretamente ao Núcleo da DPU da região, que é o órgão com atribuição legal perante a Justiça Federal.
+                    </p>
+                </div>
+
+                <div class="help-card">
+                    <strong style="color: var(--texto); font-size: 0.95rem;">(2) Ajuizar a ação já solicitando remessa à Justiça Federal</strong>
+                    <p style="font-size: 0.88rem; color: var(--texto-mudo); line-height: 1.5;">
+                        A própria Defensoria Estadual inicia o processo na Justiça Estadual, mas solicita na petição que os autos sejam encaminhados à Justiça Federal, resguardando o direito à saúde e evitando perecimento.
+                    </p>
+                </div>
+            </div>
+
+            <div class="right-highlight-box" style="margin-top: 0.75rem;">
+                Segundo Ofício do Defensor Público-Geral Federal, a DPU está implementando um projeto de <strong>atuação interiorizada específico para a Saúde</strong> em todas as subseções judiciárias do país. Até que tal expansão seja concluída e regulamentada, a alternativa de ajuizar na Justiça Estadual e pedir o encaminhamento à Federal se revela uma via adequada para proteger o paciente com diabetes.
+            </div>
+        </section>
+
+        <!-- 5. Os Requisitos Essenciais para Conseguir o Medicamento -->
+        <section class="checklist-card">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 1.35rem; color: var(--texto); margin-bottom: 0.25rem;">
+                <i class="fa fa-list-ul" style="color: var(--rosa-escuro); margin-right: 8px;"></i>
+                Os Requisitos para Conseguir o Medicamento pela Justiça
+            </h2>
+            <p style="font-size: 0.92rem; color: var(--texto-mudo); margin-bottom: 0.75rem;">
+                Antes de ajuizar uma ação judicial, os tribunais analisam critérios técnicos rigorosos:
+            </p>
+
+            <!-- Requisito 1: CONITEC -->
+            <div style="background: #fdf8f8; border: 1px solid var(--rosa-suave); border-radius: 14px; padding: 1.35rem; margin-bottom: 1rem;">
+                <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--texto); margin-bottom: 0.35rem;">
+                    1. Ilegalidade da Não Incorporação pela CONITEC, Ausência de Pedido ou Demora na Análise
+                </h3>
+                <p style="font-size: 0.92rem; color: var(--texto); line-height: 1.6;">
+                    A <strong>CONITEC</strong> é a Comissão Nacional de Incorporação de Tecnologias no SUS, responsável por avaliar evidências científicas e impacto econômico para inclusão de tecnologias na rede pública. O processo judicial deve demonstrar uma das 4 situações:
+                </p>
+
+                <div class="conitec-grid">
+                    <div class="conitec-card">
+                        <span class="conitec-letter">A</span>
+                        <span class="conitec-card-text">Ninguém solicitou a inclusão do medicamento no SUS.</span>
+                    </div>
+                    <div class="conitec-card">
+                        <span class="conitec-letter">B</span>
+                        <span class="conitec-card-text">O medicamento foi solicitado para outra doença ou para pacientes com características clínicas diferentes.</span>
+                    </div>
+                    <div class="conitec-card">
+                        <span class="conitec-letter">C</span>
+                        <span class="conitec-card-text">A inclusão foi formalmente solicitada, mas a CONITEC ainda não tomou decisão (mora excessiva).</span>
+                    </div>
+                    <div class="conitec-card">
+                        <span class="conitec-letter">D</span>
+                        <span class="conitec-card-text">A CONITEC analisou e decidiu não incluir, sendo necessário demonstrar que a decisão foi <strong>ilegal</strong>.</span>
+                    </div>
+                </div>
+
+                <div style="margin-top: 0.85rem; font-size: 0.9rem; color: var(--texto-mudo); line-height: 1.55;">
+                    <strong>Por que um medicamento não é incorporado ao SUS?</strong>
+                    <ul style="list-style: disc; padding-left: 1.25rem; margin-top: 0.3rem;">
+                        <li><strong>Impacto orçamentário:</strong> custo muito elevado para as contas públicas. A tese jurídica pondera o argumento da <em>Reserva do Possível</em> frente ao núcleo essencial da dignidade da pessoa humana e do direito à vida.</li>
+                        <li><strong>Falta de evidências científicas suficientes:</strong> estudos apresentados à época não comprovaram segurança ou eficácia superior às alternativas já fornecidas.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Requisito 2: Impossibilidade de Substituição -->
+            <div style="background: #fdf8f8; border: 1px solid var(--rosa-suave); border-radius: 14px; padding: 1.35rem; margin-bottom: 1rem;">
+                <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--texto); margin-bottom: 0.35rem;">
+                    2. Impossibilidade de Substituição por Outro Medicamento Disponível no SUS
+                </h3>
+                <p style="font-size: 0.92rem; color: var(--texto); line-height: 1.6;">
+                    Não basta demonstrar que o paciente quer determinado fármaco. O médico assistente deverá explicar pormenorizadamente <strong>por que as alternativas já disponíveis gratuitamente no SUS foram utilizadas e se mostraram ineficazes</strong> ou causaram reações adversas intoleráveis.
+                </p>
+            </div>
+
+            <!-- Requisito 3: Comprovação Científica -->
+            <div style="background: #fdf8f8; border: 1px solid var(--rosa-suave); border-radius: 14px; padding: 1.35rem; margin-bottom: 1rem;">
+                <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--texto); margin-bottom: 0.35rem;">
+                    3. Comprovação Científica: Eficácia, Acurácia, Efetividade e Segurança
+                </h3>
+                <p style="font-size: 0.92rem; color: var(--texto); line-height: 1.6;">
+                    O pedido deve ser fundamentado em evidências científicas de alto nível:
+                </p>
+                <div class="science-concepts-grid">
+                    <div class="science-concept-box">
+                        <div class="science-concept-header"><i class="fa fa-bullseye"></i> Eficácia</div>
+                        <p>Demonstra se o medicamento consegue produzir o resultado esperado em testes clínicos controlados.</p>
+                    </div>
+                    <div class="science-concept-box">
+                        <div class="science-concept-header"><i class="fa fa-crosshairs"></i> Acurácia</div>
+                        <p>Diz respeito à exatidão e precisão dos métodos avaliativos e diagnósticos utilizados.</p>
+                    </div>
+                    <div class="science-concept-box">
+                        <div class="science-concept-header"><i class="fa fa-street-view"></i> Efetividade</div>
+                        <p>Demonstra se o tratamento funciona na prática do dia a dia, nas condições reais dos pacientes.</p>
+                    </div>
+                    <div class="science-concept-box">
+                        <div class="science-concept-header"><i class="fa fa-shield"></i> Segurança</div>
+                        <p>Demonstra que os riscos e efeitos colaterais são aceitáveis frente aos benefícios à saúde.</p>
+                    </div>
+                </div>
+
+                <div class="right-highlight-box" style="margin-top: 0.85rem;">
+                    <strong>O papel do e-NATJUS (Núcleo de Apoio Técnico do Poder Judiciário):</strong><br>
+                    O e-NATJUS auxilia os magistrados fornecendo notas técnicas e pareceres fundamentados cientificamente, confirmando se o pedido médico possui respaldo médico e base científica sólida.
+                </div>
+            </div>
+
+            <!-- Requisitos 4 e 5: Imprescindibilidade e Incapacidade Financeira -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+                <div style="background: #fdf8f8; border: 1px solid var(--rosa-suave); border-radius: 14px; padding: 1.35rem;">
+                    <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--texto); margin-bottom: 0.35rem;">
+                        4. Imprescindibilidade do Tratamento
+                    </h3>
+                    <p style="font-size: 0.9rem; color: var(--texto-mudo); line-height: 1.55;">
+                        O tratamento deve ser <strong>indispensável</strong> para a saúde e sobrevivência do paciente, demonstrando-se que sua interrupção ou ausência provocará agravamento irreversível do quadro clínico.
+                    </p>
+                </div>
+
+                <div style="background: #fdf8f8; border: 1px solid var(--rosa-suave); border-radius: 14px; padding: 1.35rem;">
+                    <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--texto); margin-bottom: 0.35rem;">
+                        5. Incapacidade Financeira de Pagar o Tratamento
+                    </h3>
+                    <p style="font-size: 0.9rem; color: var(--texto-mudo); line-height: 1.55;">
+                        Não basta afirmar que o remédio é caro. Deve ser demonstrado que o custo contínuo é incompatível com a renda do assistido e de sua família, comprometendo sua subsistência básica.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. Resumo STF e Prática Jurídica -->
+        <section class="dignity-card">
+            <div class="dignity-icon">
+                <i class="fa fa-balance-scale"></i>
+            </div>
+            <div class="dignity-text">
+                <h3>Direito e Saúde: A Judicialização Consciente</h3>
+                <p>
+                    Não é porque uma pessoa necessita de um medicamento e não consegue comprá-lo que a Justiça determinará automaticamente o seu fornecimento. O paciente possui o direito constitucional à saúde, mas o pedido judicial precisa estar devidamente fundamentado — tanto juridicamente quanto cientificamente.
+                </p>
+                <p>
+                    O diálogo entre Direito e Saúde busca assegurar que a judicialização ocorra de forma responsável, garantindo a dignidade de quem realmente não tem alternativa sem comprometer o sistema público de assistência farmacêutica.
+                </p>
+            </div>
+        </section>
+
+        <!-- Atalhos Rápidos -->
+        <section class="gov-cta-section">
+            <span class="gov-badge">
+                <i class="fa fa-compass"></i> Navegação Integrada GLICO+
+            </span>
+            <h2>Consulte Outros Temas Fundamentais</h2>
+            <p>
+                Aprofunde seu entendimento sobre os critérios do STF ou veja a análise de casos reais julgados nos Tribunais.
+            </p>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+                <a href="criterios-justica.html" class="btn-primary" style="padding: 0.85rem 1.6rem; font-size: 0.95rem;">
+                    <i class="fa fa-gavel"></i>
+                    <span>Ver Critérios do STF</span>
+                </a>
+                <a href="acoes-judiciais.html" class="btn-secondary" style="padding: 0.85rem 1.6rem; font-size: 0.95rem;">
+                    <i class="fa fa-balance-scale"></i>
+                    <span>Ver Casos Reais Julgados</span>
+                </a>
+                <a href="vulnerabilidade.html" class="btn-secondary" style="padding: 0.85rem 1.6rem; font-size: 0.95rem;">
+                    <i class="fa fa-shield"></i>
+                    <span>Direitos em Vulnerabilidade</span>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- ══ MODAL DE DETALHES DE TÓPICOS DA SIDEBAR ══ -->
+    <div class="modal-overlay" id="topic-modal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2><i id="modal-icon" class="fa fa-info-circle"></i> <span id="modal-badge">Detalhes</span></h2>
+                <button class="modal-close-btn" id="modal-close"><i class="fa fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <h3 id="modal-title" style="font-family: 'Playfair Display', serif; font-size: 1.25rem; color: var(--texto);">Título</h3>
+                <div style="background: var(--rosa-claro); border-left: 4px solid var(--rosa-escuro); padding: 0.85rem 1rem; border-radius: 0 8px 8px 0;">
+                    <p id="modal-summary" style="font-size: 0.92rem; color: var(--texto); font-weight: 500;"></p>
+                </div>
+                <div style="font-size: 0.95rem; color: var(--texto-mudo); line-height: 1.6;">
+                    <p id="modal-details"></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-primary" id="modal-ok">Entendi</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ JAVASCRIPT INTEGRADO ══ -->
+    <script>
+        // Dados dos tópicos da sidebar para o modal
+        const topicsData = {
+            1: {
+                title: "Acesso à Justiça para Pessoas de Baixa Renda",
+                icon: "fa-balance-scale",
+                isLaw: true,
+                summary: "Assistência jurídica integral e gratuita assegurada pela Constituição através da Defensoria Pública.",
+                details: "Cidadãos que não possuem renda suficiente para contratar advogado particular têm o direito constitucional à assistência jurídica gratuita pela Defensoria Pública da União (DPU) ou do Estado (DPE) para exigir remédios, análogos de insulina e insumos negados na rede pública."
+            },
+            3: {
+                title: "Canais de Denúncia e Reclamação",
+                icon: "fa-bullhorn",
+                isLaw: false,
+                summary: "Onde reclamar quando faltam insulinas, fitas ou tiras reagentes na sua unidade de saúde.",
+                details: "Em caso de desabastecimento de medicamentos ou recusa de atendimento, formalize a denúncia na Ouvidoria Geral do SUS (Disque 136), nas Ouvidorias das Secretarias Municipais e Estaduais de Saúde, no Ministério Público Estadual (Promotoria da Saúde) e no Conselho Municipal de Saúde."
+            },
+            4: {
+                title: "Como Solicitar Medicamentos Fora da Relação Oficial",
+                icon: "fa-file-text-o",
+                isLaw: false,
+                summary: "Orientações sobre solicitação administrativa para medicamentos que não constam na RENAME.",
+                details: "Para solicitar fármacos não padronizados na RENAME (Relação Nacional de Medicamentos Essenciais), é preciso apresentar relatório médico detalhado comprovando que os medicamentos convencionais fornecidos pelo SUS foram ineficazes ou causaram reações adversas graves."
+            },
+            6: {
+                title: "Defensoria Pública e Assistência Jurídica Gratuita",
+                icon: "fa-balance-scale",
+                isLaw: true,
+                summary: "Atendimento especializado para a defesa dos direitos dos pacientes diabéticos vulneráveis.",
+                details: "A Defensoria Pública possui núcleos especializados em Saúde Pública que acionam os entes públicos (Município, Estado e União) de forma célere, inclusive em regime de plantão nos casos de risco iminente de descompensação glicêmica."
+            },
+            9: {
+                title: "Incorporação de Novos Medicamentos ao SUS",
+                icon: "fa-plus-square",
+                isLaw: false,
+                summary: "O papel da CONITEC na avaliação de eficácia e custo de novas tecnologias em diabetes.",
+                details: "A CONITEC (Comissão Nacional de Incorporação de Tecnologias no SUS) é o órgão que avalia evidências científicas, benefícios clínicos e impacto financeiro para incluir insulinas análogas ultrarrápidas, sensores contínuos e novos antidiabéticos orais no SUS."
+            },
+            10: {
+                title: "Políticas Públicas para Pessoas com Diabetes",
+                icon: "fa-institution",
+                isLaw: false,
+                summary: "A Lei Federal nº 11.347/2006 e as diretrizes do Programa Nacional de Atenção ao Diabetes.",
+                details: "A legislação federal determina a disponibilização universal e gratuita de medicamentos, insulinas e insumos para automonitoramento da glicemia capilar a todos os indivíduos inscritos em programas de educação em diabetes."
+            },
+            11: {
+                title: "Tratamentos Não Disponibilizados pelo SUS",
+                icon: "fa-medkit",
+                isLaw: false,
+                summary: "O que fazer quando uma nova insulina, bomba de infusão ou medicação moderna ainda não é fornecida.",
+                details: "Quando o paciente necessita de tecnologias ainda não incorporadas na rede básica ou especializada (como bombas de insulina de última geração ou medicamentos recentemente aprovados pela Anvisa), é necessária comprovação de falha em todas as alternativas do SUS para requisição via processo administrativo ou judicial."
+            }
+        };
+
+        // Elementos do DOM
+        const hamburgerBtn = document.getElementById('hamburger-btn');
+        const sideMenu = document.getElementById('side-menu');
+        const overlay = document.getElementById('overlay');
+        const menuClose = document.getElementById('menu-close');
+
+        // Modal
+        const topicModal = document.getElementById('topic-modal');
+        const modalClose = document.getElementById('modal-close');
+        const modalOk = document.getElementById('modal-ok');
+        const modalTitle = document.getElementById('modal-title');
+        const modalSummary = document.getElementById('modal-summary');
+        const modalDetails = document.getElementById('modal-details');
+        const modalIcon = document.getElementById('modal-icon');
+        const modalBadge = document.getElementById('modal-badge');
+
+        function openMenu() {
+            sideMenu.classList.add('open');
+            overlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMenu() {
+            sideMenu.classList.remove('open');
+            overlay.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        hamburgerBtn.addEventListener('click', openMenu);
+        overlay.addEventListener('click', closeMenu);
+        menuClose.addEventListener('click', closeMenu);
+
+        // Abertura do modal para tópicos sem página dedicada ainda
+        document.querySelectorAll('.topic-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const topicId = btn.getAttribute('data-topic');
+                const topic = topicsData[topicId];
+                if (topic) {
+                    modalTitle.textContent = topic.title;
+                    modalSummary.textContent = topic.summary;
+                    modalDetails.textContent = topic.details;
+                    modalIcon.className = `fa ${topic.icon}`;
+                    modalBadge.textContent = topic.isLaw ? 'Direito do Diabético' : 'Saúde & Orientações';
+                    modalIcon.style.color = topic.isLaw ? '#dc2626' : 'var(--rosa-escuro)';
+                    topicModal.classList.add('open');
+                    closeMenu();
+                }
+            });
+        });
+
+        function closeModal() {
+            topicModal.classList.remove('open');
+        }
+
+        modalClose.addEventListener('click', closeModal);
+        modalOk.addEventListener('click', closeModal);
+        topicModal.addEventListener('click', (e) => {
+            if (e.target === topicModal) closeModal();
+        });
+    </script>
+</body>
+
+</html>

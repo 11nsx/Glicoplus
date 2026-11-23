@@ -1,0 +1,1655 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLICO+ | Calculadora</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --rosa: #DFB2B5;
+            --rosa-escuro: #c99699;
+            --rosa-deep: #b8807e;
+            --rosa-suave: #f7ecec;
+            --rosa-claro: #fdf5f5;
+            --creme: #faf7f4;
+            --texto: #2c2422;
+            --texto-mudo: #7a6560;
+            --branco: #ffffff;
+            --verde: #6dab87;
+            --verde-suave: #eaf5ef;
+            --amarelo: #e8c36a;
+            --amarelo-s: #fdf6e3;
+            --vermelho: #d96060;
+            --vermelho-s: #fdeaea;
+            --nav-h: 60px;
+            --radius: 18px;
+            --shadow: 0 4px 20px rgba(180, 100, 100, .10);
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #f0e8e8;
+            color: var(--texto);
+            padding-top: var(--nav-h);
+            min-height: 100vh;
+        }
+
+        /* ══ NAV SUPERIOR ══ */
+        .topnav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--nav-h);
+            background: var(--rosa);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.25rem;
+            z-index: 200;
+            box-shadow: 0 2px 10px rgba(180, 80, 90, .18);
+        }
+
+        .topnav-left {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+        }
+
+        .hamburger {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .18);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            transition: background .2s;
+        }
+
+        .hamburger:hover {
+            background: rgba(255, 255, 255, .32);
+        }
+
+        .topnav-logo {
+            height: 34px;
+        }
+
+        .topnav-center {
+            display: flex;
+            align-items: center;
+            gap: .25rem;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .topnav-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            padding: 0 16px;
+            height: var(--nav-h);
+            color: rgba(255, 255, 255, .8);
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 500;
+            border-bottom: 3px solid transparent;
+            transition: all .2s;
+        }
+
+        .topnav-link i {
+            font-size: 18px;
+        }
+
+        .topnav-link:hover {
+            color: white;
+            background: rgba(255, 255, 255, .1);
+        }
+
+        .topnav-link.active {
+            color: white;
+            border-bottom-color: white;
+        }
+
+        .topnav-right {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+        }
+
+        .nav-icon-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .18);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            transition: background .2s;
+            position: relative;
+        }
+
+        .nav-icon-btn:hover {
+            background: rgba(255, 255, 255, .32);
+        }
+
+        .notif-badge {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 16px;
+            height: 16px;
+            background: #e03040;
+            border-radius: 50%;
+            font-size: 9px;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--rosa);
+        }
+
+        /* ══ MENU LATERAL ══ */
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .35);
+            z-index: 300;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .3s;
+        }
+
+        .sidebar-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            height: 100%;
+            background: var(--branco);
+            z-index: 400;
+            transform: translateX(-100%);
+            transition: transform .35s cubic-bezier(.4, 0, .2, 1);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .side-menu.open {
+            transform: translateX(0);
+        }
+
+        .side-menu-header {
+            background: var(--rosa);
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            min-height: var(--nav-h);
+        }
+
+        .side-menu-header img {
+            height: 32px;
+        }
+
+        .side-menu-header span {
+            color: white;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .side-menu-close {
+            margin-left: auto;
+            background: rgba(255, 255, 255, .2);
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .side-menu-section {
+            padding: .75rem 0;
+            border-bottom: 1px solid var(--rosa-suave);
+        }
+
+        .side-menu-label {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--texto-mudo);
+            padding: .25rem 1.25rem .5rem;
+        }
+
+        .side-menu-item {
+            display: flex;
+            align-items: center;
+            gap: .9rem;
+            padding: .75rem 1.25rem;
+            color: var(--texto);
+            text-decoration: none;
+            font-size: 14px;
+            transition: background .2s, color .2s;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+        }
+
+        .side-menu-item:hover {
+            background: var(--rosa-suave);
+            color: var(--rosa-escuro);
+        }
+
+        .side-menu-item.active {
+            color: var(--rosa-escuro);
+            font-weight: 500;
+            background: var(--rosa-suave);
+        }
+
+        .side-menu-item i {
+            width: 20px;
+            text-align: center;
+            color: var(--rosa-escuro);
+            font-size: 15px;
+        }
+
+        .side-submenu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height .3s ease;
+        }
+
+        .side-submenu.open {
+            max-height: 300px;
+        }
+
+        .side-submenu .side-menu-item {
+            padding-left: 3.25rem;
+            font-size: 13px;
+            color: var(--texto-mudo);
+        }
+
+        .chevron {
+            margin-left: auto;
+            font-size: 11px;
+            transition: transform .3s;
+            color: var(--texto-mudo);
+        }
+
+        .chevron.open {
+            transform: rotate(180deg);
+        }
+
+        /* ══ LAYOUT PRINCIPAL ══ */
+        .main-wrap {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1.25rem 4rem;
+        }
+
+        .page-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--texto);
+            margin-bottom: .3rem;
+        }
+
+        .page-sub {
+            font-size: 14px;
+            color: var(--texto-mudo);
+            margin-bottom: 2rem;
+        }
+
+        /* ══ CONFIGURAÇÕES (fator insulina) ══ */
+        .config-bar {
+            background: white;
+            border-radius: var(--radius);
+            padding: 1.25rem 1.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .config-bar label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--texto-mudo);
+        }
+
+        .config-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 150px;
+        }
+
+        .config-group input {
+            background: var(--rosa-suave);
+            border: 1.5px solid #ecc8ca;
+            border-radius: 10px;
+            padding: 7px 12px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            color: var(--texto);
+            width: 120px;
+            outline: none;
+            transition: border-color .2s;
+        }
+
+        .config-group input:focus {
+            border-color: var(--rosa-escuro);
+        }
+
+        .config-hint {
+            font-size: 11px;
+            color: var(--texto-mudo);
+            margin-left: auto;
+            max-width: 260px;
+            line-height: 1.5;
+            background: var(--amarelo-s);
+            border-radius: 10px;
+            padding: 8px 12px;
+            border-left: 3px solid var(--amarelo);
+        }
+
+        /* ══ GRID ══ */
+        .calc-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        /* ══ CARD PADRÃO ══ */
+        .card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--texto);
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+        }
+
+        .card-title .ct-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        /* ══ BUSCA DE ALIMENTOS ══ */
+        .food-search-wrap {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .food-search-wrap i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--rosa-escuro);
+            font-size: 14px;
+        }
+
+        .food-search {
+            width: 100%;
+            padding: 10px 12px 10px 36px;
+            background: var(--rosa-suave);
+            border: 1.5px solid #ecc8ca;
+            border-radius: 12px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            color: var(--texto);
+            outline: none;
+            transition: border-color .2s;
+        }
+
+        .food-search:focus {
+            border-color: var(--rosa-escuro);
+        }
+
+        .food-dropdown {
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(180, 100, 100, .15);
+            max-height: 220px;
+            overflow-y: auto;
+            z-index: 50;
+            display: none;
+            border: 1px solid #f0e0e1;
+        }
+
+        .food-dropdown.show {
+            display: block;
+        }
+
+        .food-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: background .15s;
+            border-bottom: 1px solid #faf0f0;
+        }
+
+        .food-option:last-child {
+            border-bottom: none;
+        }
+
+        .food-option:hover {
+            background: var(--rosa-suave);
+        }
+
+        .food-option .fo-name {
+            font-weight: 500;
+            color: var(--texto);
+        }
+
+        .food-option .fo-carb {
+            color: var(--rosa-escuro);
+            font-size: 12px;
+        }
+
+        .food-option .fo-cat {
+            font-size: 10px;
+            background: var(--rosa-suave);
+            color: var(--rosa-escuro);
+            padding: 2px 8px;
+            border-radius: 100px;
+        }
+
+        /* Categorias rápidas */
+        .cat-tabs {
+            display: flex;
+            gap: .4rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .cat-tab {
+            font-size: 11px;
+            padding: 4px 12px;
+            border-radius: 100px;
+            background: var(--rosa-suave);
+            color: var(--rosa-escuro);
+            border: 1px solid #ecc8ca;
+            cursor: pointer;
+            transition: all .2s;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 500;
+        }
+
+        .cat-tab:hover,
+        .cat-tab.active {
+            background: var(--rosa-escuro);
+            color: white;
+            border-color: var(--rosa-escuro);
+        }
+
+        /* Lista de alimentos adicionados */
+        .food-list {
+            display: flex;
+            flex-direction: column;
+            gap: .6rem;
+            min-height: 60px;
+        }
+
+        .food-item {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            background: var(--rosa-suave);
+            border-radius: 12px;
+            padding: .7rem 1rem;
+            animation: slideIn .25s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .food-item .fi-name {
+            font-size: 13px;
+            font-weight: 500;
+            flex: 1;
+        }
+
+        .food-item .fi-portion {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .fi-portion input {
+            width: 58px;
+            padding: 4px 8px;
+            text-align: center;
+            background: white;
+            border: 1.5px solid #ecc8ca;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--texto);
+            outline: none;
+        }
+
+        .fi-portion input:focus {
+            border-color: var(--rosa-escuro);
+        }
+
+        .fi-portion span {
+            font-size: 12px;
+            color: var(--texto-mudo);
+        }
+
+        .fi-carb {
+            font-size: 12px;
+            color: var(--rosa-escuro);
+            font-weight: 600;
+            min-width: 52px;
+            text-align: right;
+        }
+
+        .fi-remove {
+            background: none;
+            border: none;
+            color: #d99;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 2px 4px;
+            transition: color .2s;
+        }
+
+        .fi-remove:hover {
+            color: var(--vermelho);
+        }
+
+        .food-empty {
+            text-align: center;
+            color: var(--texto-mudo);
+            font-size: 13px;
+            padding: 1.5rem 0;
+        }
+
+        .food-empty i {
+            font-size: 28px;
+            display: block;
+            margin-bottom: .5rem;
+            opacity: .4;
+        }
+
+        /* ══ TOTAIS ══ */
+        .totals-box {
+            margin-top: 1.25rem;
+            background: linear-gradient(135deg, var(--rosa-suave) 0%, #fce8e9 100%);
+            border-radius: 14px;
+            padding: 1rem 1.25rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .total-pill {
+            flex: 1;
+            min-width: 90px;
+            text-align: center;
+        }
+
+        .total-pill strong {
+            display: block;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            color: var(--rosa-escuro);
+        }
+
+        .total-pill span {
+            font-size: 11px;
+            color: var(--texto-mudo);
+        }
+
+        /* ══ CALCULADORA DE INSULINA ══ */
+        .insulin-card {
+            grid-column: 2;
+        }
+
+        .field-group {
+            margin-bottom: 1rem;
+        }
+
+        .field-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--texto-mudo);
+            margin-bottom: 5px;
+            letter-spacing: .03em;
+        }
+
+        .field-input {
+            width: 100%;
+            padding: 11px 14px;
+            background: var(--rosa-suave);
+            border: 1.5px solid #ecc8ca;
+            border-radius: 12px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            color: var(--texto);
+            outline: none;
+            transition: border-color .2s;
+        }
+
+        .field-input:focus {
+            border-color: var(--rosa-escuro);
+        }
+
+        .field-input.big {
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .field-row {
+            display: flex;
+            gap: .75rem;
+        }
+
+        .field-row .field-group {
+            flex: 1;
+        }
+
+        /* Slider de glicemia atual */
+        .glicemia-slider-wrap {
+            position: relative;
+            margin-top: .5rem;
+        }
+
+        .glicemia-val {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: .4rem;
+            transition: color .3s;
+        }
+
+        .glicemia-label {
+            text-align: center;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            margin-bottom: .75rem;
+            transition: color .3s;
+        }
+
+        input[type=range] {
+            width: 100%;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 8px;
+            border-radius: 100px;
+            outline: none;
+            cursor: pointer;
+            transition: background .3s;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--rosa-escuro);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(180, 100, 100, .3);
+            border: 3px solid white;
+            transition: transform .15s;
+        }
+
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+        }
+
+        .glicemia-scale {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: var(--texto-mudo);
+            margin-top: 4px;
+        }
+
+        /* Resultado da insulina */
+        .result-box {
+            margin-top: 1.25rem;
+            border-radius: 16px;
+            padding: 1.25rem;
+            text-align: center;
+            transition: background .4s, border-color .4s;
+            border: 2px solid transparent;
+        }
+
+        .result-box.ok {
+            background: var(--verde-suave);
+            border-color: #b2dfc5;
+        }
+
+        .result-box.high {
+            background: var(--amarelo-s);
+            border-color: #f0d890;
+        }
+
+        .result-box.low {
+            background: var(--vermelho-s);
+            border-color: #f0b5b5;
+        }
+
+        .result-box .rb-label {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--texto-mudo);
+            margin-bottom: .4rem;
+        }
+
+        .result-box .rb-dose {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            line-height: 1;
+            transition: color .3s;
+        }
+
+        .result-box .rb-unit {
+            font-size: 14px;
+            color: var(--texto-mudo);
+            margin-top: .2rem;
+        }
+
+        .result-box .rb-breakdown {
+            display: flex;
+            justify-content: center;
+            gap: 1.25rem;
+            margin-top: .85rem;
+            font-size: 12px;
+            color: var(--texto-mudo);
+            flex-wrap: wrap;
+        }
+
+        .result-box .rb-breakdown span strong {
+            color: var(--rosa-escuro);
+        }
+
+        .result-box.ok .rb-dose {
+            color: var(--verde);
+        }
+
+        .result-box.high .rb-dose {
+            color: #c8a020;
+        }
+
+        .result-box.low .rb-dose {
+            color: var(--vermelho);
+        }
+
+        .calc-btn {
+            width: 100%;
+            padding: 13px;
+            background: var(--rosa-escuro);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: background .2s, transform .15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .calc-btn:hover {
+            background: var(--rosa-deep);
+            transform: translateY(-1px);
+        }
+
+        .calc-btn:active {
+            transform: translateY(0);
+        }
+
+        /* ══ HISTÓRICO ══ */
+        .hist-section {
+            margin-top: 2rem;
+            background: white;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .hist-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+        }
+
+        .hist-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+        }
+
+        .hist-clear {
+            font-size: 12px;
+            color: var(--texto-mudo);
+            background: none;
+            border: 1px solid #ecc8ca;
+            border-radius: 100px;
+            padding: 5px 14px;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            transition: all .2s;
+        }
+
+        .hist-clear:hover {
+            background: var(--vermelho-s);
+            color: var(--vermelho);
+            border-color: #f0b5b5;
+        }
+
+        .hist-list {
+            display: flex;
+            flex-direction: column;
+            gap: .75rem;
+        }
+
+        .hist-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--rosa-claro);
+            border-radius: 14px;
+            padding: 1rem 1.25rem;
+            border-left: 4px solid var(--rosa);
+            animation: slideIn .3s ease;
+        }
+
+        .hist-item .hi-time {
+            font-size: 12px;
+            color: var(--texto-mudo);
+            min-width: 60px;
+        }
+
+        .hist-item .hi-foods {
+            flex: 1;
+            font-size: 13px;
+            color: var(--texto);
+        }
+
+        .hist-item .hi-foods small {
+            color: var(--texto-mudo);
+            display: block;
+            font-size: 11px;
+        }
+
+        .hist-item .hi-carb {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--rosa-escuro);
+            background: var(--rosa-suave);
+            padding: 4px 10px;
+            border-radius: 100px;
+        }
+
+        .hist-item .hi-dose {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--verde);
+            background: var(--verde-suave);
+            padding: 4px 10px;
+            border-radius: 100px;
+        }
+
+        .hist-empty {
+            text-align: center;
+            color: var(--texto-mudo);
+            font-size: 13px;
+            padding: 2rem 0;
+        }
+
+        .hist-empty i {
+            font-size: 32px;
+            display: block;
+            margin-bottom: .5rem;
+            opacity: .3;
+        }
+
+        /* ══ RESPONSIVO ══ */
+        @media (max-width: 700px) {
+            .topnav-center {
+                display: none;
+            }
+
+            .calc-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .insulin-card {
+                grid-column: 1;
+            }
+
+            .config-bar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .config-hint {
+                margin-left: 0;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAV SUPERIOR -->
+    <nav class="topnav">
+        <div class="topnav-left">
+            <button class="hamburger" id="hamburger-btn"><i class="fa fa-bars"></i></button>
+            <img class="topnav-logo"
+                src="https://lh3.google.com/u/1/d/1LXI0zimC6koiCi20q6CK9m6mwu5gSo7w=w1878-h956-iv1?auditContext=prefetch"
+                alt="GLICO+">
+        </div>
+        <div class="topnav-center">
+            <a href="index.html" class="topnav-link"><i class="fa fa-home"></i><span>Início</span></a>
+            <a href="perfil.html" class="topnav-link"><i class="fa fa-user"></i><span>Perfil</span></a>
+            <a href="receitas.html" class="topnav-link"><i class="fa fa-cutlery"></i><span>Receitas</span></a>
+            <a href="calculadora.html" class="topnav-link active"><i
+                    class="fa fa-calculator"></i><span>Calculadora</span></a>
+            <a href="#" class="topnav-link"><i class="fa fa-calendar"></i><span>Agenda</span></a>
+        </div>
+        <div class="topnav-right">
+            <button class="nav-icon-btn"><i class="fa fa-search"></i></button>
+            <button class="nav-icon-btn"><i class="fa fa-bell"></i><span class="notif-badge">3</span></button>
+        </div>
+    </nav>
+
+    <!-- OVERLAY + MENU LATERAL -->
+    <div class="sidebar-overlay" id="overlay"></div>
+    <aside class="side-menu" id="side-menu">
+        <div class="side-menu-header">
+            <img src="https://lh3.google.com/u/1/d/1LXI0zimC6koiCi20q6CK9m6mwu5gSo7w=w1878-h956-iv1?auditContext=prefetch"
+                alt="GLICO+">
+            <span>GLICO+</span>
+            <button class="side-menu-close" id="menu-close"><i class="fa fa-times"></i></button>
+        </div>
+        <div class="side-menu-section">
+            <div class="side-menu-label">Navegação</div>
+            <a href="index.html" class="side-menu-item"><i class="fa fa-home"></i> Página Inicial</a>
+            <a href="perfil.html" class="side-menu-item"><i class="fa fa-user"></i> Perfil</a>
+            <a href="receitas.html" class="side-menu-item"><i class="fa fa-cutlery"></i> Receitas</a>
+            <a href="calculadora.html" class="side-menu-item active"><i class="fa fa-calculator"></i> Calculadora</a>
+            <a href="#" class="side-menu-item"><i class="fa fa-heartbeat"></i> Acompanhe a Glicemia</a>
+            <a href="#" class="side-menu-item"><i class="fa fa-calendar"></i> Agenda</a>
+        </div>
+        <div class="side-menu-section">
+            <div class="side-menu-label">Saúde</div>
+            <button class="side-menu-item" id="submenu-insulina-btn">
+                <i class="fa fa-puzzle-piece"></i> Acesso a Insulina
+                <i class="fa fa-chevron-down chevron" id="chevron-insulina"></i>
+            </button>
+            <div class="side-submenu" id="submenu-insulina">
+                <a href="#" class="side-menu-item"><i class="fa fa-list"></i> Passo a passo</a>
+                <a href="#" class="side-menu-item"><i class="fa fa-ban"></i> Caso for negado</a>
+            </div>
+            <a href="#" class="side-menu-item"><i class="fa fa-stethoscope"></i> Tratamento</a>
+            <a href="#" class="side-menu-item"><i class="fa fa-user-md"></i> Área Médica</a>
+            <a href="#" class="side-menu-item"><i class="fa fa-child"></i> Diabetes &amp; Crianças</a>
+        </div>
+        <div class="side-menu-section">
+            <div class="side-menu-label">Direitos</div>
+            <a href="#" class="side-menu-item"><i class="fa fa-briefcase"></i> Trabalho &amp; Concurso</a>
+            <a href="#" class="side-menu-item"><i class="fa fa-graduation-cap"></i> Escola &amp; Acessibilidade</a>
+            <a href="#" class="side-menu-item"><i class="fa fa-file-text"></i> Imposto de Renda</a>
+            <a href="#" class="side-menu-item"><i class="fa fa-wheelchair"></i> Aposentadoria / BPC / LOAS</a>
+        </div>
+    </aside>
+
+    <!-- CONTEÚDO -->
+    <div class="main-wrap">
+
+        <h1 class="page-title">🧮 Calculadora</h1>
+        <p class="page-sub">Calcule os carboidratos da refeição e a dose de insulina necessária</p>
+
+        <!-- CONFIGURAÇÕES -->
+        <div class="config-bar">
+            <div class="config-group">
+                <label>Fator de Insulina (FI)</label>
+                <input type="number" id="cfg-fi" value="15" min="1" max="100" step="1">
+                <small style="font-size:11px;color:var(--texto-mudo);">g de carbo por 1 UI</small>
+            </div>
+            <div class="config-group">
+                <label>Fator de Correção (FC)</label>
+                <input type="number" id="cfg-fc" value="40" min="1" max="200" step="1">
+                <small style="font-size:11px;color:var(--texto-mudo);">mg/dL por 1 UI</small>
+            </div>
+            <div class="config-group">
+                <label>Glicemia Alvo (mg/dL)</label>
+                <input type="number" id="cfg-alvo" value="120" min="60" max="200" step="5">
+            </div>
+            <div class="config-hint">
+                <strong>⚙️ Configure com seu médico.</strong> O FI e FC são individuais. Esses valores são só um exemplo
+                — ajuste conforme sua prescrição.
+            </div>
+        </div>
+
+        <!-- GRID PRINCIPAL -->
+        <div class="calc-grid">
+
+            <!-- CARD ALIMENTOS -->
+            <div class="card">
+                <div class="card-title">
+                    <div class="ct-icon" style="background:var(--rosa-suave);">🍽️</div>
+                    Alimentos da Refeição
+                </div>
+
+                <!-- Categorias -->
+                <div class="cat-tabs" id="cat-tabs">
+                    <button class="cat-tab active" data-cat="todos">Todos</button>
+                    <button class="cat-tab" data-cat="frutas">Frutas</button>
+                    <button class="cat-tab" data-cat="graos">Grãos</button>
+                    <button class="cat-tab" data-cat="laticinios">Laticínios</button>
+                    <button class="cat-tab" data-cat="bebidas">Bebidas</button>
+                    <button class="cat-tab" data-cat="doces">Doces</button>
+                    <button class="cat-tab" data-cat="verduras">Verduras</button>
+                    <button class="cat-tab" data-cat="carnes">Carnes/Ovos</button>
+                    <button class="cat-tab" data-cat="legumes">Legumes</button>
+                    <button class="cat-tab" data-cat="massas">Massas</button>
+                    <button class="cat-tab" data-cat="outros">Outros</button>
+                </div>
+
+                <!-- Busca -->
+                <div class="food-search-wrap">
+                    <i class="fa fa-search"></i>
+                    <input type="text" id="food-search" class="food-search"
+                        placeholder="Buscar alimento... (ex: arroz, banana)">
+                    <div class="food-dropdown" id="food-dropdown"></div>
+                </div>
+
+                <!-- Lista adicionada -->
+                <div class="food-list" id="food-list">
+                    <div class="food-empty" id="food-empty">
+                        <i class="fa fa-leaf"></i>
+                        Adicione alimentos para calcular
+                    </div>
+                </div>
+
+                <!-- Totais de carbo -->
+                <div class="totals-box">
+                    <div class="total-pill">
+                        <strong id="total-carb">0g</strong>
+                        <span>Total de Carbos</span>
+                    </div>
+                    <div class="total-pill">
+                        <strong id="total-items">0</strong>
+                        <span>Alimentos</span>
+                    </div>
+                    <div class="total-pill">
+                        <strong id="total-kcal">0</strong>
+                        <span>kcal estimadas</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD INSULINA -->
+            <div class="card insulin-card">
+                <div class="card-title">
+                    <div class="ct-icon" style="background:#eaf5ef;">💉</div>
+                    Dose de Insulina
+                </div>
+
+                <!-- Glicemia atual (slider) -->
+                <div class="field-group">
+                    <label>Glicemia Atual</label>
+                    <div class="glicemia-val" id="glic-val" style="color:var(--verde)">120</div>
+                    <div class="glicemia-label" id="glic-label" style="color:var(--verde)">✅ Normal</div>
+                    <input type="range" id="glic-slider" min="40" max="400" value="120" step="1"
+                        style="background: linear-gradient(to right, var(--rosa-escuro) 0%, var(--rosa-escuro) 21.4%, #e0e0e0 21.4%);">
+                    <div class="glicemia-scale">
+                        <span>40</span><span>Hipo &lt;70</span><span>Normal 70-180</span><span>Alto
+                            &gt;180</span><span>400</span>
+                    </div>
+                </div>
+
+                <!-- Bolus de refeição -->
+                <div class="field-group">
+                    <label>Carboidratos da Refeição (g)</label>
+                    <input type="number" id="carb-input" class="field-input big" value="0" min="0" max="500"
+                        placeholder="0">
+                </div>
+
+                <!-- Botão calcular -->
+                <button class="calc-btn" id="calc-btn">
+                    <i class="fa fa-calculator"></i> Calcular Dose
+                </button>
+
+                <!-- Resultado -->
+                <div class="result-box ok" id="result-box">
+                    <div class="rb-label">Dose Total Sugerida</div>
+                    <div class="rb-dose" id="rb-dose">—</div>
+                    <div class="rb-unit">unidades de insulina</div>
+                    <div class="rb-breakdown" id="rb-breakdown"></div>
+                </div>
+
+                <p style="font-size:11px;color:var(--texto-mudo);margin-top:.75rem;line-height:1.6;text-align:center;">
+                    ⚠️ Este cálculo é uma <strong>estimativa</strong>. Sempre consulte seu médico antes de ajustar
+                    doses.
+                </p>
+            </div>
+
+        </div><!-- /calc-grid -->
+
+        <!-- HISTÓRICO -->
+        <div class="hist-section">
+            <div class="hist-header">
+                <h2><span style="font-size:1.3rem;">📋</span> Histórico de Refeições</h2>
+                <button class="hist-clear" id="hist-clear">🗑️ Limpar histórico</button>
+            </div>
+            <div class="hist-list" id="hist-list">
+                <div class="hist-empty" id="hist-empty">
+                    <i class="fa fa-clock-o"></i>
+                    Nenhuma refeição salva ainda
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /main-wrap -->
+
+    <script>
+        /* ═══════════════════════════════════════════════
+           BASE DE ALIMENTOS BRASILEIROS (por 100g)
+           formato: { nome, carbo (g/100g), cal (kcal/100g), cat }
+        ═══════════════════════════════════════════════ */
+        const FOODS = [
+            // Frutas
+            { nome: 'Banana prata', carbo: 23, cal: 89, cat: 'frutas', porcao: 100 },
+            { nome: 'Banana nanica', carbo: 22, cal: 87, cat: 'frutas', porcao: 100 },
+            { nome: 'Maçã', carbo: 14, cal: 52, cat: 'frutas', porcao: 100 },
+            { nome: 'Laranja', carbo: 12, cal: 47, cat: 'frutas', porcao: 100 },
+            { nome: 'Manga', carbo: 15, cal: 60, cat: 'frutas', porcao: 100 },
+            { nome: 'Melancia', carbo: 8, cal: 30, cat: 'frutas', porcao: 100 },
+            { nome: 'Melão', carbo: 9, cal: 34, cat: 'frutas', porcao: 100 },
+            { nome: 'Uva', carbo: 17, cal: 69, cat: 'frutas', porcao: 100 },
+            { nome: 'Mamão papaia', carbo: 11, cal: 43, cat: 'frutas', porcao: 100 },
+            { nome: 'Abacaxi', carbo: 13, cal: 50, cat: 'frutas', porcao: 100 },
+            { nome: 'Morango', carbo: 8, cal: 32, cat: 'frutas', porcao: 100 },
+            { nome: 'Pêra', carbo: 15, cal: 57, cat: 'frutas', porcao: 100 },
+            { nome: 'Goiaba', carbo: 14, cal: 54, cat: 'frutas', porcao: 100 },
+            { nome: 'Abacate', carbo: 6, cal: 160, cat: 'frutas', porcao: 100 },
+            { nome: 'Kiwi', carbo: 15, cal: 61, cat: 'frutas', porcao: 100 },
+            // Grãos / Cereais / Tubérculos
+            { nome: 'Arroz branco cozido', carbo: 28, cal: 130, cat: 'graos', porcao: 100 },
+            { nome: 'Arroz integral cozido', carbo: 26, cal: 124, cat: 'graos', porcao: 100 },
+            { nome: 'Feijão cozido', carbo: 14, cal: 77, cat: 'graos', porcao: 100 },
+            { nome: 'Lentilha cozida', carbo: 20, cal: 116, cat: 'graos', porcao: 100 },
+            { nome: 'Batata cozida', carbo: 17, cal: 77, cat: 'graos', porcao: 100 },
+            { nome: 'Batata-doce cozida', carbo: 20, cal: 86, cat: 'graos', porcao: 100 },
+            { nome: 'Mandioca cozida', carbo: 30, cal: 125, cat: 'graos', porcao: 100 },
+            { nome: 'Inhame cozido', carbo: 22, cal: 95, cat: 'graos', porcao: 100 },
+            { nome: 'Milho verde cozido', carbo: 21, cal: 96, cat: 'graos', porcao: 100 },
+            { nome: 'Aveia em flocos', carbo: 67, cal: 394, cat: 'graos', porcao: 30 },
+            { nome: 'Tapioca', carbo: 85, cal: 360, cat: 'graos', porcao: 30 },
+            { nome: 'Granola', carbo: 65, cal: 440, cat: 'graos', porcao: 30 },
+            // Massas / Pães
+            { nome: 'Pão francês', carbo: 58, cal: 300, cat: 'massas', porcao: 50 },
+            { nome: 'Pão de forma integral', carbo: 44, cal: 247, cat: 'massas', porcao: 30 },
+            { nome: 'Pão de queijo (unid.)', carbo: 30, cal: 270, cat: 'massas', porcao: 40 },
+            { nome: 'Macarrão cozido', carbo: 25, cal: 131, cat: 'massas', porcao: 100 },
+            { nome: 'Biscoito cream cracker', carbo: 68, cal: 440, cat: 'massas', porcao: 25 },
+            { nome: 'Biscoito maisena', carbo: 77, cal: 430, cat: 'massas', porcao: 25 },
+            { nome: 'Cuscuz cozido', carbo: 27, cal: 112, cat: 'massas', porcao: 100 },
+            { nome: 'Polenta cozida', carbo: 18, cal: 84, cat: 'massas', porcao: 100 },
+            // Laticínios
+            { nome: 'Leite integral', carbo: 5, cal: 61, cat: 'laticinios', porcao: 200 },
+            { nome: 'Leite desnatado', carbo: 5, cal: 35, cat: 'laticinios', porcao: 200 },
+            { nome: 'Iogurte natural', carbo: 4, cal: 61, cat: 'laticinios', porcao: 170 },
+            { nome: 'Iogurte grego', carbo: 4, cal: 97, cat: 'laticinios', porcao: 170 },
+            { nome: 'Queijo mussarela', carbo: 2, cal: 280, cat: 'laticinios', porcao: 30 },
+            { nome: 'Requeijão', carbo: 3, cal: 226, cat: 'laticinios', porcao: 30 },
+            // Bebidas
+            { nome: 'Suco de laranja (200ml)', carbo: 21, cal: 88, cat: 'bebidas', porcao: 200 },
+            { nome: 'Suco de uva (200ml)', carbo: 36, cal: 150, cat: 'bebidas', porcao: 200 },
+            { nome: 'Suco de maçã (200ml)', carbo: 28, cal: 113, cat: 'bebidas', porcao: 200 },
+            { nome: 'Refrigerante cola (350ml)', carbo: 38, cal: 151, cat: 'bebidas', porcao: 350 },
+            { nome: 'Água de coco (200ml)', carbo: 9, cal: 40, cat: 'bebidas', porcao: 200 },
+            { nome: 'Vitamina de banana (250ml)', carbo: 33, cal: 155, cat: 'bebidas', porcao: 250 },
+            // Doces
+            { nome: 'Açúcar refinado', carbo: 99, cal: 387, cat: 'doces', porcao: 10 },
+            { nome: 'Mel', carbo: 82, cal: 304, cat: 'doces', porcao: 20 },
+            { nome: 'Chocolate ao leite', carbo: 60, cal: 535, cat: 'doces', porcao: 30 },
+            { nome: 'Brigadeiro (unid.)', carbo: 18, cal: 95, cat: 'doces', porcao: 25 },
+            { nome: 'Bolo de chocolate (fatia)', carbo: 45, cal: 290, cat: 'doces', porcao: 80 },
+            { nome: 'Sorvete de creme', carbo: 24, cal: 207, cat: 'doces', porcao: 80 },
+            // Verduras (baixo carbo)
+            { nome: 'Alface', carbo: 2, cal: 15, cat: 'verduras', porcao: 100 },
+            { nome: 'Tomate', carbo: 4, cal: 18, cat: 'verduras', porcao: 100 },
+            { nome: 'Pepino', carbo: 3, cal: 16, cat: 'verduras', porcao: 100 },
+            { nome: 'Cenoura crua', carbo: 10, cal: 41, cat: 'verduras', porcao: 100 },
+            { nome: 'Beterraba cozida', carbo: 10, cal: 43, cat: 'verduras', porcao: 100 },
+            { nome: 'Couve-flor cozida', carbo: 5, cal: 25, cat: 'verduras', porcao: 100 },
+            { nome: 'Brócolis cozido', carbo: 7, cal: 35, cat: 'verduras', porcao: 100 },
+            { nome: 'Chuchu cozido', carbo: 4, cal: 22, cat: 'verduras', porcao: 100 },
+            { nome: 'Abobrinha cozida', carbo: 3, cal: 17, cat: 'verduras', porcao: 100 },
+            // Legumes
+            { nome: 'Grão-de-bico cozido', carbo: 27, cal: 164, cat: 'legumes', porcao: 100 },
+            { nome: 'Ervilha cozida', carbo: 14, cal: 84, cat: 'legumes', porcao: 100 },
+            { nome: 'Vagem cozida', carbo: 8, cal: 35, cat: 'legumes', porcao: 100 },
+            // Carnes / Ovos (baixo carbo)
+            { nome: 'Ovo cozido (unid.)', carbo: 1, cal: 78, cat: 'carnes', porcao: 50 },
+            { nome: 'Frango grelhado', carbo: 0, cal: 165, cat: 'carnes', porcao: 100 },
+            { nome: 'Carne bovina magra', carbo: 0, cal: 215, cat: 'carnes', porcao: 100 },
+            { nome: 'Atum em lata', carbo: 0, cal: 132, cat: 'carnes', porcao: 80 },
+            // Outros
+            { nome: 'Amendoim torrado', carbo: 20, cal: 567, cat: 'outros', porcao: 30 },
+            { nome: 'Castanha-do-pará', carbo: 12, cal: 656, cat: 'outros', porcao: 30 },
+            { nome: 'Azeite de oliva', carbo: 0, cal: 884, cat: 'outros', porcao: 15 },
+            { nome: 'Ketchup', carbo: 25, cal: 100, cat: 'outros', porcao: 20 },
+        ];
+
+        /* ═══════════════════════════════════════════════
+           ESTADO
+        ═══════════════════════════════════════════════ */
+        let addedFoods = [];  // { food, porcao }
+        let currentCat = 'todos';
+        let lastDose = 0;
+
+        /* ═══════════════════════════════════════════════
+           MENU LATERAL
+        ═══════════════════════════════════════════════ */
+        const hamburger = document.getElementById('hamburger-btn');
+        const sideMenu = document.getElementById('side-menu');
+        const overlay = document.getElementById('overlay');
+        const menuClose = document.getElementById('menu-close');
+
+        hamburger.addEventListener('click', () => { sideMenu.classList.add('open'); overlay.classList.add('open'); });
+        menuClose.addEventListener('click', () => { sideMenu.classList.remove('open'); overlay.classList.remove('open'); });
+        overlay.addEventListener('click', () => { sideMenu.classList.remove('open'); overlay.classList.remove('open'); });
+
+        document.getElementById('submenu-insulina-btn').addEventListener('click', () => {
+            document.getElementById('submenu-insulina').classList.toggle('open');
+            document.getElementById('chevron-insulina').classList.toggle('open');
+        });
+
+        /* ═══════════════════════════════════════════════
+           SLIDER DE GLICEMIA
+        ═══════════════════════════════════════════════ */
+        const glicSlider = document.getElementById('glic-slider');
+        const glicVal = document.getElementById('glic-val');
+        const glicLabel = document.getElementById('glic-label');
+
+        function updateSlider(v) {
+            const pct = ((v - 40) / (400 - 40)) * 100;
+            glicSlider.style.background =
+                `linear-gradient(to right, var(--rosa-escuro) 0%, var(--rosa-escuro) ${pct}%, #e0dada ${pct}%)`;
+
+            if (v < 70) {
+                glicVal.style.color = 'var(--vermelho)';
+                glicLabel.style.color = 'var(--vermelho)';
+                glicLabel.textContent = '⚠️ Hipoglicemia';
+            } else if (v <= 180) {
+                glicVal.style.color = 'var(--verde)';
+                glicLabel.style.color = 'var(--verde)';
+                glicLabel.textContent = '✅ Normal';
+            } else {
+                glicVal.style.color = '#c8a020';
+                glicLabel.style.color = '#c8a020';
+                glicLabel.textContent = '🔺 Hiperglicemia';
+            }
+            glicVal.textContent = v;
+        }
+
+        glicSlider.addEventListener('input', () => updateSlider(+glicSlider.value));
+        updateSlider(120);
+
+        /* Sincronizar carbo do card alimentos → campo de input */
+        function syncCarbInput() {
+            const total = addedFoods.reduce((s, f) => s + (f.food.carbo * f.porcao / 100), 0);
+            document.getElementById('carb-input').value = Math.round(total);
+        }
+
+        /* ═══════════════════════════════════════════════
+           CATEGORIAS
+        ═══════════════════════════════════════════════ */
+        document.querySelectorAll('.cat-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentCat = tab.dataset.cat;
+                const q = document.getElementById('food-search').value.trim();
+                if (q.length >= 1) renderDropdown(q);
+                else if (q.length === 0) renderDropdown('');
+            });
+        });
+
+        /* ═══════════════════════════════════════════════
+           BUSCA E DROPDOWN
+        ═══════════════════════════════════════════════ */
+        const searchInput = document.getElementById('food-search');
+        const dropdown = document.getElementById('food-dropdown');
+
+        function renderDropdown(q) {
+            let list = FOODS.filter(f =>
+                (currentCat === 'todos' || f.cat === currentCat) &&
+                (q === '' || f.nome.toLowerCase().includes(q.toLowerCase()))
+            );
+            if (list.length === 0) {
+                dropdown.innerHTML = `<div class="food-option"><span class="fo-name" style="color:var(--texto-mudo)">Nenhum resultado</span></div>`;
+            } else {
+                dropdown.innerHTML = list.slice(0, 30).map(f => `
+            <div class="food-option" data-nome="${f.nome}">
+                <div>
+                    <span class="fo-name">${f.nome}</span>
+                    <span class="fo-carb"> — ${f.carbo}g carbo/100g</span>
+                </div>
+                <span class="fo-cat">${catLabel(f.cat)}</span>
+            </div>
+        `).join('');
+                dropdown.querySelectorAll('.food-option').forEach(opt => {
+                    opt.addEventListener('click', () => {
+                        const food = FOODS.find(f => f.nome === opt.dataset.nome);
+                        if (food) addFood(food);
+                        dropdown.classList.remove('show');
+                        searchInput.value = '';
+                    });
+                });
+            }
+            dropdown.classList.add('show');
+        }
+
+        searchInput.addEventListener('input', () => {
+            const q = searchInput.value.trim();
+            if (q.length >= 1) renderDropdown(q);
+            else renderDropdown('');
+        });
+
+        searchInput.addEventListener('focus', () => { renderDropdown(searchInput.value); });
+
+        document.addEventListener('click', e => {
+            if (!e.target.closest('.food-search-wrap')) dropdown.classList.remove('show');
+        });
+
+        function catLabel(c) {
+            const m = {
+                frutas: '🍎 Frutas', graos: '🌾 Grãos', laticinios: '🥛 Laticínios',
+                bebidas: '🥤 Bebidas', doces: '🍰 Doces', verduras: '🥗 Verduras',
+                carnes: '🥚 Carnes', legumes: '🫘 Legumes', massas: '🍞 Massas', outros: '🥜 Outros'
+            };
+            return m[c] || c;
+        }
+
+        /* ═══════════════════════════════════════════════
+           LISTA DE ALIMENTOS ADICIONADOS
+        ═══════════════════════════════════════════════ */
+        function addFood(food) {
+            addedFoods.push({ food, porcao: food.porcao });
+            renderFoodList();
+            syncCarbInput();
+        }
+
+        function removeFood(idx) {
+            addedFoods.splice(idx, 1);
+            renderFoodList();
+            syncCarbInput();
+        }
+
+        function renderFoodList() {
+            const list = document.getElementById('food-list');
+            const empty = document.getElementById('food-empty');
+            const tCarb = document.getElementById('total-carb');
+            const tItems = document.getElementById('total-items');
+            const tKcal = document.getElementById('total-kcal');
+
+            if (addedFoods.length === 0) {
+                list.innerHTML = '';
+                list.appendChild(createEmpty());
+                tCarb.textContent = '0g';
+                tItems.textContent = '0';
+                tKcal.textContent = '0';
+                return;
+            }
+
+            list.innerHTML = addedFoods.map((entry, i) => {
+                const carb = (entry.food.carbo * entry.porcao / 100).toFixed(1);
+                return `
+        <div class="food-item">
+            <span class="fi-name">${entry.food.nome}</span>
+            <div class="fi-portion">
+                <input type="number" value="${entry.porcao}" min="1" max="2000"
+                    data-idx="${i}" class="fi-qty">
+                <span>g</span>
+            </div>
+            <span class="fi-carb">${carb}g</span>
+            <button class="fi-remove" data-idx="${i}"><i class="fa fa-times"></i></button>
+        </div>`;
+            }).join('');
+
+            // eventos
+            list.querySelectorAll('.fi-qty').forEach(inp => {
+                inp.addEventListener('input', () => {
+                    const idx = +inp.dataset.idx;
+                    addedFoods[idx].porcao = +inp.value || 0;
+                    renderFoodList();
+                    syncCarbInput();
+                });
+            });
+            list.querySelectorAll('.fi-remove').forEach(btn => {
+                btn.addEventListener('click', () => removeFood(+btn.dataset.idx));
+            });
+
+            // totais
+            const totalCarb = addedFoods.reduce((s, f) => s + f.food.carbo * f.porcao / 100, 0);
+            const totalKcal = addedFoods.reduce((s, f) => s + f.food.cal * f.porcao / 100, 0);
+            tCarb.textContent = Math.round(totalCarb) + 'g';
+            tItems.textContent = addedFoods.length;
+            tKcal.textContent = Math.round(totalKcal);
+        }
+
+        function createEmpty() {
+            const d = document.createElement('div');
+            d.className = 'food-empty';
+            d.innerHTML = '<i class="fa fa-leaf"></i>Adicione alimentos para calcular';
+            return d;
+        }
+
+        /* ═══════════════════════════════════════════════
+           CÁLCULO DE INSULINA
+        ═══════════════════════════════════════════════ */
+        document.getElementById('calc-btn').addEventListener('click', calcularInsulina);
+
+        function calcularInsulina() {
+            const fi = +document.getElementById('cfg-fi').value || 15;
+            const fc = +document.getElementById('cfg-fc').value || 40;
+            const alvo = +document.getElementById('cfg-alvo').value || 120;
+            const carb = +document.getElementById('carb-input').value || 0;
+            const glic = +glicSlider.value;
+
+            const bolusComida = carb / fi;
+            const bolusCorrecao = (glic - alvo) / fc;
+            const total = Math.max(0, bolusComida + bolusCorrecao);
+            const totalRounded = Math.round(total * 2) / 2; // arredonda para 0.5
+
+            lastDose = totalRounded;
+
+            const box = document.getElementById('result-box');
+            const doseEl = document.getElementById('rb-dose');
+            const breakEl = document.getElementById('rb-breakdown');
+
+            doseEl.textContent = totalRounded % 1 === 0 ? totalRounded + ' UI' : totalRounded.toFixed(1) + ' UI';
+
+            box.className = 'result-box';
+            if (glic < 70) box.classList.add('low');
+            else if (glic > 180) box.classList.add('high');
+            else box.classList.add('ok');
+
+            const corrSign = bolusCorrecao >= 0 ? '+' : '';
+            breakEl.innerHTML = `
+        <span>🍽️ Bolus refeição: <strong>${bolusComida.toFixed(1)} UI</strong></span>
+        <span>📊 Correção: <strong>${corrSign}${bolusCorrecao.toFixed(1)} UI</strong></span>
+        <span>💉 Total: <strong>${totalRounded} UI</strong></span>
+    `;
+
+            // Salvar no histórico
+            salvarHistorico(carb, glic, totalRounded);
+        }
+
+        /* ═══════════════════════════════════════════════
+           HISTÓRICO (localStorage)
+        ═══════════════════════════════════════════════ */
+        function salvarHistorico(carb, glic, dose) {
+            const hist = getHistorico();
+            const entry = {
+                ts: Date.now(),
+                foods: addedFoods.map(f => `${f.food.nome} (${f.porcao}g)`),
+                carb,
+                glic,
+                dose
+            };
+            hist.unshift(entry);
+            localStorage.setItem('glico_hist', JSON.stringify(hist.slice(0, 50)));
+            renderHistorico();
+        }
+
+        function getHistorico() {
+            try { return JSON.parse(localStorage.getItem('glico_hist')) || []; }
+            catch { return []; }
+        }
+
+        function renderHistorico() {
+            const hist = getHistorico();
+            const listEl = document.getElementById('hist-list');
+            const emptyEl = document.getElementById('hist-empty');
+
+            if (hist.length === 0) {
+                listEl.innerHTML = '';
+                listEl.appendChild(createHistEmpty());
+                return;
+            }
+
+            listEl.innerHTML = hist.map(h => {
+                const d = new Date(h.ts);
+                const time = d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) + ' ' +
+                    d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                const foods = h.foods.slice(0, 3).join(', ') + (h.foods.length > 3 ? ` +${h.foods.length - 3}` : '');
+                return `
+        <div class="hist-item">
+            <span class="hi-time">${time}</span>
+            <div class="hi-foods">
+                ${foods || 'Sem alimentos registrados'}
+                <small>Glicemia: ${h.glic} mg/dL</small>
+            </div>
+            <span class="hi-carb">${h.carb}g carbo</span>
+            <span class="hi-dose">${h.dose} UI</span>
+        </div>`;
+            }).join('');
+        }
+
+        function createHistEmpty() {
+            const d = document.createElement('div');
+            d.className = 'hist-empty';
+            d.id = 'hist-empty';
+            d.innerHTML = '<i class="fa fa-clock-o"></i>Nenhuma refeição salva ainda';
+            return d;
+        }
+
+        document.getElementById('hist-clear').addEventListener('click', () => {
+            if (confirm('Deseja apagar todo o histórico?')) {
+                localStorage.removeItem('glico_hist');
+                renderHistorico();
+            }
+        });
+
+        /* ═══════════════════════════════════════════════
+           INIT
+        ═══════════════════════════════════════════════ */
+        renderHistorico();
+        renderDropdown('');
+    </script>
+</body>
+
+</html>

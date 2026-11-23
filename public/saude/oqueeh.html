@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>GLICO+ | O que é Diabetes?</title>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+   <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet">
+   <style>
+      :root {
+         --rosa: #DFB2B5;
+         --rosa-escuro: #c99699;
+         --rosa-deep: #b8807e;
+         --rosa-suave: #f7ecec;
+         --rosa-claro: #fdf5f5;
+         --creme: #faf7f4;
+         --texto: #2c2422;
+         --texto-mudo: #7a6560;
+         --branco: #ffffff;
+         --nav-h: 60px;
+      }
+
+      *,
+      *::before,
+      *::after {
+         box-sizing: border-box;
+         margin: 0;
+         padding: 0;
+      }
+
+      body {
+         font-family: 'DM Sans', sans-serif;
+         background: #f0e8e8;
+         color: var(--texto);
+         padding-top: var(--nav-h);
+      }
+
+      /* ══ NAV SUPERIOR ══ */
+      .topnav {
+         position: fixed;
+         top: 0;
+         left: 0;
+         right: 0;
+         height: var(--nav-h);
+         background: var(--rosa);
+         display: flex;
+         align-items: center;
+         justify-content: space-between;
+         padding: 0 1rem;
+         z-index: 200;
+         box-shadow: 0 2px 10px rgba(180, 80, 90, .18);
+      }
+
+      .topnav-left {
+         display: flex;
+         align-items: center;
+         gap: .75rem;
+      }
+
+      .hamburger {
+         width: 38px;
+         height: 38px;
+         border-radius: 50%;
+         background: rgba(255, 255, 255, .18);
+         border: none;
+         cursor: pointer;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         color: white;
+         font-size: 18px;
+         transition: background .2s;
+      }
+
+      .hamburger:hover {
+         background: rgba(255, 255, 255, .32);
+      }
+
+      .topnav-logo {
+         height: 34px;
+      }
+
+      .topnav-center {
+         display: flex;
+         align-items: center;
+         gap: .25rem;
+         position: absolute;
+         left: 50%;
+         transform: translateX(-50%);
+      }
+
+      .topnav-link {
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+         gap: 2px;
+         padding: 0 18px;
+         height: var(--nav-h);
+         color: rgba(255, 255, 255, .8);
+         text-decoration: none;
+         font-size: 11px;
+         font-weight: 500;
+         border-bottom: 3px solid transparent;
+         transition: all .2s;
+      }
+
+      .topnav-link i {
+         font-size: 18px;
+      }
+
+      .topnav-link:hover {
+         color: white;
+         background: rgba(255, 255, 255, .1);
+      }
+
+      .topnav-link.active {
+         color: white;
+         border-bottom-color: white;
+      }
+
+      /* ══ MENU LATERAL ══ */
+      .sidebar-overlay {
+         position: fixed;
+         inset: 0;
+         background: rgba(0, 0, 0, .35);
+         z-index: 300;
+         opacity: 0;
+         pointer-events: none;
+         transition: opacity .3s;
+      }
+
+      .sidebar-overlay.open {
+         opacity: 1;
+         pointer-events: all;
+      }
+
+      .side-menu {
+         position: fixed;
+         top: 0;
+         left: 0;
+         width: 280px;
+         height: 100%;
+         background: var(--branco);
+         z-index: 400;
+         transform: translateX(-100%);
+         transition: transform .35s cubic-bezier(.4, 0, .2, 1);
+         display: flex;
+         flex-direction: column;
+         overflow-y: auto;
+      }
+
+      .side-menu.open {
+         transform: translateX(0);
+      }
+
+      .side-menu-header {
+         background: var(--rosa);
+         padding: 1.25rem;
+         display: flex;
+         align-items: center;
+         gap: .75rem;
+         min-height: var(--nav-h);
+      }
+
+      .side-menu-header img {
+         height: 42px;
+      }
+
+      .side-menu-header span {
+         color: white;
+         font-family: 'Playfair Display', serif;
+         font-size: 1.1rem;
+         font-weight: 700;
+      }
+
+      .side-menu-close {
+         margin-left: auto;
+         background: rgba(255, 255, 255, .2);
+         border: none;
+         color: white;
+         width: 32px;
+         height: 32px;
+         border-radius: 50%;
+         cursor: pointer;
+         font-size: 16px;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+      }
+
+      .side-menu-section {
+         padding: .75rem 0;
+         border-bottom: 1px solid var(--rosa-suave);
+      }
+
+      .side-menu-label {
+         font-size: 11px;
+         font-weight: 500;
+         letter-spacing: .1em;
+         text-transform: uppercase;
+         color: var(--texto-mudo);
+         padding: .25rem 1.25rem .5rem;
+      }
+
+      .side-menu-item {
+         display: flex;
+         align-items: center;
+         gap: .9rem;
+         padding: .75rem 1.25rem;
+         color: var(--texto);
+         text-decoration: none;
+         font-size: 14px;
+         transition: background .2s, color .2s;
+         border: none;
+         background: none;
+         width: 100%;
+         text-align: left;
+         font-family: 'DM Sans', sans-serif;
+         cursor: pointer;
+      }
+
+      .side-menu-item:hover {
+         background: var(--rosa-suave);
+         color: var(--rosa-escuro);
+      }
+
+      .side-menu-item.active {
+         color: var(--rosa-escuro);
+         font-weight: 500;
+         background: var(--rosa-suave);
+      }
+
+      .side-menu-item i {
+         width: 20px;
+         text-align: center;
+         color: var(--rosa-escuro);
+         font-size: 15px;
+      }
+
+      .side-submenu {
+         max-height: 0;
+         overflow: hidden;
+         transition: max-height .3s ease;
+      }
+
+      .side-submenu.open {
+         max-height: 300px;
+      }
+
+      .side-submenu .side-menu-item {
+         padding-left: 3.25rem;
+         font-size: 13px;
+         color: var(--texto-mudo);
+      }
+
+      .chevron {
+         margin-left: auto;
+         font-size: 11px;
+         transition: transform .3s;
+         color: var(--texto-mudo);
+      }
+
+      .chevron.open {
+         transform: rotate(180deg);
+      }
+
+      /* ══ HERO DA PÁGINA ══ */
+      .page-hero {
+         background: linear-gradient(135deg, var(--rosa-claro) 0%, #fce8e9 100%);
+         padding: 3.5rem 2rem 2.5rem;
+         text-align: center;
+         border-bottom: 1px solid #f0dede;
+      }
+
+      .page-hero .badge {
+         display: inline-block;
+         background: var(--rosa);
+         color: white;
+         font-size: 11px;
+         font-weight: 500;
+         letter-spacing: .12em;
+         text-transform: uppercase;
+         padding: 5px 16px;
+         border-radius: 100px;
+         margin-bottom: 1rem;
+      }
+
+      .page-hero h1 {
+         font-family: 'Playfair Display', serif;
+         font-size: clamp(1.8rem, 4vw, 3rem);
+         font-weight: 700;
+         color: var(--texto);
+         margin-bottom: 1rem;
+      }
+
+      .page-hero h1 em {
+         font-style: normal;
+         color: var(--rosa-escuro);
+      }
+
+      .page-hero p {
+         font-size: 1.05rem;
+         color: var(--texto-mudo);
+         max-width: 560px;
+         margin: 0 auto 2rem;
+         line-height: 1.75;
+      }
+
+      /* Pills do hero */
+      .hero-pills {
+         display: flex;
+         justify-content: center;
+         gap: .75rem;
+         flex-wrap: wrap;
+      }
+
+      .hero-pill {
+         background: white;
+         border: 1.5px solid #ecc8ca;
+         border-radius: 100px;
+         padding: 8px 18px;
+         font-size: 13px;
+         font-weight: 500;
+         color: var(--rosa-escuro);
+         cursor: pointer;
+         transition: all .2s;
+         text-decoration: none;
+      }
+
+      .hero-pill:hover {
+         background: var(--rosa-escuro);
+         color: white;
+         border-color: var(--rosa-escuro);
+      }
+
+      /* ══ INTRO BOX ══ */
+      .intro-section {
+         max-width: 860px;
+         margin: 2.5rem auto 0;
+         padding: 0 1.5rem;
+      }
+
+      .intro-box {
+         background: white;
+         border-radius: 20px;
+         padding: 2rem 2.5rem;
+         box-shadow: 0 4px 20px rgba(180, 100, 100, .08);
+         display: grid;
+         grid-template-columns: 1fr 1fr;
+         gap: 2rem;
+         align-items: center;
+      }
+
+      .intro-box h2 {
+         font-family: 'Playfair Display', serif;
+         font-size: 1.5rem;
+         margin-bottom: .75rem;
+         color: var(--texto);
+      }
+
+      .intro-box p {
+         font-size: 15px;
+         color: var(--texto-mudo);
+         line-height: 1.8;
+      }
+
+      .intro-pills {
+         display: flex;
+         flex-direction: column;
+         gap: .75rem;
+      }
+
+      .intro-pill {
+         display: flex;
+         align-items: flex-start;
+         gap: .9rem;
+         background: var(--rosa-suave);
+         border-radius: 14px;
+         padding: 1rem 1.25rem;
+      }
+
+      .intro-pill .ip-icon {
+         font-size: 22px;
+         flex-shrink: 0;
+         margin-top: 2px;
+      }
+
+      .intro-pill h4 {
+         font-size: 14px;
+         font-weight: 600;
+         margin-bottom: 3px;
+      }
+
+      .intro-pill p {
+         font-size: 13px;
+         color: var(--texto-mudo);
+         line-height: 1.6;
+      }
+
+      /* ══ SEÇÃO DE CARDS ══ */
+      .cards-section {
+         max-width: 860px;
+         margin: 2.5rem auto;
+         padding: 0 1.5rem 4rem;
+      }
+
+      .section-label {
+         font-size: 11px;
+         font-weight: 500;
+         letter-spacing: .15em;
+         text-transform: uppercase;
+         color: var(--rosa-escuro);
+         margin-bottom: .5rem;
+      }
+
+      .section-title {
+         font-family: 'Playfair Display', serif;
+         font-size: 1.6rem;
+         font-weight: 700;
+         margin-bottom: .4rem;
+         color: var(--texto);
+      }
+
+      .section-divider {
+         width: 48px;
+         height: 3px;
+         background: var(--rosa);
+         border-radius: 2px;
+         margin-bottom: 1.75rem;
+      }
+
+      /* Grid dos cards */
+      .cards-grid {
+         display: grid;
+         grid-template-columns: 1fr 1fr;
+         gap: 1.25rem;
+         margin-bottom: 1.25rem;
+      }
+
+      .cards-grid.single {
+         grid-template-columns: 1fr;
+      }
+
+      /* Card de tipo */
+      .tipo-card {
+         background: white;
+         border-radius: 20px;
+         padding: 1.75rem;
+         box-shadow: 0 4px 20px rgba(180, 100, 100, .07);
+         border-top: 4px solid var(--rosa);
+         transition: transform .3s, box-shadow .3s;
+         cursor: default;
+         opacity: 0;
+         transform: translateY(20px);
+         transition: opacity .5s ease, transform .5s ease, box-shadow .3s;
+      }
+
+      .tipo-card.visible {
+         opacity: 1;
+         transform: translateY(0);
+      }
+
+      .tipo-card:hover {
+         transform: translateY(-5px) !important;
+         box-shadow: 0 12px 36px rgba(180, 100, 100, .14);
+      }
+
+      /* Variações de cor da borda superior */
+      .tipo-card.c1 {
+         border-top-color: #e07a7a;
+      }
+
+      .tipo-card.c2 {
+         border-top-color: #c99699;
+      }
+
+      .tipo-card.c3 {
+         border-top-color: #e0a06a;
+      }
+
+      .tipo-card.c4 {
+         border-top-color: #8abedc;
+      }
+
+      .tipo-card.c5 {
+         border-top-color: #9ab87a;
+      }
+
+      .tipo-card.c6 {
+         border-top-color: #c09adc;
+      }
+
+      .tipo-card.c7 {
+         border-top-color: #e0c46a;
+      }
+
+      .tipo-card-header {
+         display: flex;
+         align-items: center;
+         gap: .85rem;
+         margin-bottom: 1rem;
+      }
+
+      .tipo-icon {
+         width: 48px;
+         height: 48px;
+         border-radius: 14px;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         font-size: 22px;
+         flex-shrink: 0;
+         background: var(--rosa-suave);
+      }
+
+      .tipo-card.c1 .tipo-icon {
+         background: #fdeaea;
+      }
+
+      .tipo-card.c2 .tipo-icon {
+         background: #f7ecec;
+      }
+
+      .tipo-card.c3 .tipo-icon {
+         background: #fdf3ea;
+      }
+
+      .tipo-card.c4 .tipo-icon {
+         background: #eaf4fb;
+      }
+
+      .tipo-card.c5 .tipo-icon {
+         background: #eef5e8;
+      }
+
+      .tipo-card.c6 .tipo-icon {
+         background: #f5eefb;
+      }
+
+      .tipo-card.c7 .tipo-icon {
+         background: #fdf8ea;
+      }
+
+      .tipo-card h3 {
+         font-family: 'Playfair Display', serif;
+         font-size: 1.15rem;
+         font-weight: 700;
+         color: var(--texto);
+         margin-bottom: 2px;
+      }
+
+      .tipo-badge {
+         display: inline-block;
+         font-size: 10px;
+         font-weight: 600;
+         letter-spacing: .08em;
+         text-transform: uppercase;
+         padding: 2px 10px;
+         border-radius: 100px;
+         background: var(--rosa-suave);
+         color: var(--rosa-escuro);
+      }
+
+      .tipo-card.c1 .tipo-badge {
+         background: #fdeaea;
+         color: #c05050;
+      }
+
+      .tipo-card.c3 .tipo-badge {
+         background: #fdf3ea;
+         color: #b07030;
+      }
+
+      .tipo-card.c4 .tipo-badge {
+         background: #eaf4fb;
+         color: #3a7aaa;
+      }
+
+      .tipo-card.c5 .tipo-badge {
+         background: #eef5e8;
+         color: #4a8030;
+      }
+
+      .tipo-card.c6 .tipo-badge {
+         background: #f5eefb;
+         color: #7040a0;
+      }
+
+      .tipo-card.c7 .tipo-badge {
+         background: #fdf8ea;
+         color: #8a7020;
+      }
+
+      .tipo-card p {
+         font-size: 14px;
+         color: var(--texto-mudo);
+         line-height: 1.75;
+      }
+
+      /* Tag de frequência */
+      .freq-tag {
+         display: inline-flex;
+         align-items: center;
+         gap: 5px;
+         margin-top: 1rem;
+         font-size: 11px;
+         color: var(--texto-mudo);
+         background: #f8f0f0;
+         border-radius: 100px;
+         padding: 4px 12px;
+      }
+
+      .freq-tag i {
+         font-size: 10px;
+         color: var(--rosa-escuro);
+      }
+
+      /* ══ CARD DESTAQUE (Tipo 1 e 2) ══ */
+      .destaque-grid {
+         display: grid;
+         grid-template-columns: 1fr 1fr;
+         gap: 1.25rem;
+         margin-bottom: 1.25rem;
+      }
+
+      .tipo-card.destaque {
+         border-top-width: 5px;
+      }
+
+      /* ══ FONTE ══ */
+      .fonte-box {
+         background: white;
+         border-radius: 16px;
+         padding: 1rem 1.5rem;
+         display: flex;
+         align-items: center;
+         gap: .75rem;
+         font-size: 13px;
+         color: var(--texto-mudo);
+         box-shadow: 0 2px 10px rgba(180, 100, 100, .05);
+         margin-top: 2rem;
+      }
+
+      .fonte-box i {
+         color: var(--rosa-escuro);
+      }
+
+      .fonte-box a {
+         color: var(--rosa-escuro);
+         font-weight: 500;
+      }
+
+      /* ══ RESPONSIVO ══ */
+      @media (max-width: 720px) {
+         .topnav-center {
+            display: none;
+         }
+
+         .cards-grid,
+         .destaque-grid {
+            grid-template-columns: 1fr;
+         }
+
+         .intro-box {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+         }
+      }
+   
+        /* ══ ESTILO PADRONIZADO DO NAV & SIDEBAR (medicamentos-insumos-sus.html + pílulas) ══ */
+        :root {
+            --rosa: #DFB2B5;
+            --rosa-escuro: #c99699;
+            --rosa-suave: #f7ecec;
+            --rosa-claro: #fdf5f5;
+            --creme: #faf7f4;
+            --texto: #2c2422;
+            --texto-mudo: #7a6560;
+            --branco: #ffffff;
+            --nav-h: 60px;
+            --shadow-soft: 0 4px 20px rgba(180, 80, 90, 0.08);
+            --shadow-hover: 0 8px 30px rgba(180, 80, 90, 0.15);
+        }
+
+        body {
+            padding-top: var(--nav-h);
+        }
+
+        .topnav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--nav-h);
+            background: var(--rosa);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1rem;
+            z-index: 200;
+            box-shadow: 0 2px 10px rgba(180, 80, 90, .18);
+        }
+
+        .topnav-left {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+        }
+
+        .hamburger {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .18);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            transition: 0.2s;
+            flex-shrink: 0;
+        }
+
+        .hamburger:hover {
+            background: rgba(255, 255, 255, .32);
+        }
+
+        .topnav-logo {
+            height: 34px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .topnav-logo-fallback {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: var(--branco);
+            font-size: 1.25rem;
+        }
+
+        .topnav-logo-fallback .plus-icon {
+            background: rgba(255, 255, 255, 0.25);
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .topnav-center {
+            display: flex;
+            align-items: center;
+            gap: .35rem;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .topnav-link {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: .35rem;
+            padding: .45rem .85rem;
+            height: auto;
+            border-radius: 20px;
+            border-bottom: none;
+            background: rgba(255, 255, 255, .14);
+            color: white;
+            text-decoration: none;
+            font-size: .84rem;
+            font-weight: 500;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+
+        .topnav-link i {
+            font-size: 14px;
+        }
+
+        .topnav-link:hover,
+        .topnav-link.active {
+            background: rgba(255, 255, 255, .30);
+            color: white;
+            border-bottom: none;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(44, 36, 34, .45);
+            z-index: 299;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: .3s;
+            backdrop-filter: blur(2px);
+        }
+
+        .sidebar-overlay.open {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: all;
+        }
+
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 320px;
+            max-width: 86vw;
+            height: 100%;
+            background: var(--branco);
+            z-index: 300;
+            transform: translateX(-100%);
+            transition: transform .3s cubic-bezier(.4, 0, .2, 1);
+            overflow-y: auto;
+            box-shadow: 4px 0 24px rgba(44, 36, 34, .15);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .side-menu.open {
+            transform: translateX(0);
+        }
+
+        .side-menu-header {
+            background: var(--rosa);
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            min-height: var(--nav-h);
+        }
+
+        .side-menu-header img {
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .side-menu-header span {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: white;
+            font-weight: 700;
+            flex: 1;
+        }
+
+        .side-menu-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+
+        .side-menu-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .side-menu-section {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--rosa-suave);
+        }
+
+        .side-menu-section:last-child {
+            border-bottom: none;
+        }
+
+        .side-menu-label {
+            padding: .5rem 1.25rem;
+            font-size: .75rem;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: var(--texto-mudo);
+            font-weight: 700;
+        }
+
+        .side-menu-item {
+            display: flex;
+            align-items: center;
+            gap: .85rem;
+            padding: .75rem 1.25rem;
+            color: var(--texto);
+            text-decoration: none;
+            font-size: .92rem;
+            font-weight: 500;
+            transition: 0.2s;
+            border: none;
+            border-left: 3px solid transparent;
+            background: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            line-height: 1.35;
+        }
+
+        .side-menu-item:hover {
+            background: var(--rosa-claro);
+            color: var(--rosa-escuro);
+        }
+
+        .side-menu-item.active {
+            background: var(--rosa-suave);
+            border-left-color: var(--rosa-escuro);
+            color: var(--rosa-escuro);
+            font-weight: 700;
+        }
+
+        .side-menu-item i {
+            width: 20px;
+            text-align: center;
+            color: var(--rosa-escuro);
+            flex-shrink: 0;
+        }
+
+        .side-menu-item i.fa-balance-scale {
+            color: #dc2626;
+        }
+
+        @media (min-width: 769px) {
+            .topnav-center {
+                display: flex;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .topnav-center {
+                display: none;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+   <!-- NAV SUPERIOR -->
+    <nav class="topnav">
+        <div class="topnav-left">
+            <button class="hamburger" id="hamburger-btn" aria-label="Abrir menu">
+                <i class="fa fa-bars"></i>
+            </button>
+            <img class="topnav-logo"
+                src="https://lh3.google.com/u/1/d/1AFkllEteK2G4I7QkAsqzwZrgo43DDGtE=w1878-h956-iv1?auditContext=prefetch"
+                alt="GLICO+"
+                onerror="this.style.display='none'; document.getElementById('topnav-fallback').style.display='inline-flex';">
+            <div id="topnav-fallback" class="topnav-logo-fallback" style="display: none;">
+                <span class="plus-icon">+</span>
+                <span>GLICO+</span>
+            </div>
+        </div>
+
+        <div class="topnav-center">
+            <a href="../index.html" class="topnav-link"><i class="fa fa-home"></i><span>Início</span></a>
+            <a href="agenda.html" class="topnav-link"><i class="fa fa-calendar"></i><span>Agenda</span></a>
+            <a href="calculadora.html" class="topnav-link"><i class="fa fa-heartbeat"></i><span>Glicemia</span></a>
+            <a href="receitas.html" class="topnav-link"><i class="fa fa-cutlery"></i><span>Receitas</span></a>
+        </div>
+    </nav>
+
+    <!-- OVERLAY -->
+    <div class="sidebar-overlay" id="overlay"></div>
+
+    <!-- MENU LATERAL -->
+    <aside class="side-menu" id="side-menu">
+        <div class="side-menu-header">
+            <img src="https://lh3.google.com/u/1/d/1AFkllEteK2G4I7QkAsqzwZrgo43DDGtE=w1878-h956-iv1?auditContext=prefetch"
+                alt="GLICO+"
+                onerror="this.style.display='none';">
+            <span>GLICO+</span>
+            <button class="side-menu-close" id="menu-close" aria-label="Fechar menu"><i class="fa fa-times"></i></button>
+        </div>
+
+        <div class="side-menu-section">
+            <div class="side-menu-label">Navegação &amp; Saúde</div>
+            <a href="../index.html" class="side-menu-item"><i class="fa fa-home"></i> Página Inicial</a>
+            <a href="consulta-exames.html" class="side-menu-item"><i class="fa fa-stethoscope"></i> Acesso a Consultas e Exames</a>
+            <a href="calculadora.html" class="side-menu-item"><i class="fa fa-heartbeat"></i> Acompanhe a Glicemia</a>
+            <a href="agenda.html" class="side-menu-item"><i class="fa fa-calendar"></i> Agenda</a>
+            <a href="oqueeh.html" class="side-menu-item active"><i class="fa fa-question"></i> O Que é? | Tipos</a>
+            <a href="receitas.html" class="side-menu-item"><i class="fa fa-cutlery"></i> Receitas</a>
+        </div>
+
+        <div class="side-menu-section">
+            <div class="side-menu-label">Direitos &amp; SUS</div>
+            <a href="../direitos/acoes-judiciais.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Ações Judiciais (Medicamentos)</a>
+            <a href="../direitos/aposentadoria-bpc-loas.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Aposentadoria / BPC / LOAS</a>
+            <a href="../direitos/canais-denuncia.html" class="side-menu-item"><i class="fa fa-bullhorn"></i> Canais de Denúncia e Reclamação</a>
+            <a href="../direitos/medicamentos-fora-relacao.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Como Solicitar Medicamentos (Fora da Relação Oficial)</a>
+            <a href="../direitos/criterios-justica.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Critérios para Conseguir Medicamentos pela Justiça</a>
+            <a href="../direitos/defensoria-publica.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Defensoria Pública e Assistência Jurídica Gratuita</a>
+            <a href="../direitos/padronizados.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Diferenças entre Medicamentos Padronizados e Não Padronizados no SUS</a>
+            <a href="../direitos/direitos-diabetico.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Direitos da Pessoa com Diabetes</a>
+            <a href="../direitos/vulnerabilidade.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Direitos da Pessoa com Diabetes em Situação de Vulnerabilidade</a>
+            <a href="../direitos/incorporacao-conitec.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Incorporação de Novos Medicamentos ao SUS</a>
+            <a href="../direitos/instrumentos-juridicos.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Instrumentos Jurídicos Aplicáveis</a>
+            <a href="../direitos/medicamentos-insumos-sus.html" class="side-menu-item"><i class="fa fa-medkit"></i> Medicamentos e Insumos Fornecidos pelo SUS</a>
+            <a href="../direitos/politicas-publicas.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Políticas Públicas para Pessoas com Diabetes</a>
+            <a href="../direitos/responsabilidade-estado.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Responsabilidade do Estado</a>
+            <a href="../direitos/tratamentos-nao-disponibilizados.html" class="side-menu-item"><i class="fa fa-balance-scale"></i> Tratamentos Não Disponibilizados pelo SUS</a>
+        </div>
+    </aside>
+
+   <!-- HERO -->
+   <section class="page-hero">
+      <span class="badge"><i class="fa fa-question-circle"></i> &nbsp;Educação em Saúde</span>
+      <h1>O que é o <em>Diabetes</em>?</h1>
+      <p>Uma condição crônica que afeta milhões de brasileiros. Entender os tipos é o primeiro passo para um
+         tratamento eficaz e uma vida plena.</p>
+      <div class="hero-pills">
+         <a href="#principais" class="hero-pill">🔴 Tipos principais</a>
+         <a href="#raros" class="hero-pill">🔬 Tipos raros</a>
+         <a href="#gestacional" class="hero-pill">🤰 Gestacional</a>
+      </div>
+   </section>
+
+   <!-- INTRO -->
+   <div class="intro-section">
+      <div class="intro-box">
+         <div>
+            <h2>O que acontece no corpo?</h2>
+            <p>O diabetes é uma doença comum que afeta pessoas de todas as idades. Existem vários tipos de diabetes,
+               sendo o tipo 2 o mais comum. Uma combinação de estratégias de tratamento pode ajudar a controlar a
+               doença, permitindo uma vida saudável e prevenindo complicações.</p>
+            <br>
+            <p>Ela ocorre quando o nível de açúcar (glicose) no sangue está muito alto. Ele se desenvolve quando o
+               pâncreas não produz insulina suficiente , ou nenhuma, ou quando o corpo não responde adequadamente
+               aos efeitos da insulina. O diabetes afeta pessoas de todas as idades. A maioria dos tipos de
+               diabetes é crônica (para a vida toda), e todos os tipos são controláveis com medicamentos e/ou
+               mudanças no estilo de vida.</p>
+         </div>
+         <div class="intro-pills">
+            <div class="intro-pill">
+               <span class="ip-icon">🍬</span>
+               <div>
+                  <h4>Glicose em excesso</h4>
+                  <p>O açúcar proveniente dos alimentos não entra nas células e fica "preso" na corrente
+                     sanguínea.</p>
+               </div>
+            </div>
+            <div class="intro-pill">
+               <span class="ip-icon">💉</span>
+               <div>
+                  <h4>Insulina insuficiente ou ineficaz</h4>
+                  <p>O pâncreas não produz o suficiente, ou as células resistem à sua ação.</p>
+               </div>
+            </div>
+            <div class="intro-pill">
+               <span class="ip-icon">🩺</span>
+               <div>
+                  <h4>Tem controle</h4>
+                  <p>Com diagnóstico precoce, alimentação e tratamento adequado, é possível viver bem com
+                     diabetes.</p>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <!-- CARDS -->
+   <div class="cards-section">
+
+      <!-- TIPOS PRINCIPAIS -->
+      <div id="principais" style="padding-top: 2.5rem;">
+         <p class="section-label">Mais comuns</p>
+         <h2 class="section-title">Tipos Principais</h2>
+         <div class="section-divider"></div>
+
+         <div class="destaque-grid">
+            <!-- Tipo 1 -->
+            <div class="tipo-card destaque c1 reveal">
+               <div class="tipo-card-header">
+                  <div class="tipo-icon">🔬</div>
+                  <div>
+                     <h3>Diabetes Tipo 1</h3>
+                     <span class="tipo-badge">Autoimune</span>
+                  </div>
+               </div>
+               <p>O Diabetes Tipo 1 é uma condição autoimune onde o corpo ataca as células beta do pâncreas,
+                  responsáveis pela produção de insulina.</p>
+               <p style="margin-top:.75rem;">Geralmente diagnosticada na infância ou adolescência, mas pode ocorrer
+                  em qualquer idade.</p>
+               <span class="freq-tag"><i class="fa fa-users"></i> Representa ~10% dos casos de diabetes</span>
+            </div>
+
+            <!-- Tipo 2 -->
+            <div class="tipo-card destaque c2 reveal">
+               <div class="tipo-card-header">
+                  <div class="tipo-icon">🫀</div>
+                  <div>
+                     <h3>Diabetes Tipo 2</h3>
+                     <span class="tipo-badge">Mais comum</span>
+                  </div>
+               </div>
+               <p>O corpo produz insulina, mas as células desenvolvem <strong>resistência</strong> a ela. Com o
+                  tempo, o pâncreas também pode reduzir a produção. Está fortemente associado a fatores como
+                  obesidade, sedentarismo e alimentação inadequada.</p>
+               <p style="margin-top:.75rem;">É o tipo mais prevalente, geralmente diagnosticado na vida adulta, mas
+                  cada vez mais comum em jovens.</p>
+               <span class="freq-tag"><i class="fa fa-users"></i> Representa ~90% dos casos de diabetes</span>
+            </div>
+         </div>
+      </div>
+
+      <!-- GESTACIONAL -->
+      <div id="gestacional" style="padding-top: 1rem;">
+         <div class="cards-grid single">
+            <div class="tipo-card c3 reveal">
+               <div class="tipo-card-header">
+                  <div class="tipo-icon">🤰</div>
+                  <div>
+                     <h3>Diabetes Gestacional</h3>
+                     <span class="tipo-badge">Durante a gravidez</span>
+                  </div>
+               </div>
+               <p>Surge durante a gravidez quando os hormônios da placenta interferem na ação da insulina.
+                  Geralmente desaparece após o parto, mas aumenta o risco de a mãe e o bebê desenvolverem Diabetes
+                  Tipo 2 no futuro. Requer acompanhamento médico cuidadoso durante toda a gestação.</p>
+               <span class="freq-tag"><i class="fa fa-info-circle"></i> Afeta entre 7% e 18% das gestantes no
+                  Brasil</span>
+            </div>
+         </div>
+      </div>
+
+      <!-- TIPOS RAROS -->
+      <div id="raros" style="padding-top: 2.5rem;">
+         <p class="section-label">Menos conhecidos</p>
+         <h2 class="section-title">Tipos Raros</h2>
+         <div class="section-divider"></div>
+
+         <div class="cards-grid">
+            <!-- Tipo 3 -->
+            <div class="tipo-card c4 reveal">
+               <div class="tipo-card-header">
+                  <div class="tipo-icon">🧠</div>
+                  <div>
+                     <h3>Diabetes Tipo 3</h3>
+                     <span class="tipo-badge">Não oficial</span>
+                  </div>
+               </div>
+               <p>Acredita-se estar relacionado à incapacidade do cérebro em responder à insulina. <strong>Não é
+                     reconhecido oficialmente</strong> pela comunidade médica, mas é estudado em contextos de
+                  pesquisa sobre Alzheimer, onde a resistência à insulina cerebral pode ter papel relevante na
+                  degeneração neuronal.</p>
+               <span class="freq-tag"><i class="fa fa-flask"></i> Ainda em fase de pesquisa científica</span>
+            </div>
+
+            <!-- Tipo 5 -->
+            <div class="tipo-card c5 reveal">
+               <div class="tipo-card-header">
+                  <div class="tipo-icon">🌍</div>
+                  <div>
+                     <h3>Diabetes Tipo 5</h3>
+                     <span class="tipo-badge">Por desnutrição</span>
+                  </div>
+               </div>
+               <p>Causado por desnutrição grave, caracterizado por deficiência severa de insulina sem resistência a
+                  ela. Mais comum na infância e adolescência em países em desenvolvimento. Difere dos outros tipos
+                  por sua origem nutricional e contexto socioeconômico.</p>
+               <span class="freq-tag"><i class="fa fa-globe"></i> Mais prevalente em países em
+                  desenvolvimento</span>
+            </div>
+         </div>
+
+         <div class="cards-grid" style="margin-top:0;">
+            <!-- MODY -->
+            <div class="tipo-card c6 reveal">
+               <div class="tipo-card-header">
+                  <div class="tipo-icon">🧬</div>
+                  <div>
+                     <h3>Diabetes tipo MODY</h3>
+                     <span class="tipo-badge">Genético</span>
+                  </div>
+               </div>
+               <p><strong>Maturity Onset Diabetes of the Young</strong> — é um tipo raro causado por mutação em um
+                  único gene herdado de um dos pais. Ocorre em jovens, mas é mais brando que o Tipo 1 e se
+                  assemelha ao Tipo 2. Também chamado de <em>diabetes monogênica</em>.</p>
+               <span class="freq-tag"><i class="fa fa-dna"></i> Representa 1% a 5% dos casos de diabetes</span>
+            </div>
+
+            <!-- Insipidus -->
+            <div class="tipo-card c7 reveal">
+               <div class="tipo-card-header">
+                  <div class="tipo-icon">💧</div>
+                  <div>
+                     <h3>Diabetes Insipidus</h3>
+                     <span class="tipo-badge">Raro</span>
+                  </div>
+               </div>
+               <p>Condição rara causada pela diminuição do hormônio antidiurético (ADH) ou pela incapacidade dos
+                  rins de responder a ele. <strong>Não está relacionado ao açúcar</strong> — o nome "diabetes"
+                  aqui refere-se apenas à produção excessiva de urina, causando desidratação e sede intensa.</p>
+               <span class="freq-tag"><i class="fa fa-tint"></i> Não envolve glicose ou insulina</span>
+            </div>
+         </div>
+      </div>
+
+      <!-- FONTE -->
+      <div class="fonte-box">
+         <i class="fa fa-book"></i>
+         <span>Fonte: <a href="https://www.tuasaude.com/diabetes/" target="_blank">www.tuasaude.com/diabetes/</a> ·
+            Conteúdo de caráter informativo. Consulte sempre um profissional de saúde.</span>
+      </div>
+
+   </div><!-- /cards-section -->
+
+   <script>
+      /* MENU LATERAL */
+      const hamburger = document.getElementById('hamburger-btn');
+      const sideMenu = document.getElementById('side-menu');
+      const overlay = document.getElementById('overlay');
+      const menuClose = document.getElementById('menu-close');
+
+      const openMenu = () => { sideMenu.classList.add('open'); overlay.classList.add('open'); };
+      const closeMenu = () => { sideMenu.classList.remove('open'); overlay.classList.remove('open'); };
+
+      hamburger.addEventListener('click', openMenu);
+      menuClose.addEventListener('click', closeMenu);
+      overlay.addEventListener('click', closeMenu);
+
+      /* Fechar menu ao clicar num link (mobile) */
+      document.querySelectorAll('.side-menu-item[href]').forEach(link => {
+         link.addEventListener('click', closeMenu);
+      });
+
+/* SCROLL REVEAL (Correção Aplicada) */
+      const observer = new IntersectionObserver((entries) => {
+         entries.forEach((e, i) => {
+            if (e.isIntersecting) {
+               setTimeout(() => e.target.classList.add('visible'), i * 80);
+               observer.unobserve(e.target);
+            }
+         });
+      }, { threshold: 0.1 });
+
+      document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+      /* SMOOTH SCROLL para as pills do hero (Correção Aplicada) */
+      document.querySelectorAll('a[href^="#"]').forEach(a => {
+         a.addEventListener('click', function (e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            if (!targetId || targetId === '#') return;
+            const targetElement = document.querySelector(targetId);
+
+            if (targetElement) {
+               window.scrollTo({
+                  top: targetElement.offsetTop - 80, // Compensar a altura da navbar
+                  behavior: 'smooth'
+               });
+            }
+         });
+      });
+   </script>
+
+    <script>
+        (function () {
+            const sideMenuEl = document.getElementById('side-menu');
+            const overlayEl = document.getElementById('overlay');
+            function forceCloseMenu() {
+                if (sideMenuEl) sideMenuEl.classList.remove('open');
+                if (overlayEl) overlayEl.classList.remove('open');
+                document.body.style.overflow = '';
+            }
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') forceCloseMenu();
+            });
+            document.querySelectorAll('#side-menu a.side-menu-item').forEach(function (link) {
+                link.addEventListener('click', forceCloseMenu);
+            });
+        })();
+    </script>
+</body>
+
+</html>

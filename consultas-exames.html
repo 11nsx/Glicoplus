@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLICO+ | Acesso a Consultas e Exames</title>
+    <meta name="description" content="Acesso a consultas médicas e exames de rotina para pessoas com diabetes no SUS: UBS, exames gratuitos, atendimento prioritário em jejum e teleconsulta.">
+
+    <!-- FONTES E ÍCONES OBRIGATÓRIOS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ══ PALETA DE CORES E VARIÁVEIS OFICIAIS GLICO+ ══ */
+        :root {
+            --rosa: #DFB2B5;
+            --rosa-escuro: #c99699;
+            --rosa-suave: #f7ecec;
+            --rosa-claro: #fdf5f5;
+            --creme: #faf7f4;
+            --texto: #2c2422;
+            --texto-mudo: #7a6560;
+            --branco: #ffffff;
+            --nav-h: 60px;
+            --shadow-soft: 0 4px 20px rgba(180, 80, 90, 0.08);
+            --shadow-hover: 0 8px 30px rgba(180, 80, 90, 0.15);
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--creme);
+            color: var(--texto);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+            padding-top: var(--nav-h);
+        }
+
+        /* ══ TOPNAV FIXA (ESTRUTURA BASE EXATA) ══ */
+        .topnav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--nav-h);
+            background: var(--rosa);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1rem;
+            z-index: 200;
+            box-shadow: 0 2px 10px rgba(180, 80, 90, .18);
+        }
+
+        .topnav-left {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+        }
+
+        .hamburger {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .18);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            transition: 0.2s;
+            flex-shrink: 0;
+        }
+
+        .hamburger:hover {
+            background: rgba(255, 255, 255, .32);
+        }
+
+        .topnav-logo {
+            height: 34px;
+            object-fit: contain;
+        }
+
+        .topnav-center {
+            display: flex;
+            align-items: center;
+            gap: .25rem;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .topnav-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            padding: 0 18px;
+            height: var(--nav-h);
+            color: rgba(255, 255, 255, .8);
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 500;
+            border-bottom: 3px solid transparent;
+            transition: all .2s;
+            white-space: nowrap;
+        }
+
+        .topnav-link i {
+            font-size: 18px;
+        }
+
+        .topnav-link:hover {
+            color: white;
+            background: rgba(255, 255, 255, .1);
+        }
+
+        .topnav-link.active {
+            color: white;
+            border-bottom-color: white;
+        }
+
+        /* ══ MENU LATERAL E OVERLAY ══ */
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .35);
+            z-index: 300;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .3s;
+        }
+
+        .sidebar-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 320px;
+            height: 100%;
+            background: var(--branco);
+            z-index: 400;
+            transform: translateX(-100%);
+            transition: transform .35s cubic-bezier(.4, 0, .2, 1);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .side-menu.open {
+            transform: translateX(0);
+        }
+
+        .side-menu-header {
+            background: var(--rosa);
+            padding: 1.25rem 1.25rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            min-height: var(--nav-h);
+        }
+
+        .side-menu-header img {
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .side-menu-header span {
+            color: white;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .side-menu-close {
+            margin-left: auto;
+            background: rgba(255, 255, 255, .2);
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background .2s;
+        }
+
+        .side-menu-close:hover {
+            background: rgba(255, 255, 255, .35);
+        }
+
+        .side-menu-section {
+            padding: .75rem 0;
+        }
+
+        .side-menu-item {
+            display: flex;
+            align-items: center;
+            gap: .9rem;
+            padding: .75rem 1.25rem;
+            color: var(--texto);
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 400;
+            transition: background .2s, color .2s;
+            cursor: pointer;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-family: 'DM Sans', sans-serif;
+            line-height: 1.35;
+        }
+
+        .side-menu-item:hover {
+            background: var(--rosa-suave);
+            color: var(--rosa-escuro);
+        }
+
+        .side-menu-item.active {
+            color: var(--rosa-escuro);
+            font-weight: 600;
+            background: var(--rosa-suave);
+        }
+
+        .side-menu-item i {
+            width: 20px;
+            text-align: center;
+            color: var(--rosa-escuro);
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+
+        /* ══ CONTEÚDO PRINCIPAL (ARTIGO DO TÓPICO) ══ */
+        .page-body {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.25rem 4rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.75rem;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--texto-mudo);
+            margin-bottom: -0.5rem;
+        }
+
+        .breadcrumb-nav a {
+            color: var(--texto-mudo);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb-nav a:hover {
+            color: var(--rosa-escuro);
+        }
+
+        /* Header da Página */
+        .topic-header {
+            background: linear-gradient(135deg, var(--branco) 0%, var(--rosa-claro) 100%);
+            border: 1px solid var(--rosa-suave);
+            border-radius: 18px;
+            padding: 2rem 2.25rem;
+            box-shadow: var(--shadow-soft);
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .topic-header::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 6px;
+            background: var(--rosa-escuro);
+        }
+
+        .topic-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            background: var(--rosa-suave);
+            color: var(--rosa-escuro);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            width: fit-content;
+        }
+
+        .topic-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            color: var(--texto);
+            font-weight: 700;
+            line-height: 1.25;
+        }
+
+        .topic-header p.lead {
+            font-size: 1.02rem;
+            color: var(--texto-mudo);
+            line-height: 1.6;
+        }
+
+        /* Cartões de Conteúdo */
+        .content-card {
+            background: var(--branco);
+            border: 1px solid var(--rosa-suave);
+            border-radius: 16px;
+            padding: 1.75rem 2rem;
+            box-shadow: var(--shadow-soft);
+            display: flex;
+            flex-direction: column;
+            gap: 1.15rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .content-card:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .content-card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .card-icon-badge {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: var(--rosa-suave);
+            color: var(--rosa-escuro);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .content-card-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.35rem;
+            color: var(--texto);
+            font-weight: 700;
+        }
+
+        .card-body-text {
+            font-size: 0.98rem;
+            line-height: 1.75;
+            color: var(--texto);
+        }
+
+        /* Caixa de Documentos Exigidos */
+        .docs-checklist {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        .doc-item {
+            background: var(--creme);
+            border: 1px solid var(--rosa-suave);
+            border-radius: 12px;
+            padding: 0.9rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+            color: var(--texto);
+            font-weight: 500;
+        }
+
+        .doc-item i {
+            color: var(--rosa-escuro);
+            font-size: 1.1rem;
+        }
+
+        /* Caixa Digital (Meu SUS Digital) */
+        .digital-box {
+            background: linear-gradient(135deg, #f0f7ff 0%, #e6f0fa 100%);
+            border: 1px solid #bfdbfe;
+            border-radius: 14px;
+            padding: 1.25rem 1.4rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .digital-box i {
+            color: #0284c7;
+            font-size: 1.5rem;
+            margin-top: 2px;
+        }
+
+        .digital-box-text strong {
+            display: block;
+            color: #0369a1;
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .digital-box-text p {
+            color: #334155;
+            font-size: 0.92rem;
+            line-height: 1.6;
+        }
+
+        /* Grade de Exames Periódicos */
+        .exams-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .exam-item-card {
+            background: var(--creme);
+            border: 1px solid var(--rosa-suave);
+            border-radius: 14px;
+            padding: 1.15rem 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            transition: all 0.2s;
+        }
+
+        .exam-item-card:hover {
+            background: var(--branco);
+            border-color: var(--rosa);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .exam-item-header {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-weight: 600;
+            color: var(--texto);
+            font-size: 0.98rem;
+        }
+
+        .exam-item-header i {
+            color: var(--rosa-escuro);
+            font-size: 1.1rem;
+        }
+
+        .exam-item-desc {
+            font-size: 0.85rem;
+            color: var(--texto-mudo);
+            line-height: 1.5;
+        }
+
+        .exam-item-tag {
+            align-self: flex-start;
+            font-size: 0.72rem;
+            font-weight: 600;
+            background: var(--rosa-suave);
+            color: var(--rosa-escuro);
+            padding: 0.15rem 0.55rem;
+            border-radius: 6px;
+            margin-top: 0.25rem;
+        }
+
+        /* Alerta de Atendimento Prioritário em Jejum */
+        .priority-alert-box {
+            background: linear-gradient(135deg, #fef2f2 0%, #fff1f2 100%);
+            border: 1.5px solid #fecaca;
+            border-radius: 16px;
+            padding: 1.4rem 1.6rem;
+            display: flex;
+            gap: 1.15rem;
+            align-items: flex-start;
+        }
+
+        .priority-alert-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #fee2e2;
+            color: #dc2626;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .priority-alert-content h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            color: #991b1b;
+            margin-bottom: 0.4rem;
+        }
+
+        .priority-alert-content p {
+            font-size: 0.95rem;
+            color: #7f1d1d;
+            line-height: 1.65;
+        }
+
+        /* ══ CARD DE AÇÃO GOVERNAMENTAL E TELECONSULTA ══ */
+        .gov-cta-section {
+            background: linear-gradient(135deg, var(--branco) 0%, var(--rosa-claro) 100%);
+            border: 2px solid var(--rosa);
+            border-radius: 20px;
+            padding: 2.25rem 2rem;
+            box-shadow: 0 8px 32px rgba(201, 150, 153, 0.18);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 1.25rem;
+        }
+
+        .gov-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--rosa-suave);
+            color: var(--rosa-escuro);
+            padding: 0.4rem 0.9rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .gov-cta-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.7rem;
+            color: var(--texto);
+            max-width: 620px;
+            line-height: 1.3;
+        }
+
+        .gov-cta-section p {
+            color: var(--texto-mudo);
+            font-size: 0.95rem;
+            max-width: 580px;
+        }
+
+        /* Botão Oficial Solicitado pelo Usuário */
+        .btn-atendimento-sus {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--rosa-escuro) 0%, #b88084 100%);
+            color: var(--branco);
+            text-decoration: none;
+            padding: 1.1rem 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(201, 150, 153, 0.4);
+            transition: all 0.25s ease;
+            max-width: 460px;
+            width: 100%;
+            cursor: pointer;
+            border: none;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-atendimento-sus:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(201, 150, 153, 0.5);
+            background: linear-gradient(135deg, #ba787c 0%, #a66a6e 100%);
+            color: var(--branco);
+        }
+
+        .btn-atendimento-sus .btn-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .btn-atendimento-sus .btn-subtitle {
+            font-size: 0.92rem;
+            font-weight: 400;
+            opacity: 0.95;
+            margin-bottom: 0.35rem;
+        }
+
+        .btn-atendimento-sus .btn-action {
+            font-size: 0.88rem;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.22);
+            padding: 0.25rem 0.85rem;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        /* ══ RESPONSIVIDADE ══ */
+        @media (max-width: 860px) {
+            .topnav-center {
+                display: none;
+            }
+
+            .page-body {
+                padding: 1.5rem 1rem 3rem;
+            }
+
+            .topic-header {
+                padding: 1.5rem 1.4rem;
+            }
+
+            .topic-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .content-card {
+                padding: 1.35rem 1.25rem;
+            }
+
+            .btn-atendimento-sus {
+                width: 100%;
+                padding: 1rem 1.25rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ══ MENU SUPERIOR (TOPNAV LIMPA) ══ -->
+    <nav class="topnav">
+        <div class="topnav-left">
+            <button class="hamburger" id="hamburger-btn" aria-label="Abrir menu">
+                <i class="fa fa-bars"></i>
+            </button>
+            <img class="topnav-logo"
+                src="https://lh3.google.com/u/1/d/1AFkllEteK2G4I7QkAsqzwZrgo43DDGtE=w1878-h956-iv1?auditContext=prefetch"
+                alt="GLICO+">
+        </div>
+
+        <div class="topnav-center">
+            <a href="index.html" class="topnav-link"><i class="fa fa-home"></i><span>Início</span></a>
+            <a href="acoes-judiciais.html" class="topnav-link"><i class="fa fa-balance-scale"></i><span>Ações Judiciais</span></a>
+            <a href="consultas-exames.html" class="topnav-link active"><i class="fa fa-stethoscope"></i><span>Consultas &amp; Exames</span></a>
+            <a href="receitas.html" class="topnav-link"><i class="fa fa-cutlery"></i><span>Receitas</span></a>
+            <a href="calculadora.html" class="topnav-link"><i class="fa fa-heartbeat"></i><span>Glicemia</span></a>
+            <a href="agenda.html" class="topnav-link"><i class="fa fa-calendar"></i><span>Agenda</span></a>
+        </div>
+    </nav>
+
+    <!-- OVERLAY -->
+    <div class="sidebar-overlay" id="overlay"></div>
+
+    <!-- ══ MENU LATERAL (HAMBURGUER) EM ORDEM ALFABÉTICA ══ -->
+    <aside class="side-menu" id="side-menu">
+        <div class="side-menu-header">
+            <img src="https://lh3.google.com/u/1/d/1AFkllEteK2G4I7QkAsqzwZrgo43DDGtE=w1878-h956-iv1?auditContext=prefetch"
+                alt="GLICO+">
+            <span>GLICO+</span>
+            <button class="side-menu-close" id="menu-close"><i class="fa fa-times"></i></button>
+        </div>
+
+        <div class="side-menu-section">
+            <!-- 1º Lugar: Página Inicial -->
+            <a href="index.html" class="side-menu-item">
+                <i class="fa fa-home"></i>
+                <span>Página Inicial</span>
+            </a>
+
+            <!-- 12 Tópicos Solicitados em Ordem Alfabética (com o tópico atual ativo) -->
+            <a href="consultas-exames.html" class="side-menu-item active">
+                <i class="fa fa-stethoscope"></i>
+                <span>Acesso a Consultas e Exames para Pessoas com Diabetes</span>
+            </a>
+
+            <a href="#justica-baixa-renda" class="side-menu-item">
+                <i class="fa fa-balance-scale"></i>
+                <span>Acesso à Justiça para Pessoas de Baixa Renda</span>
+            </a>
+
+            <a href="acoes-judiciais.html" class="side-menu-item">
+                <i class="fa fa-balance-scale"></i>
+                <span>Ações Judiciais para Obtenção de Medicamentos</span>
+            </a>
+
+            <a href="#denuncia-reclamacao" class="side-menu-item">
+                <i class="fa fa-bullhorn"></i>
+                <span>Canais de Denúncia e Reclamação</span>
+            </a>
+
+            <a href="#fora-relacao-oficial" class="side-menu-item">
+                <i class="fa fa-file-text-o"></i>
+                <span>Como Solicitar Medicamentos Fora da Relação Oficial</span>
+            </a>
+
+            <a href="#criterios-justica" class="side-menu-item">
+                <i class="fa fa-balance-scale"></i>
+                <span>Critérios para Conseguir Medicamentos pela Justiça</span>
+            </a>
+
+            <a href="#defensoria-publica" class="side-menu-item">
+                <i class="fa fa-balance-scale"></i>
+                <span>Defensoria Pública e Assistência Jurídica Gratuita</span>
+            </a>
+
+            <a href="#padronizados-nao-padronizados" class="side-menu-item">
+                <i class="fa fa-cubes"></i>
+                <span>Diferenças entre Medicamentos Padronizados e Não Padronizados no SUS</span>
+            </a>
+
+            <a href="#vulnerabilidade" class="side-menu-item">
+                <i class="fa fa-balance-scale"></i>
+                <span>Direitos da Pessoa com Diabetes em Situação de Vulnerabilidade</span>
+            </a>
+
+            <a href="#incorporacao-novos-medicamentos" class="side-menu-item">
+                <i class="fa fa-plus-square"></i>
+                <span>Incorporação de Novos Medicamentos ao SUS</span>
+            </a>
+
+            <a href="#politicas-publicas" class="side-menu-item">
+                <i class="fa fa-institution"></i>
+                <span>Políticas Públicas para Pessoas com Diabetes</span>
+            </a>
+
+            <a href="#tratamentos-nao-sus" class="side-menu-item">
+                <i class="fa fa-medkit"></i>
+                <span>Tratamentos Não Disponibilizados pelo SUS</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- ══ CONTEÚDO PRINCIPAL: ACESSO A CONSULTAS E EXAMES ══ -->
+    <main class="page-body">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb-nav">
+            <a href="index.html"><i class="fa fa-home"></i> Início</a>
+            <i class="fa fa-angle-right"></i>
+            <span>Direitos &amp; Saúde</span>
+            <i class="fa fa-angle-right"></i>
+            <span>Consultas e Exames</span>
+        </nav>
+
+        <!-- Cabeçalho do Tópico -->
+        <header class="topic-header">
+            <span class="topic-tag">
+                <i class="fa fa-stethoscope"></i> Atenção Básica &amp; SUS
+            </span>
+            <h1>Acesso a Consultas e Exames para Pessoas com Diabetes</h1>
+            <p class="lead">
+                Guia prático e oficial sobre a porta de entrada para atendimento médico, documentos exigidos, aplicativo digital, lista de exames periódicos garantidos e direito à prioridade em jejum.
+            </p>
+        </header>
+
+        <!-- SEÇÃO 1: Porta de Entrada (UBS e Documentação) -->
+        <section class="content-card">
+            <div class="content-card-header">
+                <div class="card-icon-badge">
+                    <i class="fa fa-hospital-o"></i>
+                </div>
+                <h2>Porta de Entrada: Unidades Básicas de Saúde (UBS)</h2>
+            </div>
+            <p class="card-body-text">
+                O acesso a consultas médicas e exames de rotina para pessoas com diabetes ocorre prioritariamente por meio da Atenção Primária à Saúde, tendo as Unidades Básicas de Saúde (UBS) como porta de entrada principal. Para agendar consultas e obter encaminhamentos para exames, o cidadão deve apresentar documento oficial com foto, CPF ou Cartão Nacional de Saúde (CNS) e passar por avaliação médica na rede pública.
+            </p>
+            <div class="docs-checklist">
+                <div class="doc-item">
+                    <i class="fa fa-id-card-o"></i>
+                    <span>Documento oficial com foto (RG, CNH)</span>
+                </div>
+                <div class="doc-item">
+                    <i class="fa fa-file-text-o"></i>
+                    <span>CPF regular</span>
+                </div>
+                <div class="doc-item">
+                    <i class="fa fa-credit-card"></i>
+                    <span>Cartão Nacional de Saúde (CNS / SUS)</span>
+                </div>
+                <div class="doc-item">
+                    <i class="fa fa-user-md"></i>
+                    <span>Avaliação médica prévia na rede pública</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO 2: Acompanhamento Digital (Meu SUS Digital) -->
+        <section class="content-card">
+            <div class="content-card-header">
+                <div class="card-icon-badge">
+                    <i class="fa fa-mobile"></i>
+                </div>
+                <h2>Acompanhamento Digital: Aplicativo Meu SUS Digital</h2>
+            </div>
+            <p class="card-body-text">
+                Além do atendimento presencial na UBS, em diversos municípios o acompanhamento e a solicitação de serviços podem ser realizados de forma digital pelo aplicativo Meu SUS Digital (antigo Conecte SUS).
+            </p>
+            <div class="digital-box">
+                <i class="fa fa-check-circle"></i>
+                <div class="digital-box-text">
+                    <strong>Serviços Digitais Disponíveis no Aplicativo:</strong>
+                    <p>
+                        Pelo Meu SUS Digital, o paciente com diabetes pode consultar seu histórico de atendimentos, registros de medicamentos retirados, comprovantes de vacinação, agendamentos locais e laudos de exames laboratoriais integrados à Rede Nacional de Dados em Saúde (RNDS).
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO 3: Exames Laboratoriais e Clínicos Periódicos -->
+        <section class="content-card">
+            <div class="content-card-header">
+                <div class="card-icon-badge">
+                    <i class="fa fa-flask"></i>
+                </div>
+                <h2>Exames Laboratoriais e Clínicos Garantidos pelo SUS</h2>
+            </div>
+            <p class="card-body-text">
+                A realização periódica de exames laboratoriais e clínicos é garantida gratuitamente pelo SUS e funciona como um sistema de vigilância essencial para monitorar o controle glicêmico e prevenir complicações silenciosas nos rins, olhos, coração e nervos. Entre os principais exames disponibilizados estão a glicemia em jejum, a hemoglobina glicada (HbA1c), o perfil lipídico, a avaliação da função renal, a fundoscopia (exame de fundo de olho) e a avaliação clínica periódica dos pés.
+            </p>
+
+            <div class="exams-grid">
+                <!-- Exame 1: Glicemia em Jejum -->
+                <div class="exam-item-card">
+                    <div class="exam-item-header">
+                        <i class="fa fa-tint"></i>
+                        <span>Glicemia em Jejum</span>
+                    </div>
+                    <p class="exam-item-desc">Mede o nível pontual de glicose no sangue no momento exato da coleta para controle básico.</p>
+                    <span class="exam-item-tag">Laboratorial • Rotina</span>
+                </div>
+
+                <!-- Exame 2: Hemoglobina Glicada (HbA1c) -->
+                <div class="exam-item-card">
+                    <div class="exam-item-header">
+                        <i class="fa fa-bar-chart"></i>
+                        <span>Hemoglobina Glicada (HbA1c)</span>
+                    </div>
+                    <p class="exam-item-desc">Padrão-ouro que retrata a média da glicose dos últimos 60 a 90 dias, prevenindo descompensações.</p>
+                    <span class="exam-item-tag">A cada 3 a 6 meses</span>
+                </div>
+
+                <!-- Exame 3: Perfil Lipídico -->
+                <div class="exam-item-card">
+                    <div class="exam-item-header">
+                        <i class="fa fa-heartbeat"></i>
+                        <span>Perfil Lipídico</span>
+                    </div>
+                    <p class="exam-item-desc">Dosagem de colesterol total, frações (HDL/LDL) e triglicerídeos para proteção da saúde cardiovascular.</p>
+                    <span class="exam-item-tag">Proteção Cardíaca</span>
+                </div>
+
+                <!-- Exame 4: Avaliação da Função Renal -->
+                <div class="exam-item-card">
+                    <div class="exam-item-header">
+                        <i class="fa fa-filter"></i>
+                        <span>Avaliação da Função Renal</span>
+                    </div>
+                    <p class="exam-item-desc">Exames de creatinina sérica e microalbuminúria para detectar precocemente qualquer alteração nos rins.</p>
+                    <span class="exam-item-tag">Prevenção de Nefropatia</span>
+                </div>
+
+                <!-- Exame 5: Fundoscopia (Fundo de Olho) -->
+                <div class="exam-item-card">
+                    <div class="exam-item-header">
+                        <i class="fa fa-eye"></i>
+                        <span>Fundoscopia (Fundo de Olho)</span>
+                    </div>
+                    <p class="exam-item-desc">Avaliação oftalmológica da retina para rastreamento precoce e tratamento da retinopatia diabética.</p>
+                    <span class="exam-item-tag">Anual • Especializado</span>
+                </div>
+
+                <!-- Exame 6: Avaliação dos Pés -->
+                <div class="exam-item-card">
+                    <div class="exam-item-header">
+                        <i class="fa fa-shield"></i>
+                        <span>Avaliação Clínica dos Pés</span>
+                    </div>
+                    <p class="exam-item-desc">Inspeção periódica da sensibilidade tátil, reflexos e circulação para prevenir o pé diabético e úlceras.</p>
+                    <span class="exam-item-tag">Clínico • Regular</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO 4: Direito ao Atendimento Prioritário em Exames com Jejum -->
+        <section class="priority-alert-box">
+            <div class="priority-alert-icon">
+                <i class="fa fa-exclamation-triangle"></i>
+            </div>
+            <div class="priority-alert-content">
+                <h3>Direito ao Atendimento Prioritário em Exames com Jejum</h3>
+                <p>
+                    Além disso, pessoas com diabetes têm direito ao atendimento prioritário na realização de exames que exigem jejum prévio, reduzindo o risco de episódios graves de hipoglicemia. Para exercer esse direito, é necessário informar a condição no momento do agendamento e apresentar laudo ou documento médico comprovatório no dia do atendimento.
+                </p>
+            </div>
+        </section>
+
+        <!-- SEÇÃO 5: CANAL GOVERNAMENTAL OFICIAL / TELECONSULTA -->
+        <section class="gov-cta-section">
+            <span class="gov-badge">
+                <i class="fa fa-university"></i> Portal Oficial do Cidadão
+            </span>
+            <h2>Agendamento e Serviços de Saúde Pública</h2>
+            <p>
+                Acesse a plataforma governamental para informações oficiais, consultas, encaminhamentos de exames e agendamento de teleconsultas na rede pública.
+            </p>
+
+            <!-- Botão Obrigatório conforme especificado -->
+            <a href="https://share.google/EOcu1NKozhQ1IxccY" target="_blank" rel="noopener noreferrer" class="btn-atendimento-sus" aria-label="Acessar Atendimento SUS">
+                <span class="btn-title">
+                    <i class="fa fa-stethoscope"></i> Atendimento Sus
+                </span>
+                <span class="btn-subtitle">
+                    Consulta, exames, e cirurgias.
+                </span>
+                <span class="btn-action">
+                    Agende uma teleconsulta <i class="fa fa-external-link"></i>
+                </span>
+            </a>
+        </section>
+
+    </main>
+
+    <!-- ══ JAVASCRIPT BASE PARA MENU LATERAL ══ -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const hamburger = document.getElementById('hamburger-btn');
+            const sideMenu = document.getElementById('side-menu');
+            const overlay = document.getElementById('overlay');
+            const menuClose = document.getElementById('menu-close');
+
+            const openMenu = () => {
+                sideMenu.classList.add('open');
+                overlay.classList.add('open');
+            };
+
+            const closeMenu = () => {
+                sideMenu.classList.remove('open');
+                overlay.classList.remove('open');
+            };
+
+            if (hamburger) hamburger.addEventListener('click', openMenu);
+            if (menuClose) menuClose.addEventListener('click', closeMenu);
+            if (overlay) overlay.addEventListener('click', closeMenu);
+
+            document.querySelectorAll('.side-menu-item').forEach(link => {
+                link.addEventListener('click', closeMenu);
+            });
+        });
+    </script>
+</body>
+
+</html>

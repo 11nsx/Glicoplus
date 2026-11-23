@@ -1,0 +1,6 @@
+{
+  "name": "GLICO+ Agenda",
+  "description": "Sistema de acompanhamento e agenda de saúde para pessoas com diabetes: consultas médicas, retirada de insumos no SUS, exames e lembretes.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
