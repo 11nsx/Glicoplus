@@ -34,10 +34,7 @@ const DIREITOS_LINKS: MenuItem[] = [
   { label: 'Tratamentos Não Disponibilizados pelo SUS', href: '/direitos/tratamentos-nao-disponibilizados.html', icon: 'fa-balance-scale' },
 ];
 
-const LOGO_NAV_URL =
-  'https://lh3.google.com/u/1/d/1AFkllEteK2G4I7QkAsqzwZrgo43DDGtE=w1878-h956-iv1?auditContext=prefetch';
-const LOGO_AVATAR_URL =
-  'https://lh3.google.com/u/1/d/1LXI0zimC6koiCi20q6CK9m6mwu5gSo7w=w1878-h956-iv1?auditContext=prefetch';
+const LOGO_LOCAL_PATH = '/assets/aistudio/Logo_Glico_Mais_94ad8d9e.png';
 
 export function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -70,12 +67,17 @@ export function App() {
             <i className="fa fa-bars"></i>
           </button>
           {!logoFailed ? (
-            <img
-              className="topnav-logo"
-              src={LOGO_NAV_URL}
-              alt="GLICO+"
-              onError={() => setLogoFailed(true)}
-            />
+            <a href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
+              <img
+                className="topnav-logo"
+                src={LOGO_LOCAL_PATH}
+                alt="GLICO+"
+                onError={() => setLogoFailed(true)}
+              />
+              <span style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, color: 'white', fontSize: '1.2rem' }}>
+                GLICO+
+              </span>
+            </a>
           ) : (
             <div className="topnav-logo-fallback">
               <span className="plus-icon">+</span>
@@ -114,7 +116,7 @@ export function App() {
       {/* MENU LATERAL COMPLETO */}
       <aside className={`side-menu ${isMenuOpen ? 'open' : ''}`} id="side-menu">
         <div className="side-menu-header">
-          {!logoFailed && <img src={LOGO_NAV_URL} alt="GLICO+" />}
+          {!logoFailed && <img src={LOGO_LOCAL_PATH} alt="GLICO+" />}
           <span>GLICO+</span>
           <button className="side-menu-close" id="menu-close" aria-label="Fechar menu" onClick={closeMenu}>
             <i className="fa fa-times"></i>
@@ -168,7 +170,7 @@ export function App() {
       <div className="profile-block">
         <div className="profile-avatar-wrap">
           <div className="profile-avatar">
-            <img src={LOGO_AVATAR_URL} alt="GLICO+" />
+            <img src={LOGO_LOCAL_PATH} alt="GLICO+" />
           </div>
         </div>
 
@@ -205,7 +207,7 @@ export function App() {
           <div className="post-card">
             <div className="post-header">
               <div className="post-avatar-mini">
-                <img src={LOGO_AVATAR_URL} alt="GLICO+" />
+                <img src={LOGO_LOCAL_PATH} alt="GLICO+" />
               </div>
               <div className="post-meta">
                 <strong>GLICO+</strong>
@@ -228,7 +230,7 @@ export function App() {
           <div className="post-card" style={{ animationDelay: '.15s' }}>
             <div className="post-header">
               <div className="post-avatar-mini">
-                <img src={LOGO_AVATAR_URL} alt="GLICO+" />
+                <img src={LOGO_LOCAL_PATH} alt="GLICO+" />
               </div>
               <div className="post-meta">
                 <strong>GLICO+</strong>
@@ -251,7 +253,7 @@ export function App() {
           <div className="post-card" style={{ animationDelay: '.3s' }}>
             <div className="post-header">
               <div className="post-avatar-mini">
-                <img src={LOGO_AVATAR_URL} alt="GLICO+" />
+                <img src={LOGO_LOCAL_PATH} alt="GLICO+" />
               </div>
               <div className="post-meta">
                 <strong>GLICO+</strong>
